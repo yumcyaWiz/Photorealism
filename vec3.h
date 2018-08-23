@@ -79,5 +79,14 @@ std::ostream& operator<<(std::ostream& stream, const Vec3& v) {
 }
 
 
+void orthonormalBasis(const Vec3& n, Vec3& vx, Vec3& vz) {
+  if(n.x > 0.9) vx = Vec3(0, 1, 0);
+  else vx = Vec3(1, 0, 0);
+
+  vx = normalize(vx - n*dot(vx, n));
+  vz = cross(n, vx);
+}
+
+
 typedef Vec3 RGB;
 #endif
