@@ -9,8 +9,11 @@ class Hit {
     double t;
     Vec3 hitPos;
     Vec3 hitNormal;
-    Primitive* hitPrimitive;
+    const Primitive* hitPrimitive;
 
-    Hit() {};
+    Hit() {
+      t = 1000000;
+      hitPrimitive = nullptr;
+    };
 };
 #endif

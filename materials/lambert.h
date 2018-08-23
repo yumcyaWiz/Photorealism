@@ -10,7 +10,7 @@ class Lambert : public Material {
     RGB brdf(const Vec3& wo, const Vec3& wi) const {
       return reflectance/M_PI;
     };
-    RGB sample(const Vec3& wo, Vec3& wi, double& pdf) {
+    RGB sample(const Vec3& wo, Vec3& wi, double& pdf) const {
       return reflectance/M_PI;
     };
 };
