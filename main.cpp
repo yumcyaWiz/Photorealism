@@ -5,6 +5,7 @@
 #include "hit.h"
 #include "shapes/sphere.h"
 #include "cameras/pinholeCamera.h"
+#include "materials/lambert.h"
 
 
 int main() {
@@ -25,7 +26,7 @@ int main() {
 
       Hit res;
       if(sphere.intersect(ray, res)) {
-        img.setPixel(i, j, Vec3(1, 1, 1));
+        img.setPixel(i, j, (res.hitNormal + 1)/2);
       }
       else {
         img.setPixel(i, j, Vec3(0, 0, 0));
