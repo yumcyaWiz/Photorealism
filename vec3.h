@@ -77,4 +77,7 @@ std::ostream& operator<<(std::ostream& stream, const Vec3& v) {
   stream << "(" << v.x << ", " << v.y << ", " << v.z << ")";
   return stream;
 }
+
+
+typedef Vec3 RGB;
 #endif
