@@ -11,7 +11,7 @@ class PinholeCamera : public Camera {
       d = 1;
     };
 
-    bool getRay(double u, double v, Ray& ray) const {
+    bool getRay(double u, double v, Sampler& sampler, Ray& ray) const {
       u = -u;
       v = -v;
       ray = Ray(camPos, normalize(d*camForward + u*camRight + v*camUp));

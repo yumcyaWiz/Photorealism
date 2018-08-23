@@ -1,6 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 #include "vec3.h"
+#include "sampler.h"
 class Camera {
   public:
     Vec3 camPos;
@@ -12,6 +13,6 @@ class Camera {
       orthonormalBasis(camForward, camRight, camUp);
     };
 
-    virtual bool getRay(double u, double v, Ray& ray) const = 0;
+    virtual bool getRay(double u, double v, Sampler& sampler, Ray& ray) const = 0;
 };
 #endif
