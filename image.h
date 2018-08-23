@@ -50,5 +50,21 @@ class Image {
       }
       file.close();
     };
+
+    void divide(int k) {
+      for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+          this->setPixel(i, j, this->getPixel(i, j)/k);
+        }
+      }
+    };
+
+    void gamma_correction() {
+      for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+          this->setPixel(i, j, pow(this->getPixel(i, j), 1/2.2));
+        }
+      }
+    };
 };
 #endif
