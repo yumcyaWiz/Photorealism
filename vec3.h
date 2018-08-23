@@ -10,7 +10,7 @@ class Vec3 {
 
     Vec3() { x = y = z = 0; };
     Vec3(double _x) : x(_x), y(_x), z(_x) {};
-    Vec3(double _x, double _y, double _ z) : x(_x), y(_y), z(_z) {};
+    Vec3(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {};
 
     double length() const {
       return std::sqrt(x*x + y*y + z*z);
@@ -75,5 +75,6 @@ inline Vec3 cross(const Vec3& v1, const Vec3& v2) {
 
 std::ostream& operator<<(std::ostream& stream, const Vec3& v) {
   stream << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+  return stream;
 }
 #endif
