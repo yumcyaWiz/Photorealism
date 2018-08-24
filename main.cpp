@@ -12,6 +12,7 @@
 #include "accels/linear.h"
 #include "samplers/mt.h"
 #include "skys/ibl.h"
+#include "skys/uniformSky.h"
 
 
 RGB Li(const Ray& ray, const Accel& accel, Sampler& sampler, const Sky& sky, int depth = 0) {
@@ -43,7 +44,7 @@ RGB Li(const Ray& ray, const Accel& accel, Sampler& sampler, const Sky& sky, int
 
 
 int main() {
-  int N = 100;
+  int N = 10;
   Image img(512, 512);
   ThinLensCamera cam(Vec3(), Vec3(0, 0, 1), Vec3(0, 0, 5), 1, 2.8);
   Linear accel;
@@ -69,7 +70,7 @@ int main() {
   accel.add(prim4);
 
   Mt sampler;
-  IBL sky("PaperMill_E_3k.hdr");
+  IBL sky("PaperMill_E_3k.hdr", 1, M_PI, 0);
 
 #pragma omp parallel for schedule(dynamic, 1)
   for(int k = 0; k < N; k++) {

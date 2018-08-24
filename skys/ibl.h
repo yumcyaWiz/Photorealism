@@ -1,5 +1,6 @@
 #ifndef IBL_H
 #define IBL_H
+#include <cmath>
 #include <string>
 #include "../sky.h"
 
@@ -11,8 +12,11 @@ class IBL : public Sky {
     int width;
     int height;
     float* data;
+    double intensity;
+    double offsetX;
+    double offsetY;
 
-    IBL(const std::string& filename) {
+    IBL(const std::string& filename, double _intensity, double _offsetX, double _offsetY) : intensity(_intensity), offsetX(_offsetX), offsetY(_offsetY) {
       int n;
       data = stbi_loadf(filename.c_str(), &width, &height, &n, 0);
     };
@@ -25,8 +29,8 @@ class IBL : public Sky {
       if(phi < 0) phi += 2*M_PI;
       double theta = std::acos(ray.direction.y);
       
-      double u = phi/(2*M_PI);
-      double v = theta/M_PI;
+      double u = std::fmod(phi + offsetX, 2*M_PI)/(2*M_PI);
+      double v = std::fmod(theta + offsetY, M_PI)/M_PI;
       
       int w = (int)(u * width);
       int h = (int)(v * height);
