@@ -24,4 +24,19 @@ inline double sinTheta(const Vec3& w) {
 inline double sin2Theta(const Vec3& w) {
     return 1.0 - cos2Theta(w);
 }
+
+
+inline Vec3 reflect(const Vec3& w, const Vec3& n) {
+    return -w + 2.0f*dot(w, n)*n;
+}
+inline bool refract(const Vec3& wi, Vec3& wt, const Vec3& n, float ior1, float ior2) {
+    float eta = ior1/ior2;
+    float cosThetaI = dot(wi, n);
+    float sin2ThetaI = std::max(0.0f, 1.0f - cosThetaI*cosThetaI);
+    float sin2ThetaT = eta*eta*sin2ThetaI;
+    if(sin2ThetaT >= 1.0f) return false;
+    float cosThetaT = std::sqrt(1.0f - sin2ThetaT);
+    wt = eta*(-wi) + (eta*cosThetaI - cosThetaT)*n;
+    return true;
+}
 #endif

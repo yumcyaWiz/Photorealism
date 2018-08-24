@@ -8,6 +8,7 @@
 #include "shapes/sphere.h"
 #include "cameras/thinLensCamera.h"
 #include "materials/lambert.h"
+#include "materials/mirror.h"
 #include "primitive.h"
 #include "accels/linear.h"
 #include "samplers/mt.h"
@@ -16,7 +17,7 @@
 
 
 RGB Li(const Ray& ray, const Accel& accel, Sampler& sampler, const Sky& sky, int depth = 0) {
-  if(depth > 10) return RGB(0, 0, 0);
+  if(depth > 100) return RGB(0, 0, 0);
 
   Hit res;
   if(accel.intersect(ray, res)) {
@@ -44,7 +45,7 @@ RGB Li(const Ray& ray, const Accel& accel, Sampler& sampler, const Sky& sky, int
 
 
 int main() {
-  int N = 10;
+  int N = 1000;
   Image img(512, 512);
   ThinLensCamera cam(Vec3(), Vec3(0, 0, 1), Vec3(0, 0, 5), 1, 2.8);
   Linear accel;
@@ -54,7 +55,7 @@ int main() {
   auto sphere2 = std::make_shared<Sphere>(Vec3(0, 0, 5), 1);
   auto sphere3 = std::make_shared<Sphere>(Vec3(2, 0, 7), 1);
 
-  auto mat = std::make_shared<Lambert>(RGB(0.9, 0.9, 0.9));
+  auto mat = std::make_shared<Mirror>(RGB(0.9, 0.9, 0.9));
   auto mat2 = std::make_shared<Lambert>(RGB(0.2, 0.2, 0.8));
   auto mat3 = std::make_shared<Lambert>(RGB(0.2, 0.8, 0.2));
   auto mat4 = std::make_shared<Lambert>(RGB(0.8, 0.2, 0.2));
@@ -72,9 +73,9 @@ int main() {
   Mt sampler;
   IBL sky("PaperMill_E_3k.hdr", 1, M_PI, 0);
 
-#pragma omp parallel for schedule(dynamic, 1)
   for(int k = 0; k < N; k++) {
     for(int i = 0; i < img.width; i++) {
+#pragma omp parallel for schedule(dynamic, 1)
       for(int j = 0; j < img.height; j++) {
         double u = (2.0*i - img.width + sampler.getNext())/img.width;
         double v = (2.0*j - img.height + sampler.getNext())/img.width;
@@ -87,10 +88,11 @@ int main() {
           RGB li = Li(ray, accel, sampler, sky);
           img.setPixel(i, j, img.getPixel(i, j) + li);
         }
+
+        if(omp_get_thread_num() == 0) {
+          std::cout << progressbar(k, N) << " " << percentage(k, N) << "\r" << std::flush;
+        }
       }
-    }
-    if(omp_get_thread_num() == 0) {
-      std::cout << progressbar(k, N) << " " << percentage(k, N) << "\r" << std::flush;
     }
   }
   img.divide(N);
