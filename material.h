@@ -26,16 +26,22 @@ inline double sin2Theta(const Vec3& w) {
 }
 
 
-inline Vec3 reflect(const Vec3& w, const Vec3& n) {
-    return -w + 2.0f*dot(w, n)*n;
+inline double fresnel(const Vec3& wo, const Vec3& n, double n1, double n2) {
+  const double f0 = std::pow((n1 - n2)/(n1 + n2), 2.0);
+  return f0 + (1 - f0)*std::pow(1 - dot(wo, n), 5.0);
 }
-inline bool refract(const Vec3& wi, Vec3& wt, const Vec3& n, float ior1, float ior2) {
-    float eta = ior1/ior2;
-    float cosThetaI = dot(wi, n);
-    float sin2ThetaI = std::max(0.0f, 1.0f - cosThetaI*cosThetaI);
-    float sin2ThetaT = eta*eta*sin2ThetaI;
-    if(sin2ThetaT >= 1.0f) return false;
-    float cosThetaT = std::sqrt(1.0f - sin2ThetaT);
+
+
+inline Vec3 reflect(const Vec3& w, const Vec3& n) {
+    return -w + 2.0*dot(w, n)*n;
+}
+inline bool refract(const Vec3& wi, Vec3& wt, const Vec3& n, double ior1, double ior2) {
+    double eta = ior1/ior2;
+    double cosThetaI = dot(wi, n);
+    double sin2ThetaI = std::max(0.0, 1.0 - cosThetaI*cosThetaI);
+    double sin2ThetaT = eta*eta*sin2ThetaI;
+    if(sin2ThetaT >= 1.0) return false;
+    double cosThetaT = std::sqrt(1.0 - sin2ThetaT);
     wt = eta*(-wi) + (eta*cosThetaI - cosThetaT)*n;
     return true;
 }

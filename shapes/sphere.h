@@ -23,9 +23,9 @@ class Sphere : public Shape {
       double t1 = (-b + std::sqrt(D))/(2*a);
 
       double t = t0;
-      if(t < 0) {
+      if(t < ray.tmin) {
           t = t1;
-          if(t < 0) return false;
+          if(t < ray.tmin) return false;
       }
 
       res.t = t;
