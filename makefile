@@ -1,2 +1,2 @@
 all:
-	g++ -std=c++17 -fopenmp main.cpp
+	g++ -std=c++17 -Wall -fopenmp main.cpp

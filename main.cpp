@@ -11,9 +11,10 @@
 #include "primitive.h"
 #include "accels/linear.h"
 #include "samplers/mt.h"
+#include "skys/uniformSky.h"
 
 
-RGB Li(const Ray& ray, const Accel& accel, Sampler& sampler, int depth = 0) {
+RGB Li(const Ray& ray, const Accel& accel, Sampler& sampler, const Sky& sky, int depth = 0) {
   if(depth > 10) return RGB(0, 0, 0);
 
   Hit res;
@@ -33,10 +34,10 @@ RGB Li(const Ray& ray, const Accel& accel, Sampler& sampler, int depth = 0) {
 
     Ray nextRay(res.hitPos + 0.001*res.hitNormal, wi);
 
-    return 1/pdf * brdf * cos * Li(nextRay, accel, sampler, depth + 1);
+    return 1/pdf * brdf * cos * Li(nextRay, accel, sampler, sky, depth + 1);
   }
   else {
-    return RGB(1, 1, 1);
+    return sky.getColor(ray);
   }
 }
 
@@ -68,6 +69,7 @@ int main() {
   accel.add(prim4);
 
   Mt sampler;
+  UniformSky sky(RGB(1, 1, 1));
 
 #pragma omp parallel for schedule(dynamic, 1)
   for(int k = 0; k < N; k++) {
@@ -81,7 +83,7 @@ int main() {
           img.setPixel(i, j, Vec3(0, 0, 0));
         }
         else {
-          RGB li = Li(ray, accel, sampler);
+          RGB li = Li(ray, accel, sampler, sky);
           img.setPixel(i, j, img.getPixel(i, j) + li);
         }
       }
