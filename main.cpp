@@ -11,7 +11,7 @@
 #include "primitive.h"
 #include "accels/linear.h"
 #include "samplers/mt.h"
-#include "skys/uniformSky.h"
+#include "skys/ibl.h"
 
 
 RGB Li(const Ray& ray, const Accel& accel, Sampler& sampler, const Sky& sky, int depth = 0) {
@@ -69,7 +69,7 @@ int main() {
   accel.add(prim4);
 
   Mt sampler;
-  UniformSky sky(RGB(1, 1, 1));
+  IBL sky("PaperMill_E_3k.hdr");
 
 #pragma omp parallel for schedule(dynamic, 1)
   for(int k = 0; k < N; k++) {

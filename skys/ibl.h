@@ -2,12 +2,15 @@
 #define IBL_H
 #include <string>
 #include "../sky.h"
+
+#define STB_IMAGE_IMPLEMENTATION
 #include "../stb/stb_image.h"
+
 class IBL : public Sky {
   public:
     int width;
     int height;
-    RGB* data;
+    float* data;
 
     IBL(const std::string& filename) {
       int n;
@@ -20,7 +23,7 @@ class IBL : public Sky {
     RGB getColor(const Ray& ray) const {
       double phi = std::atan2(ray.direction.z, ray.direction.x);
       if(phi < 0) phi += 2*M_PI;
-      float theta = std::acos(ray.direction.y);
+      double theta = std::acos(ray.direction.y);
       
       double u = phi/(2*M_PI);
       double v = theta/M_PI;
