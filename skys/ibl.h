@@ -17,7 +17,7 @@ class IBL : public Sky {
       data = stbi_loadf(filename.c_str(), &width, &height, &n, 0);
     };
     ~IBL() {
-      stbi_image_free(&data);
+      stbi_image_free(data);
     };
 
     RGB getColor(const Ray& ray) const {
