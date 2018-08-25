@@ -15,35 +15,44 @@ class Pt : public Integrator {
     Pt(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler, int _N) : Integrator(_camera, _sampler), N(_N) {};
 
     RGB Li(const Ray& ray, Scene& scene, double russian_roulette = 1.0, int depth = 0) const {
-      if(depth > 10) {
-        russian_roulette *= 0.9;
+      RGB col(1);
+      Ray trace_ray = ray;
+
+      for(int depth = 0; ; depth++) {
+        if(depth > 10) {
+          russian_roulette *= 0.9;
+        }
+        if((*this->sampler).getNext() > russian_roulette) {
+          col = RGB(0);
+          break;
+        }
+
+        Hit res;
+        if(scene.intersect(trace_ray, res)) {
+          auto hitMaterial = res.hitPrimitive->material;
+
+          Vec3 n = res.hitNormal;
+          Vec3 s, t;
+          orthonormalBasis(n, s, t);
+
+          Vec3 wo_local = worldToLocal(-trace_ray.direction, n, s, t);
+          Vec3 wi_local;
+          double pdf;
+          RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, pdf);
+          double cos = absCosTheta(wi_local);
+          Vec3 wi = localToWorld(wi_local, n, s, t);
+
+          trace_ray = Ray(res.hitPos, wi);
+
+          col *= 1/russian_roulette * 1/pdf * brdf * cos;
+        }
+        else {
+          col *= 1/russian_roulette * scene.sky->getColor(trace_ray);
+          break;
+        }
       }
-      if((*this->sampler).getNext() > russian_roulette) {
-        return RGB(0);
-      }
 
-      Hit res;
-      if(scene.intersect(ray, res)) {
-        auto hitMaterial = res.hitPrimitive->material;
-
-        Vec3 n = res.hitNormal;
-        Vec3 s, t;
-        orthonormalBasis(n, s, t);
-
-        Vec3 wo_local = worldToLocal(-ray.direction, n, s, t);
-        Vec3 wi_local;
-        double pdf;
-        RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, pdf);
-        double cos = absCosTheta(wi_local);
-        Vec3 wi = localToWorld(wi_local, n, s, t);
-
-        Ray nextRay(res.hitPos, wi);
-
-        return 1/russian_roulette * 1/pdf * brdf * cos * Li(nextRay, scene, russian_roulette, depth + 1);
-      }
-      else {
-        return 1/russian_roulette * scene.sky->getColor(ray);
-      }
+      return col;
     }
 
     void render(Scene& scene) const {

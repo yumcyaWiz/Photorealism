@@ -20,7 +20,7 @@
 
 
 int main() {
-  int N = 10;
+  int N = 100;
   auto film = std::make_shared<Film>(512, 512);
   auto camera = std::make_shared<ThinLensCamera>(Vec3(0, 1, 0), normalize(Vec3(0, 0, 5) - Vec3(0, 1, 0)), film, Vec3(0, 0, 5), 1, 2.8);
 
