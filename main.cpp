@@ -22,7 +22,7 @@
 int main() {
   int N = 10;
   auto film = std::make_shared<Film>(512, 512);
-  auto camera = std::make_shared<ThinLensCamera>(Vec3(0, 1, 0), normalize(Vec3(0, 0, 5) - Vec3(0, 1, 0)), film, Vec3(0, 0, 5), 1, 1.4);
+  auto camera = std::make_shared<ThinLensCamera>(Vec3(0, 1, 0), normalize(Vec3(0, 0, 5) - Vec3(0, 1, 0)), film, Vec3(0, 0, 5), 1, 2.8);
 
   auto floor = std::make_shared<Sphere>(Vec3(0, -10001, 0), 10000);
   auto sphere1 = std::make_shared<Sphere>(Vec3(-2, 0, 3), 1);
@@ -30,9 +30,9 @@ int main() {
   auto sphere3 = std::make_shared<Sphere>(Vec3(2, 0, 7), 1);
 
   auto mat = std::make_shared<Lambert>(RGB(0.9, 0.9, 0.9));
-  auto mat2 = std::make_shared<Glass>(1.5, RGB(0.2, 0.2, 0.8));
-  auto mat3 = std::make_shared<Glass>(1.5, RGB(0.2, 0.8, 0.2));
-  auto mat4 = std::make_shared<Glass>(1.5, RGB(0.8, 0.2, 0.2));
+  auto mat2 = std::make_shared<Glass>(1.5, RGB(1));
+  auto mat3 = std::make_shared<Glass>(1.5, RGB(1));
+  auto mat4 = std::make_shared<Glass>(1.5, RGB(1));
 
   std::vector<std::shared_ptr<Primitive>> prims;
   auto prim1 = std::make_shared<Primitive>(floor, mat);
