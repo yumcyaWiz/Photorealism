@@ -1,0 +1,24 @@
+#ifndef SCENE_H
+#define SCENE_H
+#include <vector>
+#include <memory>
+#include "ray.h"
+#include "hit.h"
+#include "primitive.h"
+#include "sky.h"
+#include "accels/linear.h"
+class Scene {
+  public:
+    std::vector<std::shared_ptr<Primitive>> prims;
+    std::shared_ptr<Sky> sky;
+    std::shared_ptr<Accel> accel;
+
+    Scene(const std::vector<std::shared_ptr<Primitive>>& _prims, const std::shared_ptr<Sky>& _sky) : prims(_prims), sky(_sky) {
+      accel = std::make_shared<Linear>(prims);
+    };
+
+    bool intersect(const Ray& ray, Hit& res) const {
+      return accel->intersect(ray, res);
+    };
+};
+#endif

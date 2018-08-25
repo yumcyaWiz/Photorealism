@@ -5,6 +5,7 @@
 #include "vec3.h"
 class Sampler {
   public:
+    Sampler() {};
     virtual double getNext() = 0;
     virtual Vec2 getNext2D() = 0;
 };

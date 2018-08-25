@@ -1,19 +1,19 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#ifndef FILM_H
+#define FILM_H
 #include <iostream>
 #include <fstream>
 #include "vec3.h"
 #include "util.h"
-class Image {
+class Film {
   public:
     int width;
     int height;
     RGB* data;
 
-    Image(int _width, int _height) : width(_width), height(_height) {
+    Film(int _width, int _height) : width(_width), height(_height) {
       data = new RGB[width*height];
     };
-    ~Image() {
+    ~Film() {
       delete[] data;
     };
 

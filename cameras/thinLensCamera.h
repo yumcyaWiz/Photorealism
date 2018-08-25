@@ -1,5 +1,6 @@
 #ifndef THINLENSCAMERA_H
 #define THINLENSCAMERA_H
+#include <memory>
 #include "../camera.h"
 class ThinLensCamera : public Camera {
   public:
@@ -10,7 +11,7 @@ class ThinLensCamera : public Camera {
     Vec3 lensCenter;
     double lensRadius;
 
-    ThinLensCamera(const Vec3& _camPos, const Vec3& _camForward, const Vec3& focusPoint, double _a, double _Fnumber) : Camera(_camPos, _camForward), a(_a), Fnumber(_Fnumber) {
+    ThinLensCamera(const Vec3& _camPos, const Vec3& _camForward, const std::shared_ptr<Film>& _film, const Vec3& focusPoint, double _a, double _Fnumber) : Camera(_camPos, _camForward, _film), a(_a), Fnumber(_Fnumber) {
       b = (focusPoint - this->camPos).length() - a;
       f = 1/(1/a + 1/b);
       lensRadius = 0.5 * f/Fnumber;

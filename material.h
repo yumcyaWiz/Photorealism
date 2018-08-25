@@ -1,6 +1,7 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 #include <cmath>
+#include <memory>
 #include "vec3.h"
 #include "sampler.h"
 class Material {

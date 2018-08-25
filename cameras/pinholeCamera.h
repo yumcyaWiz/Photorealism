@@ -1,5 +1,6 @@
 #ifndef PINHOLECAMERA_H
 #define PINHOLECAMERA_H
+#include <memory>
 #include "../camera.h"
 #include "../vec3.h"
 #include "../ray.h"
@@ -7,7 +8,7 @@ class PinholeCamera : public Camera {
   public:
     double d;
 
-    PinholeCamera(const Vec3& _camPos, const Vec3& _camForward) : Camera(_camPos, _camForward) {
+    PinholeCamera(const Vec3& _camPos, const Vec3& _camForward, const std::shared_ptr<Film>& _film) : Camera(_camPos, _camForward, _film) {
       d = 1;
     };
 
