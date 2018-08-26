@@ -14,9 +14,10 @@ class Pt : public Integrator {
 
     Pt(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler, int _N) : Integrator(_camera, _sampler), N(_N) {};
 
-    RGB Li(const Ray& ray, Scene& scene, double russian_roulette = 1.0, int depth = 0) const {
+    RGB Li(const Ray& ray, Scene& scene) const {
       RGB col(1);
       Ray trace_ray = ray;
+      double russian_roulette = 1.0;
 
       for(int depth = 0; ; depth++) {
         if(depth > 10) {

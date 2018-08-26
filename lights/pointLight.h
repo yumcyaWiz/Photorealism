@@ -7,7 +7,7 @@ class PointLight : public Light {
   public:
     Vec3 lightPos;
 
-    PointLight(const RGB& _power, const Vec3& _lightPos) : Light(_power), lightPos(_lightPos) {};
+    PointLight(const RGB& _power, const Vec3& _lightPos) : Light(_power, LIGHT_TYPE::POINT), lightPos(_lightPos) {};
 
     RGB Le(const Hit& res) const {
       return this->power;

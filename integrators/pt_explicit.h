@@ -1,12 +1,71 @@
 #ifndef PT_EXPLICIT_H
 #define PT_EXPLICIT_H
 #include "../integrator.h"
-class PtExplicit ; public Integrator {
+class PtExplicit : public Integrator {
   public:
-    PtExplicit(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler) : camera(_camera), sampler(_sampler) {};
+    int N;
 
-    RGB Li(const Ray& ray, Scene& scene) {
-      return RGB(0);
+    PtExplicit(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler, int _N) : Integrator(_camera, _sampler), N(_N) {};
+
+    RGB Li(const Ray& ray, Scene& scene, double russian_roulette = 1.0, int depth = 0) const {
+      if(depth > 10) {
+        russian_roulette *= 0.9;
+      }
+      if((*this->sampler).getNext() > russian_roulette) {
+        return RGB(0);
+      }
+
+      Hit res;
+      if(scene.intersect(ray, res)) {
+        if(res.hitPrimitive->light != nullptr) {
+          return RGB(0);
+        }
+
+        auto hitMaterial = res.hitPrimitive->material;
+        Vec3 wo = -ray.direction;
+        Vec3 n = res.hitNormal;
+        Vec3 s, t;
+        orthonormalBasis(n, s, t);
+        Vec3 wo_local = worldToLocal(wo, n, s, t);
+
+        Vec3 direct_col;
+        if(hitMaterial->type == MATERIAL_TYPE::DIFFUSE || hitMaterial->type == MATERIAL_TYPE::GLOSSY) {
+          for(const auto& light : scene.lights) {
+            double light_pdf;
+            Vec3 wi_light;
+            RGB le = light->sample(res, *this->sampler, wi_light, light_pdf);
+            Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
+
+            Ray shadowRay(res.hitPos, wi_light);
+            Hit shadow_res;
+
+            if(light->type == LIGHT_TYPE::AREA) {
+              if(scene.intersect(shadowRay, shadow_res)) { 
+                if(shadow_res.hitPrimitive->light == light) { 
+                  direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * absCosTheta(wi_light_local);
+                }
+              }
+            }
+            else {
+              if(!scene.intersect(shadowRay, shadow_res)) {
+                direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * absCosTheta(wi_light_local);
+              }
+            }
+          }
+        }
+
+        Vec3 wi_local;
+        double brdf_pdf;
+        RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
+        Vec3 wi = localToWorld(wi_local, n, s, t);
+        double cos = absCosTheta(wi_local);
+
+        Ray nextRay(res.hitPos, wi);
+        return 1/russian_roulette * (direct_col + 1/brdf_pdf * brdf * cos * Li(nextRay, scene, russian_roulette, depth + 1));
+      }
+      else {
+        return 1/russian_roulette * scene.sky->getColor(ray);
+      }
     };
 
     void render(Scene& scene) const {

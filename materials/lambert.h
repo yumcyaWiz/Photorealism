@@ -6,7 +6,11 @@ class Lambert : public Material {
   public:
     RGB reflectance;
 
-    Lambert(const RGB& _reflectance) : reflectance(_reflectance) {};
+    Lambert(const RGB& _reflectance) : Material(MATERIAL_TYPE::DIFFUSE), reflectance(_reflectance) {};
+
+    RGB f(const Vec3& wo, const Vec3& wi) const {
+      return reflectance/M_PI;
+    };
 
     RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, double& pdf) const {
       Vec2 u = sampler.getNext2D();

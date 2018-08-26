@@ -4,8 +4,20 @@
 #include <memory>
 #include "vec3.h"
 #include "sampler.h"
+enum class MATERIAL_TYPE {
+  DIFFUSE,
+  SPECULAR,
+  GLOSSY
+};
+
+
 class Material {
   public:
+    MATERIAL_TYPE type;
+
+    Material(const MATERIAL_TYPE& _type) : type(_type) {};
+
+    virtual RGB f(const Vec3& wo, const Vec3& wi) const = 0;
     virtual RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, double& pdf) const = 0;
 };
 

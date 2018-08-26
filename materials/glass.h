@@ -6,7 +6,11 @@ class Glass : public Material {
     double n;
     RGB reflectance;
 
-    Glass(double _n, const RGB& _reflectance) : n(_n), reflectance(_reflectance) {};
+    Glass(double _n, const RGB& _reflectance) : Material(MATERIAL_TYPE::SPECULAR), n(_n), reflectance(_reflectance) {};
+
+    RGB f(const Vec3& wo, const Vec3& wi) const {
+      return RGB(0);
+    };
 
     RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, double& pdf) const {
       bool isEntering = cosTheta(wo) > 0;
