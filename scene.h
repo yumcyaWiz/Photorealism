@@ -6,14 +6,16 @@
 #include "hit.h"
 #include "primitive.h"
 #include "sky.h"
+#include "light.h"
 #include "accels/linear.h"
 class Scene {
   public:
     std::vector<std::shared_ptr<Primitive>> prims;
+    std::vector<std::shared_ptr<Light>> lights;
     std::shared_ptr<Sky> sky;
     std::shared_ptr<Accel> accel;
 
-    Scene(const std::vector<std::shared_ptr<Primitive>>& _prims, const std::shared_ptr<Sky>& _sky) : prims(_prims), sky(_sky) {
+    Scene(const std::vector<std::shared_ptr<Primitive>>& _prims, const std::vector<std::shared_ptr<Light>>& _lights, const std::shared_ptr<Sky>& _sky) : prims(_prims), lights(_lights), sky(_sky) {
       accel = std::make_shared<Linear>(prims);
     };
 

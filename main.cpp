@@ -14,6 +14,7 @@
 #include "samplers/mt.h"
 #include "skys/ibl.h"
 #include "skys/uniformSky.h"
+#include "lights/pointLight.h"
 #include "scene.h"
 #include "integrators/pt.h"
 
@@ -45,8 +46,12 @@ int main() {
   prims.push_back(prim3);
   prims.push_back(prim4);
 
+  std::vector<std::shared_ptr<Light>> lights;
+  auto light1 = std::make_shared<PointLight>(RGB(1), Vec3(0, 3, 0));
+  lights.push_back(light1);
+
   auto sky = std::make_shared<IBL>("PaperMill_E_3k.hdr", 0.1, M_PI, 0);
-  Scene scene(prims, sky);
+  Scene scene(prims, lights, sky);
 
   auto sampler = std::make_shared<Mt>();
   Pt integrator(camera, sampler, N);
