@@ -29,6 +29,11 @@ class Pt : public Integrator {
 
         Hit res;
         if(scene.intersect(trace_ray, res)) {
+          if(res.hitPrimitive->light != nullptr) {
+            col *= res.hitPrimitive->light->Le(res);
+            break;
+          }
+
           auto hitMaterial = res.hitPrimitive->material;
 
           Vec3 n = res.hitNormal;
