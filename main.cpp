@@ -35,15 +35,16 @@ int main() {
   auto mat = std::make_shared<Lambert>(RGB(0.9, 0.9, 0.9));
   auto blue = std::make_shared<Lambert>(RGB(0.2, 0.2, 0.8));
   auto mat2 = std::make_shared<Glass>(1.5, RGB(1));
+  auto mirror = std::make_shared<Mirror>(RGB(0.9));
 
   std::vector<std::shared_ptr<Light>> lights;
-  auto light1 = std::make_shared<PointLight>(RGB(5), Vec3(0, 3, 5));
+  auto light1 = std::make_shared<AreaLight>(RGB(2), sphere2);
   lights.push_back(light1);
 
   std::vector<std::shared_ptr<Primitive>> prims;
-  auto prim1 = std::make_shared<Primitive>(floor, blue);
+  auto prim1 = std::make_shared<Primitive>(floor, mat);
   auto prim2 = std::make_shared<Primitive>(sphere1, mat);
-  auto prim3 = std::make_shared<Primitive>(sphere2, mat);
+  auto prim3 = std::make_shared<Primitive>(sphere2, mat, light1);
   auto prim4 = std::make_shared<Primitive>(sphere3, mat);
 
   prims.push_back(prim1);

@@ -20,7 +20,7 @@ class AreaLight : public Light {
 
       double dist2 = (shapePos - res.hitPos).length2();
       wi = normalize(shapePos - res.hitPos);
-      double cos = std::max(dot(-wi, normal), 0.0);
+      double cos = std::abs(dot(-wi, normal));
       pdf = point_pdf * dist2/cos;
 
       return power;

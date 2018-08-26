@@ -18,7 +18,12 @@ class PtExplicit : public Integrator {
       Hit res;
       if(scene.intersect(ray, res)) {
         if(res.hitPrimitive->light != nullptr) {
-          return RGB(0);
+          if(depth == 0) {
+            return res.hitPrimitive->light->Le(res);
+          }
+          else {
+            return RGB(0);
+          }
         }
 
         auto hitMaterial = res.hitPrimitive->material;
@@ -41,7 +46,7 @@ class PtExplicit : public Integrator {
 
             if(light->type == LIGHT_TYPE::AREA) {
               if(scene.intersect(shadowRay, shadow_res)) { 
-                if(shadow_res.hitPrimitive->light == light) { 
+                if(shadow_res.hitPrimitive->light == light) {
                   direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * absCosTheta(wi_light_local);
                 }
               }
