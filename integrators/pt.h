@@ -53,7 +53,7 @@ class Pt : public Integrator {
       }
 
       return col;
-    }
+    };
 
     void render(Scene& scene) const {
       const int width = this->camera->film->width;

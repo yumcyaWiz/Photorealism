@@ -3,6 +3,7 @@
 #include <memory>
 #include "shape.h"
 #include "material.h"
+#include "light.h"
 class Primitive {
   public:
     std::shared_ptr<Shape> shape;

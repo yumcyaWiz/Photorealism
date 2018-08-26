@@ -34,5 +34,12 @@ class Sphere : public Shape {
 
       return true;
     };
+
+    Vec3 sample(Sampler& sampler, Vec3& normal, double& pdf) const {
+      pdf = 1/(4*M_PI*radius*radius);
+      Vec3 samplePos = center + radius*sampleSphere(sampler.getNext2D());
+      normal = normalize(samplePos - center);
+      return samplePos;
+    };
 };
 #endif

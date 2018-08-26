@@ -15,6 +15,7 @@
 #include "skys/ibl.h"
 #include "skys/uniformSky.h"
 #include "lights/pointLight.h"
+#include "lights/areaLight.h"
 #include "scene.h"
 #include "integrators/pt.h"
 
