@@ -4,13 +4,13 @@
 #include <iostream>
 class Vec3 {
   public:
-    double x;
-    double y;
-    double z;
+    float x;
+    float y;
+    float z;
 
     Vec3() { x = y = z = 0; };
-    Vec3(double _x) : x(_x), y(_x), z(_x) {};
-    Vec3(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {};
+    Vec3(float _x) : x(_x), y(_x), z(_x) {};
+    Vec3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {};
 
     Vec3 operator-() const {
       return Vec3(-x, -y, -z);
@@ -28,10 +28,10 @@ class Vec3 {
       return *this;
     };
 
-    double length() const {
+    float length() const {
       return std::sqrt(x*x + y*y + z*z);
     };
-    double length2() const {
+    float length2() const {
       return x*x + y*y + z*z;
     };
 };
@@ -41,40 +41,40 @@ typedef Vec3 RGB;
 inline Vec3 operator+(const Vec3& v1, const Vec3& v2) {
   return Vec3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 }
-inline Vec3 operator+(const Vec3& v1, double k) {
+inline Vec3 operator+(const Vec3& v1, float k) {
   return Vec3(v1.x + k, v1.y + k, v1.z + k);
 }
-inline Vec3 operator+(double k, const Vec3& v2) {
+inline Vec3 operator+(float k, const Vec3& v2) {
   return Vec3(k + v2.x, k + v2.y, k + v2.z);
 }
 
 inline Vec3 operator-(const Vec3& v1, const Vec3& v2) {
   return Vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 }
-inline Vec3 operator-(const Vec3& v1, double k) {
+inline Vec3 operator-(const Vec3& v1, float k) {
   return Vec3(v1.x - k, v1.x - k, v1.z - k);
 }
-inline Vec3 operator-(double k, const Vec3& v2) {
+inline Vec3 operator-(float k, const Vec3& v2) {
   return Vec3(k - v2.x, k - v2.y, k - v2.z);
 }
 
 inline Vec3 operator*(const Vec3& v1, const Vec3& v2) {
   return Vec3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
 }
-inline Vec3 operator*(const Vec3& v1, double k) {
+inline Vec3 operator*(const Vec3& v1, float k) {
   return Vec3(v1.x * k, v1.y * k, v1.z * k);
 }
-inline Vec3 operator*(double k, const Vec3& v2) {
+inline Vec3 operator*(float k, const Vec3& v2) {
   return Vec3(k * v2.x, k * v2.y, k * v2.z);
 }
 
 inline Vec3 operator/(const Vec3& v1, const Vec3& v2) {
   return Vec3(v1.x / v2.x, v1.y / v2.y, v1.z / v2.z);
 }
-inline Vec3 operator/(const Vec3& v1, double k) {
+inline Vec3 operator/(const Vec3& v1, float k) {
   return Vec3(v1.x / k, v1.y / k, v1.z / k);
 }
-inline Vec3 operator/(double k, const Vec3& v2) {
+inline Vec3 operator/(float k, const Vec3& v2) {
   return Vec3(k / v2.x, k / v2.y, k / v2.z);
 }
 
@@ -84,7 +84,7 @@ inline Vec3 normalize(const Vec3& v) {
 }
 
 
-inline double dot(const Vec3& v1, const Vec3& v2) {
+inline float dot(const Vec3& v1, const Vec3& v2) {
   return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
 }
 inline Vec3 cross(const Vec3& v1, const Vec3& v2) {
@@ -98,7 +98,7 @@ std::ostream& operator<<(std::ostream& stream, const Vec3& v) {
 }
 
 
-Vec3 pow(const Vec3& v, double p) {
+Vec3 pow(const Vec3& v, float p) {
   return Vec3(std::pow(v.x, p), std::pow(v.y, p), std::pow(v.z, p));
 }
 

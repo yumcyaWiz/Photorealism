@@ -12,7 +12,7 @@ class Lambert : public Material {
       return reflectance/M_PI;
     };
 
-    RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, double& pdf) const {
+    RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {
       Vec2 u = sampler.getNext2D();
       wi = sampleCosineHemisphere(u);
       pdf = absCosTheta(wi)/M_PI;

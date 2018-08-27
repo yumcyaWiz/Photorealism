@@ -17,7 +17,7 @@ class Pt : public Integrator {
     RGB Li(const Ray& ray, Scene& scene) const {
       RGB col(1);
       Ray trace_ray = ray;
-      double russian_roulette = 1.0;
+      float russian_roulette = 1.0;
 
       for(int depth = 0; ; depth++) {
         if(depth > 10) {
@@ -43,9 +43,9 @@ class Pt : public Integrator {
 
           Vec3 wo_local = worldToLocal(-trace_ray.direction, n, s, t);
           Vec3 wi_local;
-          double pdf;
+          float pdf;
           RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, pdf);
-          double cos = absCosTheta(wi_local);
+          float cos = absCosTheta(wi_local);
           Vec3 wi = localToWorld(wi_local, n, s, t);
 
           trace_ray = Ray(res.hitPos, wi);
@@ -69,8 +69,8 @@ class Pt : public Integrator {
         for(int i = 0; i < width; i++) {
 #pragma omp parallel for schedule(dynamic, 1)
           for(int j = 0; j < height; j++) {
-            double u = (2.0*i - width + sampler->getNext())/width;
-            double v = (2.0*j - height + sampler->getNext())/width;
+            float u = (2.0*i - width + sampler->getNext())/width;
+            float v = (2.0*j - height + sampler->getNext())/width;
 
             Ray ray;
             if(!this->camera->getRay(u, v, *(this->sampler), ray)) {

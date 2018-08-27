@@ -7,14 +7,14 @@ class Mt : public Sampler {
   public:
     std::random_device rnd_dev;
     std::mt19937 mt;
-    std::uniform_real_distribution<double> dist;
+    std::uniform_real_distribution<> dist;
 
     Mt() {
       mt.seed(rnd_dev());
-      dist = std::uniform_real_distribution<double>(0, 1);
+      dist = std::uniform_real_distribution<>(0, 1);
     };
 
-    double getNext() {
+    float getNext() {
       return dist(mt);
     };
     Vec2 getNext2D() {

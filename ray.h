@@ -5,12 +5,12 @@ class Ray {
   public:
     Vec3 origin;
     Vec3 direction;
-    constexpr static double tmin = 0.001;
+    constexpr static float tmin = 0.005;
 
     Ray() {};
     Ray(const Vec3& o, const Vec3& d) : origin(o), direction(d) {};
 
-    Vec3 operator()(double t) const {
+    Vec3 operator()(float t) const {
       return origin + t*direction;
     };
 };

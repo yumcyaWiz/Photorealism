@@ -6,13 +6,13 @@ class Primitive;
 
 class Hit {
   public:
-    double t;
+    float t;
     Vec3 hitPos;
     Vec3 hitNormal;
     const Primitive* hitPrimitive;
 
     Hit() {
-      t = 1000000;
+      t = 10000;
       hitPrimitive = nullptr;
     };
 };

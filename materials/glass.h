@@ -3,18 +3,18 @@
 #include "../material.h"
 class Glass : public Material {
   public:
-    double n;
+    float n;
     RGB reflectance;
 
-    Glass(double _n, const RGB& _reflectance) : Material(MATERIAL_TYPE::SPECULAR), n(_n), reflectance(_reflectance) {};
+    Glass(float _n, const RGB& _reflectance) : Material(MATERIAL_TYPE::SPECULAR), n(_n), reflectance(_reflectance) {};
 
     RGB f(const Vec3& wo, const Vec3& wi) const {
       return RGB(0);
     };
 
-    RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, double& pdf) const {
+    RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {
       bool isEntering = cosTheta(wo) > 0;
-      double n1, n2;
+      float n1, n2;
       Vec3 normal;
       if(isEntering) {
         n1 = 1.0;
@@ -27,7 +27,7 @@ class Glass : public Material {
         normal = Vec3(0, -1, 0);
       }
 
-      double fr = fresnel(wo, normal, n1, n2);
+      float fr = fresnel(wo, normal, n1, n2);
       if(sampler.getNext() < fr) {
         wi = reflect(wo, normal);
         pdf = fr;

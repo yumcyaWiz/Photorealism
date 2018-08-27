@@ -7,7 +7,7 @@ class PtExplicit : public Integrator {
 
     PtExplicit(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler, int _N) : Integrator(_camera, _sampler), N(_N) {};
 
-    RGB Li(const Ray& ray, Scene& scene, double russian_roulette = 1.0, int depth = 0) const {
+    RGB Li(const Ray& ray, Scene& scene, float russian_roulette = 1.0, int depth = 0) const {
       if(depth > 10) {
         russian_roulette *= 0.9;
       }
@@ -36,7 +36,7 @@ class PtExplicit : public Integrator {
         Vec3 direct_col;
         if(hitMaterial->type == MATERIAL_TYPE::DIFFUSE || hitMaterial->type == MATERIAL_TYPE::GLOSSY) {
           for(const auto& light : scene.lights) {
-            double light_pdf;
+            float light_pdf;
             Vec3 wi_light;
             Vec3 samplePos;
             RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
@@ -48,14 +48,14 @@ class PtExplicit : public Integrator {
             if(light->type == LIGHT_TYPE::AREA) {
               if(scene.intersect(shadowRay, shadow_res)) { 
                 if(shadow_res.hitPrimitive->light == light) {
-                  direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0);
+                  direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f);
                 }
               }
             }
             else if(light->type == LIGHT_TYPE::POINT) {
               scene.intersect(shadowRay, shadow_res);
               if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
-                direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0);
+                direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f);
               }
             }
             else {
@@ -64,10 +64,10 @@ class PtExplicit : public Integrator {
         }
 
         Vec3 wi_local;
-        double brdf_pdf;
+        float brdf_pdf;
         RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
         Vec3 wi = localToWorld(wi_local, n, s, t);
-        double cos = absCosTheta(wi_local);
+        float cos = absCosTheta(wi_local);
 
         Ray nextRay(res.hitPos, wi);
         return 1/russian_roulette * (direct_col + 1/brdf_pdf * brdf * cos * Li(nextRay, scene, russian_roulette, depth + 1));
@@ -85,8 +85,8 @@ class PtExplicit : public Integrator {
         for(int i = 0; i < width; i++) {
 #pragma omp parallel for schedule(dynamic, 1)
           for(int j = 0; j < height; j++) {
-            double u = (2.0*i - width + sampler->getNext())/width;
-            double v = (2.0*j - height + sampler->getNext())/width;
+            float u = (2.0*i - width + sampler->getNext())/width;
+            float v = (2.0*j - height + sampler->getNext())/width;
 
             Ray ray;
             if(!this->camera->getRay(u, v, *(this->sampler), ray)) {
