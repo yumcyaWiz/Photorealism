@@ -34,7 +34,7 @@ int main() {
   auto top_wall = std::make_shared<Sphere>(Vec3(0, 10005, 0), 10000);
   auto left_ball = std::make_shared<Sphere>(Vec3(-1.5, 0, 3), 1);
   auto right_ball = std::make_shared<Sphere>(Vec3(1.5, 0, 2), 1);
-  auto light_ball = std::make_shared<Sphere>(Vec3(0, 2, 3), 0.1);
+  auto light_ball = std::make_shared<Sphere>(Vec3(0, 5, 3), 0.5);
 
   auto white = std::make_shared<Lambert>(RGB(0.9, 0.9, 0.9));
   auto blue = std::make_shared<Lambert>(RGB(0.2, 0.2, 0.8));
@@ -42,7 +42,7 @@ int main() {
   auto red = std::make_shared<Lambert>(RGB(0.8, 0.2, 0.2));
 
   std::vector<std::shared_ptr<Light>> lights;
-  auto light1 = std::make_shared<AreaLight>(RGB(30), light_ball);
+  auto light1 = std::make_shared<AreaLight>(RGB(2), light_ball);
   auto light2 = std::make_shared<PointLight>(RGB(20), Vec3(0, 3, 0));
   lights.push_back(light1);
   //lights.push_back(light2);

@@ -53,7 +53,7 @@ class PtExplicit : public Integrator {
 
               if(light->type == LIGHT_TYPE::AREA) {
                 if(scene.intersect(shadowRay, shadow_res)) { 
-                  if(shadow_res.hitPrimitive->light == light) {
+                  if(shadow_res.hitPrimitive->light == light && (samplePos - shadow_res.hitPos).length() < 0.005) {
                     direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f);
                   }
                 }
