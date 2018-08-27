@@ -7,74 +7,83 @@ class PtExplicit : public Integrator {
 
     PtExplicit(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler, int _N) : Integrator(_camera, _sampler), N(_N) {};
 
-    RGB Li(const Ray& ray, Scene& scene, float russian_roulette = 1.0, int depth = 0) const {
-      if(depth > 10) {
-        russian_roulette *= 0.9;
-      }
-      if((*this->sampler).getNext() > russian_roulette) {
-        return RGB(0);
-      }
+    RGB Li(const Ray& _ray, Scene& scene) const {
+      float russian_roulette = 1.0f;
+      Vec3 col;
+      Vec3 col2(1);
+      Ray ray = _ray;
 
-      Hit res;
-      if(scene.intersect(ray, res)) {
-        if(res.hitPrimitive->light != nullptr) {
-          if(depth == 0) {
-            return res.hitPrimitive->light->Le(res);
-          }
-          else {
-            return RGB(0);
-          }
+      for(int depth = 0; ; depth++) {
+        if(depth > 10) {
+          russian_roulette *= 0.9;
+        }
+        if((*this->sampler).getNext() > russian_roulette) {
+          break;
         }
 
-        auto hitMaterial = res.hitPrimitive->material;
-        Vec3 wo = -ray.direction;
-        Vec3 n = res.hitNormal;
-        Vec3 s, t;
-        orthonormalBasis(n, s, t);
-        Vec3 wo_local = worldToLocal(wo, n, s, t);
+        Hit res;
+        if(scene.intersect(ray, res)) {
+          if(res.hitPrimitive->light != nullptr) {
+            if(depth == 0) {
+              return res.hitPrimitive->light->Le(res);
+            }
+            else {
+              break;
+            }
+          }
 
-        Vec3 direct_col;
-        if(hitMaterial->type == MATERIAL_TYPE::DIFFUSE || hitMaterial->type == MATERIAL_TYPE::GLOSSY) {
-          for(const auto& light : scene.lights) {
-            float light_pdf;
-            Vec3 wi_light;
-            Vec3 samplePos;
-            RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
-            Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
+          auto hitMaterial = res.hitPrimitive->material;
+          Vec3 wo = -ray.direction;
+          Vec3 n = res.hitNormal;
+          Vec3 s, t;
+          orthonormalBasis(n, s, t);
+          Vec3 wo_local = worldToLocal(wo, n, s, t);
 
-            Ray shadowRay(res.hitPos, wi_light);
-            Hit shadow_res;
+          Vec3 direct_col;
+          if(hitMaterial->type == MATERIAL_TYPE::DIFFUSE || hitMaterial->type == MATERIAL_TYPE::GLOSSY) {
+            for(const auto& light : scene.lights) {
+              float light_pdf;
+              Vec3 wi_light;
+              Vec3 samplePos;
+              RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
+              Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
 
-            if(light->type == LIGHT_TYPE::AREA) {
-              if(scene.intersect(shadowRay, shadow_res)) { 
-                if(shadow_res.hitPrimitive->light == light) {
+              Ray shadowRay(res.hitPos, wi_light);
+              Hit shadow_res;
+
+              if(light->type == LIGHT_TYPE::AREA) {
+                if(scene.intersect(shadowRay, shadow_res)) { 
+                  if(shadow_res.hitPrimitive->light == light) {
+                    direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f);
+                  }
+                }
+              }
+              else if(light->type == LIGHT_TYPE::POINT) {
+                scene.intersect(shadowRay, shadow_res);
+                if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
                   direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f);
                 }
               }
-            }
-            else if(light->type == LIGHT_TYPE::POINT) {
-              scene.intersect(shadowRay, shadow_res);
-              if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
-                direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f);
+              else {
               }
             }
-            else {
-            }
           }
+
+          Vec3 wi_local;
+          float brdf_pdf;
+          RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
+          Vec3 wi = localToWorld(wi_local, n, s, t);
+          float cos = absCosTheta(wi_local);
+
+          ray = Ray(res.hitPos, wi);
+          col += 1/russian_roulette * direct_col * col2;
+          col2 *= 1/(russian_roulette * brdf_pdf) * brdf * cos;
         }
-
-        Vec3 wi_local;
-        float brdf_pdf;
-        RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
-        Vec3 wi = localToWorld(wi_local, n, s, t);
-        float cos = absCosTheta(wi_local);
-
-        Ray nextRay(res.hitPos, wi);
-        return 1/russian_roulette * (direct_col + 1/brdf_pdf * brdf * cos * Li(nextRay, scene, russian_roulette, depth + 1));
+        else {
+          break;
+        }
       }
-      else {
-        return 1/russian_roulette * scene.sky->getColor(ray);
-      }
+      return col;
     };
 
     void render(Scene& scene) const {
