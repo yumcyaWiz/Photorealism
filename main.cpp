@@ -23,34 +23,48 @@
 
 
 int main() {
-  int N = 100;
+  int N = 1000;
   auto film = std::make_shared<Film>(512, 512);
-  auto camera = std::make_shared<ThinLensCamera>(Vec3(0, 1, 0), normalize(Vec3(0, 0, 5) - Vec3(0, 1, 0)), film, Vec3(0, 0, 5), 1, 2.8);
+  auto camera = std::make_shared<ThinLensCamera>(Vec3(0, 1, -5), Vec3(0, 0, 1), film, Vec3(0, 0.5, 2.5), 1.3, 1.8);
 
   auto floor = std::make_shared<Sphere>(Vec3(0, -10001, 0), 10000);
-  auto sphere1 = std::make_shared<Sphere>(Vec3(-2, 0, 3), 1);
-  auto sphere2 = std::make_shared<Sphere>(Vec3(0, 0, 5), 1);
-  auto sphere3 = std::make_shared<Sphere>(Vec3(2, 0, 7), 1);
+  auto right_wall = std::make_shared<Sphere>(Vec3(10004, 0, 0), 10000);
+  auto left_wall = std::make_shared<Sphere>(Vec3(-10004, 0, 0), 10000);
+  auto back_wall = std::make_shared<Sphere>(Vec3(0, 0, 10005), 10000);
+  auto top_wall = std::make_shared<Sphere>(Vec3(0, 10005, 0), 10000);
+  auto left_ball = std::make_shared<Sphere>(Vec3(-1.5, 0, 3), 1);
+  auto right_ball = std::make_shared<Sphere>(Vec3(1.5, 0, 2), 1);
+  auto light_ball = std::make_shared<Sphere>(Vec3(0, 4, 2.5), 0.5);
 
-  auto mat = std::make_shared<Lambert>(RGB(0.9, 0.9, 0.9));
+  auto white = std::make_shared<Lambert>(RGB(0.9, 0.9, 0.9));
   auto blue = std::make_shared<Lambert>(RGB(0.2, 0.2, 0.8));
-  auto mat2 = std::make_shared<Glass>(1.5, RGB(1));
-  auto mirror = std::make_shared<Mirror>(RGB(0.9));
+  auto green = std::make_shared<Lambert>(RGB(0.2, 0.8, 0.2));
+  auto red = std::make_shared<Lambert>(RGB(0.8, 0.2, 0.2));
 
   std::vector<std::shared_ptr<Light>> lights;
-  auto light1 = std::make_shared<AreaLight>(RGB(2), sphere2);
+  auto light1 = std::make_shared<AreaLight>(RGB(5), light_ball);
+  auto light2 = std::make_shared<PointLight>(RGB(20), Vec3(0, 3, 0));
   lights.push_back(light1);
+  //lights.push_back(light2);
 
   std::vector<std::shared_ptr<Primitive>> prims;
-  auto prim1 = std::make_shared<Primitive>(floor, mat);
-  auto prim2 = std::make_shared<Primitive>(sphere1, mat);
-  auto prim3 = std::make_shared<Primitive>(sphere2, mat, light1);
-  auto prim4 = std::make_shared<Primitive>(sphere3, mat);
+  auto prim1 = std::make_shared<Primitive>(floor, white);
+  auto prim2 = std::make_shared<Primitive>(right_wall, red);
+  auto prim3 = std::make_shared<Primitive>(left_wall, green);
+  auto prim4 = std::make_shared<Primitive>(back_wall, white);
+  auto prim5 = std::make_shared<Primitive>(top_wall, white);
+  auto prim6 = std::make_shared<Primitive>(left_ball, white);
+  auto prim7 = std::make_shared<Primitive>(right_ball, white);
+  auto prim8 = std::make_shared<Primitive>(light_ball, white, light1);
 
   prims.push_back(prim1);
   prims.push_back(prim2);
   prims.push_back(prim3);
   prims.push_back(prim4);
+  prims.push_back(prim5);
+  prims.push_back(prim6);
+  prims.push_back(prim7);
+  prims.push_back(prim8);
 
   //auto sky = std::make_shared<IBL>("PaperMill_E_3k.hdr", 0.1, M_PI, 0);
   auto sky = std::make_shared<UniformSky>(RGB(0));

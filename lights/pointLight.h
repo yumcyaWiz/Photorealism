@@ -13,9 +13,11 @@ class PointLight : public Light {
       return this->power;
     };
 
-    RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, double& pdf) const {
-      pdf = 1.0;
+    RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, double& pdf) const {
+      samplePos = lightPos;
+      double dist2 = (samplePos - res.hitPos).length2();
       wi = normalize(lightPos - res.hitPos);
+      pdf = 1.0 * dist2;
       return this->power;
     };
 };

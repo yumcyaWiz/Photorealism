@@ -18,6 +18,6 @@ class Light {
     Light(const RGB& _power, const LIGHT_TYPE& _type) : power(_power), type(_type) {};
 
     virtual RGB Le(const Hit& res) const = 0;
-    virtual RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, double& pdf) const = 0;
+    virtual RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, double& pdf) const = 0;
 };
 #endif

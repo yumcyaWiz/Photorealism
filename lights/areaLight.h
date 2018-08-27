@@ -13,13 +13,13 @@ class AreaLight : public Light {
       return power;
     };
 
-    RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, double& pdf) const {
+    RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, double& pdf) const {
       double point_pdf;
       Vec3 normal;
-      Vec3 shapePos = shape->sample(sampler, normal, point_pdf);
+      samplePos = shape->sample(sampler, normal, point_pdf);
 
-      double dist2 = (shapePos - res.hitPos).length2();
-      wi = normalize(shapePos - res.hitPos);
+      double dist2 = (samplePos - res.hitPos).length2();
+      wi = normalize(samplePos - res.hitPos);
       double cos = std::abs(dot(-wi, normal));
       pdf = point_pdf * dist2/cos;
 

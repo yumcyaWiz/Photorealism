@@ -38,7 +38,8 @@ class PtExplicit : public Integrator {
           for(const auto& light : scene.lights) {
             double light_pdf;
             Vec3 wi_light;
-            RGB le = light->sample(res, *this->sampler, wi_light, light_pdf);
+            Vec3 samplePos;
+            RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
             Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
 
             Ray shadowRay(res.hitPos, wi_light);
@@ -47,14 +48,17 @@ class PtExplicit : public Integrator {
             if(light->type == LIGHT_TYPE::AREA) {
               if(scene.intersect(shadowRay, shadow_res)) { 
                 if(shadow_res.hitPrimitive->light == light) {
-                  direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * absCosTheta(wi_light_local);
+                  direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0);
                 }
               }
             }
-            else {
-              if(!scene.intersect(shadowRay, shadow_res)) {
-                direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * absCosTheta(wi_light_local);
+            else if(light->type == LIGHT_TYPE::POINT) {
+              scene.intersect(shadowRay, shadow_res);
+              if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
+                direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0);
               }
+            }
+            else {
             }
           }
         }
