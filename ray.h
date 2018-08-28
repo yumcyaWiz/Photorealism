@@ -5,7 +5,7 @@ class Ray {
   public:
     Vec3 origin;
     Vec3 direction;
-    constexpr static float tmin = 0.005;
+    constexpr static float tmin = 0.01;
 
     Ray() {};
     Ray(const Vec3& o, const Vec3& d) : origin(o), direction(d) {};

@@ -19,6 +19,7 @@
 #include "scene.h"
 #include "integrators/pt.h"
 #include "integrators/pt_explicit.h"
+#include "integrators/direct.h"
 
 
 
@@ -44,8 +45,8 @@ int main() {
   std::vector<std::shared_ptr<Light>> lights;
   auto light1 = std::make_shared<AreaLight>(RGB(100), light_ball);
   auto light2 = std::make_shared<PointLight>(RGB(10), Vec3(2, 0.5, 4));
-  //lights.push_back(light1);
-  lights.push_back(light2);
+  lights.push_back(light1);
+  //lights.push_back(light2);
 
   std::vector<std::shared_ptr<Primitive>> prims;
   auto prim1 = std::make_shared<Primitive>(floor, white);
@@ -55,7 +56,7 @@ int main() {
   auto prim5 = std::make_shared<Primitive>(top_wall, white);
   auto prim6 = std::make_shared<Primitive>(left_ball, white);
   auto prim7 = std::make_shared<Primitive>(right_ball, white);
-  //auto prim8 = std::make_shared<Primitive>(light_ball, white, light1);
+  auto prim8 = std::make_shared<Primitive>(light_ball, white, light1);
 
   prims.push_back(prim1);
   prims.push_back(prim2);
@@ -64,14 +65,14 @@ int main() {
   prims.push_back(prim5);
   prims.push_back(prim6);
   prims.push_back(prim7);
-  //prims.push_back(prim8);
+  prims.push_back(prim8);
 
   //auto sky = std::make_shared<IBL>("PaperMill_E_3k.hdr", 0.1, M_PI, 0);
   auto sky = std::make_shared<UniformSky>(RGB(0));
   Scene scene(prims, lights, sky);
 
   auto sampler = std::make_shared<Mt>();
-  PtExplicit integrator(camera, sampler, N);
+  Direct integrator(camera, sampler, N);
 
   integrator.render(scene);
   return 0;
