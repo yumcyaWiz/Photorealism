@@ -10,6 +10,7 @@
 #include "materials/lambert.h"
 #include "materials/mirror.h"
 #include "materials/glass.h"
+#include "materials/phong.h"
 #include "primitive.h"
 #include "samplers/mt.h"
 #include "skys/ibl.h"
@@ -24,7 +25,7 @@
 
 
 int main() {
-  int N = 300;
+  int N = 10;
   auto film = std::make_shared<Film>(512, 512);
   auto camera = std::make_shared<ThinLensCamera>(Vec3(0, 1, -5), Vec3(0, 0, 1), film, Vec3(0, 0.5, 2.5), 1.3, 8.0);
 
@@ -41,6 +42,7 @@ int main() {
   auto blue = std::make_shared<Lambert>(RGB(0.2, 0.2, 0.8));
   auto green = std::make_shared<Lambert>(RGB(0.2, 0.8, 0.2));
   auto red = std::make_shared<Lambert>(RGB(0.8, 0.2, 0.2));
+  auto phong = std::make_shared<Phong>(RGB(0.9), 0.0, 100.0);
 
   std::vector<std::shared_ptr<Light>> lights;
   auto light1 = std::make_shared<AreaLight>(RGB(100), light_ball);
@@ -49,7 +51,7 @@ int main() {
   //lights.push_back(light2);
 
   std::vector<std::shared_ptr<Primitive>> prims;
-  auto prim1 = std::make_shared<Primitive>(floor, white);
+  auto prim1 = std::make_shared<Primitive>(floor, phong);
   auto prim2 = std::make_shared<Primitive>(right_wall, red);
   auto prim3 = std::make_shared<Primitive>(left_wall, green);
   auto prim4 = std::make_shared<Primitive>(back_wall, white);
@@ -72,7 +74,7 @@ int main() {
   Scene scene(prims, lights, sky);
 
   auto sampler = std::make_shared<Mt>();
-  Direct integrator(camera, sampler, N);
+  PtExplicit integrator(camera, sampler, N);
 
   integrator.render(scene);
   return 0;
