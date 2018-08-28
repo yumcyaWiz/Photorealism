@@ -18,7 +18,7 @@ class ThinLensCamera : public Camera {
       lensCenter = this->camPos + a*this->camForward;
     };
 
-    bool getRay(float u, float v, Sampler& sampler, Ray& ray) const {
+    bool getRay(float u, float v, Sampler& sampler, Ray& ray, float& weight) const {
       Vec3 sensorPos = this->camPos + u*this->camRight + v*this->camUp;
       Vec3 sensorToLensCenter = normalize(lensCenter - sensorPos);
       float cos = dot(this->camForward, sensorToLensCenter);
@@ -28,6 +28,7 @@ class ThinLensCamera : public Camera {
       Vec3 lensPos = lensCenter + lensRadius*(l.x*this->camRight + l.y*this->camUp);
 
       ray = Ray(lensPos, normalize(objectPos - lensPos));
+      weight = cos*cos / (lensPos - sensorPos).length2();
       return true;
     };
 };

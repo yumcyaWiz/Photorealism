@@ -53,7 +53,7 @@ class PtExplicit : public Integrator {
 
               if(light->type == LIGHT_TYPE::AREA) {
                 if(scene.intersect(shadowRay, shadow_res)) { 
-                  if(shadow_res.hitPrimitive->light == light && (samplePos - shadow_res.hitPos).length() < 0.005) {
+                  if(shadow_res.hitPrimitive->light == light && (samplePos - shadow_res.hitPos).length2() < 1e-6) {
                     direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f);
                   }
                 }
@@ -98,11 +98,12 @@ class PtExplicit : public Integrator {
             float v = (2.0*j - height + sampler->getNext())/width;
 
             Ray ray;
-            if(!this->camera->getRay(u, v, *(this->sampler), ray)) {
+            float weight;
+            if(!this->camera->getRay(u, v, *(this->sampler), ray, weight)) {
               this->camera->film->setPixel(i, j, Vec3(0, 0, 0));
             }
             else {
-              RGB li = this->Li(ray, scene);
+              RGB li = weight*this->Li(ray, scene);
               this->camera->film->setPixel(i, j, this->camera->film->getPixel(i, j) + li);
             }
 

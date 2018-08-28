@@ -12,10 +12,11 @@ class PinholeCamera : public Camera {
       d = 1;
     };
 
-    bool getRay(float u, float v, Sampler& sampler, Ray& ray) const {
+    bool getRay(float u, float v, Sampler& sampler, Ray& ray, float& weight) const {
       u = -u;
       v = -v;
       ray = Ray(camPos, normalize(d*camForward + u*camRight + v*camUp));
+      weight = 1;
       return true;
     };
 };

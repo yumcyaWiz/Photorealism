@@ -73,11 +73,12 @@ class Pt : public Integrator {
             float v = (2.0*j - height + sampler->getNext())/width;
 
             Ray ray;
-            if(!this->camera->getRay(u, v, *(this->sampler), ray)) {
+            float weight;
+            if(!this->camera->getRay(u, v, *(this->sampler), ray, weight)) {
               this->camera->film->setPixel(i, j, Vec3(0, 0, 0));
             }
             else {
-              RGB li = this->Li(ray, scene);
+              RGB li = weight*this->Li(ray, scene);
               this->camera->film->setPixel(i, j, this->camera->film->getPixel(i, j) + li);
             }
 

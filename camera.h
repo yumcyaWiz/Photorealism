@@ -16,6 +16,6 @@ class Camera {
       orthonormalBasis(camForward, camRight, camUp);
     };
 
-    virtual bool getRay(float u, float v, Sampler& sampler, Ray& ray) const = 0;
+    virtual bool getRay(float u, float v, Sampler& sampler, Ray& ray, float& weight) const = 0;
 };
 #endif
