@@ -1,3 +1,6 @@
 [submodule "stb"]
 	path = stb
 	url = https://github.com/nothings/stb.git
+[submodule "cpptoml"]
+	path = cpptoml
+	url = https://github.com/skystrife/cpptoml.git
