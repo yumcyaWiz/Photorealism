@@ -1,5 +1,6 @@
 #ifndef INTEGRATOR_H
 #define INTEGRATOR_H
+#include <omp.h>
 #include "scene.h"
 class Integrator {
   public:

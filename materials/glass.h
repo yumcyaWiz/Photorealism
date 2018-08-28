@@ -3,10 +3,10 @@
 #include "../material.h"
 class Glass : public Material {
   public:
-    float n;
     RGB reflectance;
+    float n;
 
-    Glass(float _n, const RGB& _reflectance) : Material(MATERIAL_TYPE::SPECULAR), n(_n), reflectance(_reflectance) {};
+    Glass(const RGB& _reflectance, float _n) : Material(MATERIAL_TYPE::SPECULAR), reflectance(_reflectance), n(_n) {};
 
     RGB f(const Vec3& wo, const Vec3& wi) const {
       return RGB(0);
