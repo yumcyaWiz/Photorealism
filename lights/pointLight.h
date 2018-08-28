@@ -17,7 +17,7 @@ class PointLight : public Light {
       samplePos = lightPos;
       float dist2 = (samplePos - res.hitPos).length2();
       wi = normalize(lightPos - res.hitPos);
-      pdf = 1.0 * dist2;
+      pdf = 1.0f * dist2;
       return this->power;
     };
 };

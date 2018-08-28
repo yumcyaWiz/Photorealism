@@ -15,7 +15,7 @@ class PtExplicit : public Integrator {
 
       for(int depth = 0; ; depth++) {
         if(depth > 10) {
-          russian_roulette *= 0.9;
+          russian_roulette *= 0.95f;
         }
         if((*this->sampler).getNext() > russian_roulette) {
           break;
@@ -68,16 +68,25 @@ class PtExplicit : public Integrator {
               }
             }
           }
+          if(isNan(direct_col) || isInf(direct_col)) {
+            std::cerr << "NaN or Inf detected at Light Sampling" << std::endl;
+            break;
+          }
 
           Vec3 wi_local;
           float brdf_pdf;
           RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
           Vec3 wi = localToWorld(wi_local, n, s, t);
-          float cos = absCosTheta(wi_local);
+          float cos = std::max(cosTheta(wi_local), 0.0f);
+          RGB k = brdf * cos / brdf_pdf;
+          if(isNan(k) || isInf(k)) {
+            std::cerr << "NaN or Inf detected at BRDF Sampling" << std::endl;
+            break;
+          }
 
           ray = Ray(res.hitPos, wi);
-          col += 1/russian_roulette * direct_col * col2;
-          col2 *= 1/(russian_roulette * brdf_pdf) * brdf * cos;
+          col += direct_col * col2 / russian_roulette;
+          col2 *= k / russian_roulette;
         }
         else {
           break;
