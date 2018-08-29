@@ -22,6 +22,8 @@ class PtExplicit : public Integrator {
           break;
         }
 
+        if(col2.x == 0 && col2.y == 0 && col2.z == 0) break;
+
         Hit res;
         if(scene.intersect(ray, res)) {
           if(res.hitPrimitive->light != nullptr) {
