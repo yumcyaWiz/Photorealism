@@ -50,7 +50,13 @@ class Pt : public Integrator {
 
           trace_ray = Ray(res.hitPos, wi);
 
-          col *= 1/russian_roulette * 1/pdf * brdf * cos;
+          RGB k = brdf * cos / pdf;
+          if(isInf(k) || isNan(k)) {
+            std::cerr << "Inf or NaN detected" << std::endl;
+            std::cerr << "BRDF PDF: " << pdf << std::endl;
+          }
+
+          col *= 1/russian_roulette * k;
         }
         else {
           col *= 1/russian_roulette * scene.sky->getColor(trace_ray);
