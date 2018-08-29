@@ -37,6 +37,12 @@ inline float sinTheta(const Vec3& w) {
 inline float sin2Theta(const Vec3& w) {
     return 1.0f - cos2Theta(w);
 }
+inline float tanTheta(const Vec3& w) {
+  return sinTheta(w)/cosTheta(w);
+}
+inline float tan2Theta(const Vec3& w) {
+  return tanTheta(w)*tanTheta(w);
+}
 
 
 inline float cosPhi(const Vec3& w) {
