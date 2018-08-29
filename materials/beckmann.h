@@ -45,10 +45,27 @@ class Beckmann : public Material {
       float fr = fresnel(wi, wh, 1.0f, ior);
       return reflectance * D(wh)*G(wo, wi)*fr / (4*cosThetaO*cosThetaI);
     };
+
+
     RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {
       Vec2 u = sampler.getNext2D();
-      wi = sampleCosineHemisphere(u);
-      pdf = absCosTheta(wi)/M_PI + 0.001f;
+
+      float tan2, phi;
+      float log = std::log(u.x);
+      if(std::isinf(log)) log = 0;
+      tan2 = -alpha*alpha*log;
+      phi = 2*M_PI*u.y;
+
+      float cos = 1/std::sqrt(1 + tan2);
+      float sin = std::sqrt(std::max(1.0f - cos*cos, 0.0f));
+      Vec3 wh = Vec3(std::cos(phi)*sin, cos, std::sin(phi)*sin);
+      if(wo.y*wh.y < 0) wh = -wh;
+
+      wi = reflect(wo, wh);
+      if(wo.y*wi.y < 0) return RGB(0);
+
+      float pdf_wh = D(wh)*absCosTheta(wh);
+      pdf = pdf_wh/(4*dot(wo, wh));
       return f(wo, wi);
     };
 };
