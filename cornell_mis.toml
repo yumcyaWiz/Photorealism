@@ -1,0 +1,117 @@
+[renderer]
+samples = 10
+integrator = "pt-explicit"
+
+[sampler]
+type = "mt"
+
+[film]
+resolution = [512, 512]
+
+[sky]
+type = "uniform"
+color = [0.0, 0.0, 0.0]
+
+[camera]
+type = "ideal-pinhole"
+[camera.transform]
+type = "look-at"
+origin = [0.0, 1.0, -3.0]
+target = [0.0, 1.0, 5.0]
+
+
+[[material]]
+name = "white"
+type = "lambert"
+albedo = [0.9, 0.9, 0.9]
+
+[[material]]
+name = "red"
+type = "lambert"
+albedo = [0.8, 0.2, 0.2]
+
+[[material]]
+name = "green"
+type = "lambert"
+albedo = [0.2, 0.8, 0.2]
+
+[[material]]
+name = "blue"
+type = "lambert"
+albedo = [0.2, 0.2, 0.8]
+
+[[material]]
+name = "mirror"
+type = "mirror"
+albedo = [0.9, 0.9, 0.9]
+
+
+[[mesh]]
+name = "bigSphere"
+type = "sphere"
+radius = 10000.0
+
+[[mesh]]
+name = "sphere"
+type = "sphere"
+radius = 1.0
+
+[[mesh]]
+name = "light"
+type = "sphere"
+radius = 0.5
+
+
+[[object]]
+name = "floor"
+mesh = "bigSphere"
+material = "mirror"
+[[object.transform]]
+type = "translate"
+vector = [0, -10001, 0]
+
+[[object]]
+name = "right_wall"
+mesh = "bigSphere"
+material = "red"
+[[object.transform]]
+type = "translate"
+vector = [10004, 0, 0]
+
+[[object]]
+name = "left_wall"
+mesh = "bigSphere"
+material = "green"
+[[object.transform]]
+type = "translate"
+vector = [-10004, 0, 0]
+
+[[object]]
+name = "back_wall"
+mesh = "bigSphere"
+material = "white"
+[[object.transform]]
+type = "translate"
+vector = [0, 0, 10005]
+
+[[object]]
+name = "top_wall"
+mesh = "bigSphere"
+material = "white"
+[[object.transform]]
+type = "translate"
+vector = [0, 10005, 0]
+
+[[object]]
+name = "light_ball"
+mesh = "light"
+material = "white"
+[[object.transform]]
+type = "translate"
+vector = [0.0, 1, 2.5]
+
+
+[[light]]
+type = "area"
+object = "light_ball"
+emission = [10.0, 10.0, 10.0]

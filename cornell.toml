@@ -111,7 +111,7 @@ type = "translate"
 vector = [-1.5, 0.0, 3.0]
 
 [[object]]
-name = "right_wall"
+name = "right_ball"
 mesh = "sphere"
 material = "white"
 [[object.transform]]

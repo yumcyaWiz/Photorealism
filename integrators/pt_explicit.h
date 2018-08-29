@@ -12,6 +12,7 @@ class PtExplicit : public Integrator {
       Vec3 col;
       Vec3 col2(1);
       Ray ray = _ray;
+      bool nee = false;
 
       for(int depth = 0; ; depth++) {
         if(depth > 10) {
@@ -24,7 +25,7 @@ class PtExplicit : public Integrator {
         Hit res;
         if(scene.intersect(ray, res)) {
           if(res.hitPrimitive->light != nullptr) {
-            if(depth == 0) {
+            if(!nee) {
               return res.hitPrimitive->light->Le(res);
             }
             else {
@@ -41,6 +42,7 @@ class PtExplicit : public Integrator {
 
           Vec3 direct_col;
           if(hitMaterial->type == MATERIAL_TYPE::DIFFUSE || hitMaterial->type == MATERIAL_TYPE::GLOSSY) {
+            nee = true;
             for(const auto& light : scene.lights) {
               float light_pdf;
               Vec3 wi_light;
