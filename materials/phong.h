@@ -27,7 +27,7 @@ class Phong : public Material {
         wi = reflect(wo, wh);
         if(wi.y < 0.0f) return RGB(0.0f);
         float pdf_wh = (alpha + 2.0f)/(2*M_PI) * std::pow(absCosTheta(wh), alpha);
-        pdf = (1.0f - kd) * pdf_wh/(4.0f*std::abs(dot(wo, wh)));
+        pdf = (1.0f - kd) * pdf_wh/(4.0f*std::abs(dot(wo, wh))) + 0.001f;
         return this->f(wo, wi);
       }
     };

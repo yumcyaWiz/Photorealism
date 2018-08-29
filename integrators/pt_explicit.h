@@ -83,6 +83,7 @@ class PtExplicit : public Integrator {
           RGB k = brdf * cos / brdf_pdf;
           if(isNan(k) || isInf(k)) {
             std::cerr << "NaN or Inf detected at BRDF Sampling" << std::endl;
+            std::cerr << "BRDF PDF: " << brdf_pdf << std::endl;
             break;
           }
 

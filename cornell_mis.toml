@@ -45,6 +45,13 @@ name = "mirror"
 type = "mirror"
 albedo = [0.9, 0.9, 0.9]
 
+[[material]]
+name = "phong"
+type = "phong"
+kd = 0.05
+alpha = 200.0
+albedo = [0.9, 0.9, 0.9]
+
 
 [[mesh]]
 name = "bigSphere"
@@ -59,13 +66,13 @@ radius = 1.0
 [[mesh]]
 name = "light"
 type = "sphere"
-radius = 0.5
+radius = 1.0
 
 
 [[object]]
 name = "floor"
 mesh = "bigSphere"
-material = "mirror"
+material = "phong"
 [[object.transform]]
 type = "translate"
 vector = [0, -10001, 0]
@@ -114,4 +121,4 @@ vector = [0.0, 1, 2.5]
 [[light]]
 type = "area"
 object = "light_ball"
-emission = [10.0, 10.0, 10.0]
+emission = [1.0, 1.0, 1.0]
