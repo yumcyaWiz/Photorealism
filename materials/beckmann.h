@@ -1,13 +1,13 @@
-#ifndef BECKMAN_H
-#define BECKMAN_H
+#ifndef BECKMANN_H
+#define BECKMANN_H
 #include "../material.h"
-class Beckman : public Material {
+class Beckmann : public Material {
   public:
     RGB reflectance;
     float alpha;
     float ior;
 
-    Beckman(const RGB& _reflectance, float _roughness, float _ior) : Material(MATERIAL_TYPE::GLOSSY), reflectance(_reflectance), ior(_ior) {
+    Beckmann(const RGB& _reflectance, float _roughness, float _ior) : Material(MATERIAL_TYPE::GLOSSY), reflectance(_reflectance), ior(_ior) {
       alpha = _roughness*_roughness;
     }
 

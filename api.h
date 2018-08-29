@@ -13,7 +13,7 @@
 #include "materials/glass.h"
 #include "materials/phong.h"
 #include "materials/oren_nayar.h"
-#include "materials/beckman.h"
+#include "materials/beckmann.h"
 
 #include "primitive.h"
 #include "samplers/mt.h"

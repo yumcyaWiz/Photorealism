@@ -109,12 +109,12 @@ class TomlLoader {
           auto sigma = *material->get_as<double>("sigma");
           mat = std::make_shared<OrenNayar>(reflectance, sigma);
         }
-        else if(type == "beckman") {
+        else if(type == "beckmann") {
           auto albedo = *material->get_array_of<double>("albedo");
           Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
           auto roughness = *material->get_as<double>("roughness");
           auto ior = *material->get_as<double>("ior");
-          mat = std::make_shared<Beckman>(reflectance, roughness, ior);
+          mat = std::make_shared<Beckmann>(reflectance, roughness, ior);
         }
         else {
           std::cerr << "Invalid Material type" << std::endl;
