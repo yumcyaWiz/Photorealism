@@ -22,22 +22,26 @@ target = [0.0, 1.0, 5.0]
 
 [[material]]
 name = "white"
-type = "lambert"
+type = "oren-nayar"
+sigma = 0.3
 albedo = [0.9, 0.9, 0.9]
 
 [[material]]
 name = "red"
-type = "lambert"
+type = "oren-nayar"
+sigma = 0.3
 albedo = [0.8, 0.2, 0.2]
 
 [[material]]
 name = "green"
-type = "lambert"
+type = "oren-nayar"
+sigma = 0.3
 albedo = [0.2, 0.8, 0.2]
 
 [[material]]
 name = "blue"
-type = "lambert"
+type = "oren-nayar"
+sigma = 0.3
 albedo = [0.2, 0.2, 0.8]
 
 [[material]]
@@ -65,7 +69,7 @@ radius = 0.2
 [[object]]
 name = "floor"
 mesh = "bigSphere"
-material = "mirror"
+material = "white"
 [[object.transform]]
 type = "translate"
 vector = [0, -10001, 0]

@@ -103,6 +103,12 @@ class TomlLoader {
           auto alpha = *material->get_as<double>("alpha");
           mat = std::make_shared<Phong>(reflectance, kd, alpha);
         }
+        else if(type == "oren-nayar") {
+          auto albedo = *material->get_array_of<double>("albedo");
+          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto sigma = *material->get_as<double>("sigma");
+          mat = std::make_shared<OrenNayar>(reflectance, sigma);
+        }
         else {
           std::cerr << "Invalid Material type" << std::endl;
           std::exit(1);

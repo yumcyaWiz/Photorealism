@@ -40,7 +40,7 @@ inline Vec3 sampleCosineHemisphere(const Vec2& u) {
 }
 
 inline Vec3 sampleNCosineHemisphere(const Vec2& u, float alpha) {
-    const float theta = std::acos(std::pow(std::max(1.0f - u.x, 0.0f), 1.0f/(alpha + 1.0f)));
+    const float theta = std::acos(std::pow(std::max(1.0 - u.x, 0.0), 1.0/(alpha + 1.0)));
     const float phi = 2.0*M_PI*u.y;
     return Vec3(std::cos(phi)*std::sin(theta), std::cos(theta), std::sin(phi)*std::sin(theta));
 }

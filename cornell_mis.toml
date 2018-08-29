@@ -48,8 +48,8 @@ albedo = [0.9, 0.9, 0.9]
 [[material]]
 name = "phong"
 type = "phong"
-kd = 0.05
-alpha = 200.0
+kd = 0.0
+alpha = 32.0
 albedo = [0.9, 0.9, 0.9]
 
 

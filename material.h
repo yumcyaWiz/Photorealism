@@ -39,6 +39,22 @@ inline float sin2Theta(const Vec3& w) {
 }
 
 
+inline float cosPhi(const Vec3& w) {
+  float sin = sinTheta(w);
+  return (sin == 0) ? 1 : clamp(w.x/sin, -1.0f, 1.0f);
+}
+inline float sinPhi(const Vec3& w) {
+  float sin = sinTheta(w);
+  return (sin == 0) ? 0 : clamp(w.y/sin, -1.0f, 1.0f);
+}
+inline float cos2Phi(const Vec3& w) {
+  return cosPhi(w)*cosPhi(w);
+}
+inline float sin2Phi(const Vec3& w) {
+  return sinPhi(w)*sinPhi(w);
+}
+
+
 inline float fresnel(const Vec3& wo, const Vec3& n, float n1, float n2) {
   const float f0 = std::pow((n1 - n2)/(n1 + n2), 2.0f);
   return f0 + (1.0f - f0)*std::pow(1.0f - dot(wo, n), 5.0f);
