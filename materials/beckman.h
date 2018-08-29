@@ -5,18 +5,18 @@ class Beckman : public Material {
   public:
     RGB reflectance;
     float alpha;
-    float n;
+    float ior;
 
-    Beckman(const RGB& _reflectance, float _roughness, float _n) : Material(MATERIAL_TYPE::GLOSSY), reflectance(_reflectance), n(_n) {
+    Beckman(const RGB& _reflectance, float _roughness, float _ior) : Material(MATERIAL_TYPE::GLOSSY), reflectance(_reflectance), ior(_ior) {
       alpha = _roughness*_roughness;
     }
 
     float D(const Vec3& wh) const {
-      float tan = tan2Theta(wh);
-      if(std::isinf(tan)) return 0;
+      float tan2 = tan2Theta(wh);
+      if(std::isinf(tan2)) return 0;
 
       float cos4 = cos2Theta(wh)*cos2Theta(wh);
-      return std::exp(-tan2Theta/(alpha*alpha))/(M_PI*alpha*alpha*cos4);
+      return std::exp(-tan2/(alpha*alpha))/(M_PI*alpha*alpha*cos4);
     };
 
     float lambda(const Vec3& w) const {
@@ -42,7 +42,7 @@ class Beckman : public Material {
       if(wh.x == 0 || wh.y == 0 || wh.z == 0) return RGB(0);
       wh = normalize(wh);
 
-      float fr = fresnel(wi, wh, 1.0f, n);
+      float fr = fresnel(wi, wh, 1.0f, ior);
       return reflectance * D(wh)*G(wo, wi)*fr / (4*cosThetaO*cosThetaI);
     };
     RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {

@@ -1,6 +1,6 @@
 [renderer]
-samples = 10
-integrator = "pt-explicit"
+samples = 300
+integrator = "pt"
 
 [sampler]
 type = "mt"
@@ -9,11 +9,18 @@ type = "mt"
 resolution = [512, 512]
 
 [sky]
-type = "uniform"
-color = [0.0, 0.0, 0.0]
+type = "ibl"
+path = "PaperMill_E_3k.hdr"
+intensity = 1.0
+phi-offset = 0
+theta-offset = 0
+
 
 [camera]
-type = "ideal-pinhole"
+type = "thin-lens"
+lens-distance = 1.0
+focus-point = [0.0, 0.0, 2.5]
+f-number = 5.6
 [camera.transform]
 type = "look-at"
 origin = [0.0, 1.0, -3.0]
@@ -52,8 +59,8 @@ albedo = [0.9, 0.9, 0.9]
 [[material]]
 name = "beckman"
 type = "beckman"
-albedo = [0.9, 0.9, 0.9]
-roughness = 0.5
+albedo = [1.0, 1.0, 1.0]
+roughness = 0.3
 ior = 2.5
 
 
@@ -82,38 +89,6 @@ type = "translate"
 vector = [0, -10001, 0]
 
 [[object]]
-name = "right_wall"
-mesh = "bigSphere"
-material = "red"
-[[object.transform]]
-type = "translate"
-vector = [10004, 0, 0]
-
-[[object]]
-name = "left_wall"
-mesh = "bigSphere"
-material = "green"
-[[object.transform]]
-type = "translate"
-vector = [-10004, 0, 0]
-
-[[object]]
-name = "back_wall"
-mesh = "bigSphere"
-material = "white"
-[[object.transform]]
-type = "translate"
-vector = [0, 0, 10005]
-
-[[object]]
-name = "top_wall"
-mesh = "bigSphere"
-material = "white"
-[[object.transform]]
-type = "translate"
-vector = [0, 10005, 0]
-
-[[object]]
 name = "left_ball"
 mesh = "sphere"
 material = "beckman"
@@ -128,17 +103,3 @@ material = "beckman"
 [[object.transform]]
 type = "translate"
 vector = [1.5, 0, 2]
-
-[[object]]
-name = "light_ball"
-mesh = "light"
-material = "white"
-[[object.transform]]
-type = "translate"
-vector = [2.0, 0.5, 4.0]
-
-
-[[light]]
-type = "area"
-object = "light_ball"
-emission = [100.0, 100.0, 100.0]
