@@ -45,30 +45,50 @@ class PtExplicit : public Integrator {
           Vec3 direct_col;
           if(hitMaterial->type == MATERIAL_TYPE::DIFFUSE || hitMaterial->type == MATERIAL_TYPE::GLOSSY) {
             nee = true;
-            for(const auto& light : scene.lights) {
-              float light_pdf;
-              Vec3 wi_light;
-              Vec3 samplePos;
-              RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
-              Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
+            unsigned int light_index = (int)(scene.lights.size() * (*this->sampler).getNext());
+            if(light_index == scene.lights.size()) light_index--;
+            float light_selection_pdf = 1.0/scene.lights.size();
+            const auto light = scene.lights[light_index];
+            float light_pdf;
+            Vec3 wi_light;
+            Vec3 samplePos;
+            RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
+            Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
 
+            if(light_pdf != 0) {
               Ray shadowRay(res.hitPos, wi_light);
               Hit shadow_res;
 
               if(light->type == LIGHT_TYPE::AREA) {
                 if(scene.intersect(shadowRay, shadow_res)) { 
                   if(shadow_res.hitPrimitive->light == light && (samplePos - shadow_res.hitPos).length2() < 1e-6) {
-                    direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f);
+                    direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f) / light_selection_pdf;
                   }
                 }
               }
               else if(light->type == LIGHT_TYPE::POINT) {
                 scene.intersect(shadowRay, shadow_res);
                 if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
-                  direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f);
+                  direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f) / light_selection_pdf;
+                }
+              }
+            }
+            else {
+              Vec3 wi_local;
+              float brdf_pdf;
+              RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
+              float cos = std::max(cosTheta(wi_local), 0.0f);
+              Vec3 wi = localToWorld(wi_local, n, s, t);
+
+              Ray shadowRay(res.hitPos, wi);
+              Hit shadow_res;
+              if(scene.intersect(shadowRay, shadow_res)) {
+                if(shadow_res.hitPrimitive->light != nullptr) {
+                  direct_col += brdf * cos / brdf_pdf * shadow_res.hitPrimitive->light->Le(shadow_res);
                 }
               }
               else {
+                direct_col += brdf * cos / brdf_pdf * scene.sky->getColor(shadowRay);
               }
             }
           }
