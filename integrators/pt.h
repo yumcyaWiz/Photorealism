@@ -54,6 +54,7 @@ class Pt : public Integrator {
           if(isInf(k) || isNan(k)) {
             std::cerr << "Inf or NaN detected" << std::endl;
             std::cerr << "BRDF PDF: " << pdf << std::endl;
+            break;
           }
 
           col *= 1/russian_roulette * k;

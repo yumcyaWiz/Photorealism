@@ -1,5 +1,5 @@
 [renderer]
-samples = 10
+samples = 300
 integrator = "pt-explicit"
 
 [sampler]
@@ -50,11 +50,11 @@ type = "mirror"
 albedo = [0.9, 0.9, 0.9]
 
 [[material]]
-name = "beckman"
-type = "beckman"
-albedo = [0.9, 0.9, 0.9]
-roughness = 0.5
-ior = 2.5
+name = "beckmann"
+type = "beckmann"
+albedo = [1.0, 1.0, 1.0]
+roughness = 0.4
+ior = 8.0
 
 
 [[mesh]]
@@ -116,7 +116,7 @@ vector = [0, 10005, 0]
 [[object]]
 name = "left_ball"
 mesh = "sphere"
-material = "beckman"
+material = "beckmann"
 [[object.transform]]
 type = "translate"
 vector = [-1.5, 0.0, 3.0]
@@ -124,7 +124,7 @@ vector = [-1.5, 0.0, 3.0]
 [[object]]
 name = "right_ball"
 mesh = "sphere"
-material = "beckman"
+material = "beckmann"
 [[object.transform]]
 type = "translate"
 vector = [1.5, 0, 2]
