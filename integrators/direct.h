@@ -10,6 +10,10 @@ class Direct : public Integrator {
     RGB Li(const Ray& ray, Scene& scene) const {
       Hit res;
       if(scene.intersect(ray, res)) {
+        if(res.hitPrimitive->light != nullptr) {
+          return res.hitPrimitive->light->Le(res);
+        }
+
         RGB col;
 
         auto hitMaterial = res.hitPrimitive->material;

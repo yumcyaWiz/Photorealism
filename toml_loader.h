@@ -261,8 +261,12 @@ class TomlLoader {
       else if(integrator == "pt-explicit") {
         integ = std::make_shared<PtExplicit>(cam, sampler, samples);
       }
+      else if(integrator == "direct") {
+        integ = std::make_shared<Direct>(cam, sampler, samples);
+      }
       else {
         std::cerr << "Invalid Integrator type" << std::endl;
+        std::exit(1);
       }
       std::cout << "Renderer Loaded" << std::endl;
     };

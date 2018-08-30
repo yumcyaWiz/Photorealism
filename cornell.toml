@@ -1,6 +1,6 @@
 [renderer]
-samples = 300
-integrator = "pt-explicit"
+samples = 100
+integrator = "direct"
 
 [sampler]
 type = "mt"
@@ -53,7 +53,7 @@ albedo = [0.9, 0.9, 0.9]
 name = "beckmann"
 type = "beckmann"
 albedo = [1.0, 1.0, 1.0]
-roughness = 0.4
+roughness = 0.2
 ior = 8.0
 
 
@@ -70,7 +70,7 @@ radius = 1.0
 [[mesh]]
 name = "light"
 type = "sphere"
-radius = 0.2
+radius = 1.0
 
 
 [[object]]
@@ -135,10 +135,10 @@ mesh = "light"
 material = "white"
 [[object.transform]]
 type = "translate"
-vector = [2.0, 0.5, 4.0]
+vector = [0.0, 5.0, 2.5]
 
 
 [[light]]
 type = "area"
 object = "light_ball"
-emission = [100.0, 100.0, 100.0]
+emission = [10.0, 10.0, 10.0]
