@@ -49,7 +49,7 @@ class PtExplicit : public Integrator {
             if(light_index == scene.lights.size()) light_index--;
             float light_selection_pdf = 1.0/scene.lights.size();
             const auto light = scene.lights[light_index];
-            float light_pdf;
+            float light_pdf = 0;
             Vec3 wi_light;
             Vec3 samplePos;
             RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
