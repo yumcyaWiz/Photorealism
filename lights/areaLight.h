@@ -20,7 +20,9 @@ class AreaLight : public Light {
 
       float dist2 = (samplePos - res.hitPos).length2();
       wi = normalize(samplePos - res.hitPos);
-      float cos = std::abs(dot(-wi, normal));
+      float cos = dot(-wi, normal);
+      if(cos <= 0) return RGB(0);
+
       pdf = point_pdf * dist2/cos;
 
       return power;

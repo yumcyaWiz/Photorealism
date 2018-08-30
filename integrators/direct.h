@@ -27,7 +27,7 @@ class Direct : public Integrator {
         if(light_index == scene.lights.size()) light_index--;
         auto light = scene.lights[light_index];
         float light_selection_pdf = 1.0f/scene.lights.size();
-        float light_pdf;
+        float light_pdf = 0;
         Vec3 wi_light;
         Vec3 samplePos;
         RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
@@ -36,17 +36,19 @@ class Direct : public Integrator {
         Ray shadowRay(res.hitPos, wi_light);
         Hit shadow_res;
 
-        if(light->type == LIGHT_TYPE::AREA) {
-          if(scene.intersect(shadowRay, shadow_res)) {
-            if(shadow_res.hitPrimitive->light == light && (samplePos - shadow_res.hitPos).length2() < 1e-6) {
-              col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
+        if(light_pdf != 0) {
+          if(light->type == LIGHT_TYPE::AREA) {
+            if(scene.intersect(shadowRay, shadow_res)) {
+              if(shadow_res.hitPrimitive->light == light && (samplePos - shadow_res.hitPos).length2() < 1e-6) {
+                col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
+              }
             }
           }
-        }
-        else if(light->type == LIGHT_TYPE::POINT) {
-          scene.intersect(shadowRay, shadow_res);
-          if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
-            col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
+          else if(light->type == LIGHT_TYPE::POINT) {
+            scene.intersect(shadowRay, shadow_res);
+            if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
+              col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
+            }
           }
         }
 

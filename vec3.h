@@ -126,4 +126,7 @@ inline bool isNan(const Vec3& v) {
 inline bool isInf(const Vec3& v) {
   return std::isinf(v.x) || std::isinf(v.y) || std::isinf(v.z);
 }
+inline bool isZero(const Vec3& v) {
+  return v.x == 0 && v.y == 0 && v.z == 0;
+}
 #endif
