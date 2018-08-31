@@ -41,102 +41,112 @@ class PtExplicit : public Integrator {
           orthonormalBasis(n, s, t);
           Vec3 wo_local = worldToLocal(wo, n, s, t);
 
-          //Direct Illumination
+          //Direct Illumination with One Sample MIS
+          Vec3 direct_col;
+          //Russian Roulette
+          bool light_or_brdf = (*this->sampler).getNext() > 0.5;
+
           //Light Sampling
-          Vec3 direct_col_light;
-          unsigned int light_index = (int)(scene.lights.size() * (*this->sampler).getNext());
-          if(light_index == scene.lights.size()) light_index--;
-          float light_selection_pdf = 1.0/scene.lights.size();
-          const auto light = scene.lights[light_index];
-          float light_pdf = 0;
-          Vec3 wi_light;
-          Vec3 samplePos;
-          RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
-          Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
+          if(light_or_brdf) {
+            unsigned int light_index = (int)(scene.lights.size() * (*this->sampler).getNext());
+            if(light_index == scene.lights.size()) light_index--;
+            float light_selection_pdf = 1.0/scene.lights.size();
+            const auto light = scene.lights[light_index];
+            float light_pdf = 0;
+            Vec3 wi_light;
+            Vec3 samplePos;
+            RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
+            Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
 
-          //BRDF PDF
-          float light_brdf_pdf = hitMaterial->Pdf(wo, wi_light);
+            //handle Specular Case
+            if(hitMaterial->type == MATERIAL_TYPE::SPECULAR) {
+              light_pdf = 0;
+            }
 
-          Ray shadowRay(res.hitPos, wi_light);
-          Hit shadow_res;
+            //BRDF PDF
+            float light_brdf_pdf = hitMaterial->Pdf(wo, wi_light);
 
-          if(light_pdf != 0) {
-            if(light->type == LIGHT_TYPE::AREA) {
-              if(scene.intersect(shadowRay, shadow_res)) { 
-                if(shadow_res.hitPrimitive->light == light && (samplePos - shadow_res.hitPos).length2() < 1e-6) {
-                  direct_col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f) / light_selection_pdf;
+            Ray shadowRay(res.hitPos, wi_light);
+            Hit shadow_res;
+
+            if(light_pdf != 0) {
+              if(light->type == LIGHT_TYPE::AREA) {
+                if(scene.intersect(shadowRay, shadow_res)) { 
+                  if(shadow_res.hitPrimitive->light == light && (samplePos - shadow_res.hitPos).length2() < 1e-6) {
+                    direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f) / light_selection_pdf / 0.5;
+                  }
+                }
+              }
+              else if(light->type == LIGHT_TYPE::POINT) {
+                scene.intersect(shadowRay, shadow_res);
+                if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
+                  direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f) / light_selection_pdf / 0.5;
                 }
               }
             }
-            else if(light->type == LIGHT_TYPE::POINT) {
-              scene.intersect(shadowRay, shadow_res);
-              if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
-                direct_col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f) / light_selection_pdf;
-              }
-            }
+
+            //MIS Weight
+            float l = std::pow(light_pdf, 2.0f);
+            float b = std::pow(light_brdf_pdf, 2.0f);
+            float w_light = l/(l + b);
+            if(std::isinf(w_light) || std::isnan(w_light)) w_light = 0;
+            direct_col *= w_light;
           }
-
-          //MIS Weight
-          float l = std::pow(light_pdf, 2.0f);
-          float b = std::pow(light_brdf_pdf, 2.0f);
-          float w_light = l/(l + b);
-          if(std::isinf(w_light) || std::isnan(w_light)) w_light = 0;
-
           //BRDF Sampling
-          Vec3 direct_col_brdf;
-          Vec3 wi_local;
-          float brdf_pdf = 0;
-          float brdf_light_pdf = 0;
-          RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
-          float cos = std::max(cosTheta(wi_local), 0.0f);
-          Vec3 wi = localToWorld(wi_local, n, s, t);
-          RGB k = brdf * cos/brdf_pdf;
+          else {
+            Vec3 wi_local;
+            float brdf_pdf = 0;
+            float brdf_light_pdf = 0;
+            RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
+            float cos = std::max(cosTheta(wi_local), 0.0f);
+            Vec3 wi = localToWorld(wi_local, n, s, t);
+            RGB k = brdf * cos/brdf_pdf / 0.5;
 
-          if(brdf_pdf != 0) {
-            shadowRay = Ray(res.hitPos, wi);
-            if(scene.intersect(shadowRay, shadow_res)) {
-              if(shadow_res.hitPrimitive->light != nullptr) {
-                direct_col_brdf += k * shadow_res.hitPrimitive->light->Le(shadow_res);
+            if(brdf_pdf != 0) {
+              Ray shadowRay = Ray(res.hitPos, wi);
+              Hit shadow_res;
 
-                //Light PDF
-                brdf_light_pdf = shadow_res.hitPrimitive->light->Pdf(res, wi, shadow_res);
+              if(scene.intersect(shadowRay, shadow_res)) {
+                if(shadow_res.hitPrimitive->light != nullptr) {
+                  direct_col += k * shadow_res.hitPrimitive->light->Le(shadow_res);
+
+                  //Light PDF
+                  brdf_light_pdf = shadow_res.hitPrimitive->light->Pdf(res, wi, shadow_res);
+                  //handle Specular Case
+                  if(hitMaterial->type == MATERIAL_TYPE::SPECULAR) {
+                    brdf_light_pdf = 0;
+                  }
+                }
+              }
+              else {
+                direct_col += k * scene.sky->getColor(shadowRay);
               }
             }
-            else {
-              direct_col_brdf += k * scene.sky->getColor(shadowRay);
-            }
+
+            //MIS Weight
+            float l = std::pow(brdf_light_pdf, 2.0f);
+            float b = std::pow(brdf_pdf, 2.0f);
+            float w_brdf = b/(l + b);
+            if(std::isinf(w_brdf) || std::isnan(w_brdf)) w_brdf = 0;
+            direct_col *= w_brdf;
           }
 
-          //MIS Weight
-          l = std::pow(brdf_light_pdf, 2.0f);
-          b = std::pow(brdf_pdf, 2.0f);
-          float w_brdf = b/(l + b);
-          if(std::isinf(w_brdf) || std::isnan(w_brdf)) w_brdf = 0;
-
-          //Direct Illumination MIS
-          Vec3 direct_col = w_light*direct_col_light + w_brdf*direct_col_brdf; 
 
           //if Direct Illumination is inf or nan
           if(isNan(direct_col) || isInf(direct_col)) {
-            std::cout << wi_local << std::endl;
             std::cerr << "NaN or Inf detected at Direct Illumination" << std::endl;
-            std::cerr << "LIGHT PDF: " << light_pdf << std::endl;
-            std::cerr << "BRDF PDF: " << brdf_pdf << std::endl;
             break;
           }
 
+
           //next ray
-          k = RGB(0);
-          brdf_pdf = 0;
-          brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
-          if(brdf_pdf != 0) {
-            wi = localToWorld(wi_local, n, s, t);
-            cos = std::max(cosTheta(wi_local), 0.0f);
-            k = brdf * cos / brdf_pdf;
-          }
-          else {
-            break;
-          }
+          Vec3 wi_local;
+          float brdf_pdf = 0;
+          RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
+          if(brdf_pdf == 0) break;
+          Vec3 wi = localToWorld(wi_local, n, s, t);
+          float cos = std::max(cosTheta(wi_local), 0.0f);
+          RGB k = brdf * cos / brdf_pdf;
 
           if(isNan(k) || isInf(k)) {
             std::cerr << "NaN or Inf detected at BRDF Sampling" << std::endl;
@@ -177,7 +187,7 @@ class PtExplicit : public Integrator {
             }
 
             if(omp_get_thread_num() == 0) {
-              std::cout << progressbar(k, N) << " " << percentage(k, N) << "\r" << std::flush;
+              std::cout << progressbar(width*height*k + height*i + j, width*height*N) << " " << percentage(width*height*k + height*i + j, width*height*N) << "\r" << std::flush;
             }
           }
         }

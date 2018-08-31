@@ -1,6 +1,6 @@
 [renderer]
 samples = 100
-integrator = "direct"
+integrator = "pt-explicit"
 
 [sampler]
 type = "mt"
