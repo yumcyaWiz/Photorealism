@@ -18,6 +18,7 @@ class Material {
     Material(const MATERIAL_TYPE& _type) : type(_type) {};
 
     virtual RGB f(const Vec3& wo, const Vec3& wi) const = 0;
+    virtual float Pdf(const Vec3& wo, const Vec3& wi) const = 0;
     virtual RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const = 0;
 };
 

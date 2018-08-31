@@ -35,10 +35,14 @@ class OrenNayar : public Material {
       return reflectance/M_PI * (A + B * maxCos  * sinAlpha * tanBeta);
     };
 
+    float Pdf(const Vec3& wo, const Vec3& wi) const {
+      return absCosTheta(wi)/M_PI + 0.001f;
+    };
+
     RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {
       Vec2 u = sampler.getNext2D();
       wi = sampleCosineHemisphere(u);
-      pdf = absCosTheta(wi)/M_PI + 0.001f;
+      pdf = Pdf(wo, wi);
       return this->f(wo, wi);
     };
 };

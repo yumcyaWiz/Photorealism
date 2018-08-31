@@ -47,6 +47,13 @@ class Beckmann : public Material {
     };
 
 
+    float Pdf(const Vec3& wo, const Vec3& wi) const {
+      Vec3 wh = normalize(wo + wi);
+      float pdf_wh = D(wh)*absCosTheta(wh);
+      return pdf_wh/(4*dot(wo, wh));
+    };
+
+
     RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {
       Vec2 u = sampler.getNext2D();
 
@@ -64,8 +71,7 @@ class Beckmann : public Material {
       wi = reflect(wo, wh);
       if(wo.y*wi.y < 0) return RGB(0);
 
-      float pdf_wh = D(wh)*absCosTheta(wh);
-      pdf = pdf_wh/(4*dot(wo, wh));
+      pdf = Pdf(wo, wi);
       return f(wo, wi);
     };
 };
