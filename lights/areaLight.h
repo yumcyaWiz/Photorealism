@@ -23,7 +23,7 @@ class AreaLight : public Light {
     RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const {
       float point_pdf;
       Vec3 normal;
-      samplePos = shape->sample(sampler, normal, point_pdf);
+      samplePos = shape->sample(res, sampler, normal, point_pdf);
 
       float dist2 = (samplePos - res.hitPos).length2();
       wi = normalize(samplePos - res.hitPos);

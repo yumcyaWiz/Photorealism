@@ -91,8 +91,8 @@ class Direct : public Integrator {
         }
 
         //MIS
-        return RGB(1, 0, 0)*w_light + RGB(0, 1, 0)*w_brdf;
-        //return w_light * col_light + w_brdf * col_brdf;
+        //return RGB(1, 0, 0)*w_light + RGB(0, 1, 0)*w_brdf;
+        return w_light * col_light + w_brdf * col_brdf;
       }
       else {
         return scene.sky->getColor(ray);
