@@ -1,5 +1,5 @@
 [renderer]
-samples = 10
+samples = 300
 integrator = "direct"
 
 [sampler]
@@ -52,6 +52,13 @@ albedo = [0.9, 0.9, 0.9]
 [[material]]
 name = "beckmann"
 type = "beckmann"
+albedo = [1.0, 1.0, 1.0]
+roughness = 0.4
+ior = 8.0
+
+[[material]]
+name = "ggx"
+type = "ggx"
 albedo = [1.0, 1.0, 1.0]
 roughness = 0.4
 ior = 8.0
@@ -116,7 +123,7 @@ vector = [0, 10005, 0]
 [[object]]
 name = "left_ball"
 mesh = "sphere"
-material = "mirror"
+material = "ggx"
 [[object.transform]]
 type = "translate"
 vector = [-1.5, 0.0, 3.0]

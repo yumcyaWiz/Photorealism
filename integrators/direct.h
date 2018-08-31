@@ -33,6 +33,9 @@ class Direct : public Integrator {
         RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
         Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
 
+        //BRDF PDF
+        float light_brdf_pdf = hitMaterial->Pdf(wo, wi_light);
+
         Ray shadowRay(res.hitPos, wi_light);
         Hit shadow_res;
 
@@ -52,6 +55,12 @@ class Direct : public Integrator {
           }
         }
 
+        //MIS Weight
+        float w_light = std::pow(light_pdf, 2.0f)/(std::pow(light_pdf, 2.0f) + std::pow(light_brdf_pdf, 2.0f));
+        if(std::isinf(w_light) || std::isnan(w_light)) {
+          w_light = 0;
+        }
+
         //BRDF Sampling
         Vec3 col_brdf;
         Vec3 wi_local;
@@ -62,21 +71,28 @@ class Direct : public Integrator {
         RGB k = brdf * cos/brdf_pdf;
 
         shadowRay = Ray(res.hitPos, wi);
+        float brdf_light_pdf = 0;
         if(scene.intersect(shadowRay, shadow_res)) {
           if(shadow_res.hitPrimitive->light != nullptr) {
             col_brdf += k * shadow_res.hitPrimitive->light->Le(shadow_res);
+            
+            //Light PDF
+            brdf_light_pdf = shadow_res.hitPrimitive->light->Pdf(res, wi, shadow_res);
           }
         }
         else {
           col_brdf += k * scene.sky->getColor(shadowRay);
         }
 
+        //MIS Weight
+        float w_brdf = std::pow(brdf_pdf, 2.0f)/(std::pow(brdf_pdf, 2.0f) + std::pow(brdf_light_pdf, 2.0f));
+        if(std::isinf(w_brdf) || std::isnan(w_brdf)) {
+          w_brdf = 0;
+        }
+
         //MIS
-        float l = std::pow(light_pdf, 2.0f);
-        float b = std::pow(brdf_pdf, 2.0f);
-        float denom = l + b;
-        //return RGB(1, 0, 0)*l/denom + RGB(0, 1, 0)*b/denom;
-        return l/denom * col_light + b/denom * col_brdf;
+        return RGB(1, 0, 0)*w_light + RGB(0, 1, 0)*w_brdf;
+        //return w_light * col_light + w_brdf * col_brdf;
       }
       else {
         return scene.sky->getColor(ray);
