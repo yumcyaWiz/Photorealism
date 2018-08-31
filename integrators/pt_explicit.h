@@ -54,6 +54,9 @@ class PtExplicit : public Integrator {
           RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
           Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
 
+          //BRDF PDF
+          float light_brdf_pdf = hitMaterial->Pdf(wo, wi_light);
+
           Ray shadowRay(res.hitPos, wi_light);
           Hit shadow_res;
 
@@ -73,10 +76,17 @@ class PtExplicit : public Integrator {
             }
           }
 
+          //MIS Weight
+          float l = std::pow(light_pdf, 2.0f);
+          float b = std::pow(light_brdf_pdf, 2.0f);
+          float w_light = l/(l + b);
+          if(std::isinf(w_light) || std::isnan(w_light)) w_light = 0;
+
           //BRDF Sampling
           Vec3 direct_col_brdf;
           Vec3 wi_local;
           float brdf_pdf = 0;
+          float brdf_light_pdf = 0;
           RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
           float cos = std::max(cosTheta(wi_local), 0.0f);
           Vec3 wi = localToWorld(wi_local, n, s, t);
@@ -87,6 +97,9 @@ class PtExplicit : public Integrator {
             if(scene.intersect(shadowRay, shadow_res)) {
               if(shadow_res.hitPrimitive->light != nullptr) {
                 direct_col_brdf += k * shadow_res.hitPrimitive->light->Le(shadow_res);
+
+                //Light PDF
+                brdf_light_pdf = shadow_res.hitPrimitive->light->Pdf(res, wi, shadow_res);
               }
             }
             else {
@@ -94,14 +107,15 @@ class PtExplicit : public Integrator {
             }
           }
 
+          //MIS Weight
+          l = std::pow(brdf_light_pdf, 2.0f);
+          b = std::pow(brdf_pdf, 2.0f);
+          float w_brdf = b/(l + b);
+          if(std::isinf(w_brdf) || std::isnan(w_brdf)) w_brdf = 0;
+
           //Direct Illumination MIS
-          Vec3 direct_col;
-          float l = std::pow(light_pdf, 2.0f);
-          float b = std::pow(brdf_pdf , 2.0f);
-          if(l != 0 || b != 0) {
-            float denom = l + b;
-            direct_col = l/denom*direct_col_light + b/denom*direct_col_brdf;
-          }
+          Vec3 direct_col = w_light*direct_col_light + w_brdf*direct_col_brdf; 
+
           //if Direct Illumination is inf or nan
           if(isNan(direct_col) || isInf(direct_col)) {
             std::cout << wi_local << std::endl;
@@ -119,6 +133,9 @@ class PtExplicit : public Integrator {
             wi = localToWorld(wi_local, n, s, t);
             cos = std::max(cosTheta(wi_local), 0.0f);
             k = brdf * cos / brdf_pdf;
+          }
+          else {
+            break;
           }
 
           if(isNan(k) || isInf(k)) {
