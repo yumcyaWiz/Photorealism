@@ -13,6 +13,11 @@ class AreaLight : public Light {
       return power;
     };
 
+    float Pdf(const Hit& res, const Vec3& wi, float dist2, float cos) const {
+      float pdf_A = shape->Pdf();
+      return pdf_A * dist2/cos;
+    };
+
     RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const {
       float point_pdf;
       Vec3 normal;

@@ -13,6 +13,10 @@ class PointLight : public Light {
       return this->power;
     };
 
+    float Pdf(const Hit& res, const Vec3& wi, float dist2, float cos) const {
+      return 0;
+    };
+
     RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const {
       samplePos = lightPos;
       float dist2 = (samplePos - res.hitPos).length2();
