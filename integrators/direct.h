@@ -32,6 +32,11 @@ class Direct : public Integrator {
         Vec3 samplePos;
         RGB le = light->sample(res, *this->sampler, wi_light, samplePos, light_pdf);
         Vec3 wi_light_local = worldToLocal(wi_light, n, s, t);
+        
+        //handle Specular Case
+        if(hitMaterial->type == MATERIAL_TYPE::SPECULAR) {
+          light_pdf = 0;
+        }
 
         //BRDF PDF
         float light_brdf_pdf = hitMaterial->Pdf(wo, wi_light);
@@ -78,6 +83,10 @@ class Direct : public Integrator {
             
             //Light PDF
             brdf_light_pdf = shadow_res.hitPrimitive->light->Pdf(res, wi, shadow_res);
+            //handle Specular Case
+            if(hitMaterial->type == MATERIAL_TYPE::SPECULAR) {
+              brdf_light_pdf = 0;
+            }
           }
         }
         else {
@@ -91,7 +100,7 @@ class Direct : public Integrator {
         }
 
         //MIS
-        //return RGB(1, 0, 0)*w_light + RGB(0, 1, 0)*w_brdf;
+        //return RGB(0, 1, 0)*col_light*w_light + RGB(1, 0, 0)*col_brdf*w_brdf;
         return w_light * col_light + w_brdf * col_brdf;
       }
       else {
