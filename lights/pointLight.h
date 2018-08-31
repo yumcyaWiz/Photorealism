@@ -13,7 +13,7 @@ class PointLight : public Light {
       return this->power;
     };
 
-    float Pdf(const Hit& res, const Vec3& wi, float dist2, float cos) const {
+    float Pdf(const Hit& res, const Vec3& wi, const Hit& shadow_res) const {
       return 0;
     };
 

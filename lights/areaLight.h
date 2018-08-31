@@ -13,7 +13,9 @@ class AreaLight : public Light {
       return power;
     };
 
-    float Pdf(const Hit& res, const Vec3& wi, float dist2, float cos) const {
+    float Pdf(const Hit& res, const Vec3& wi, const Hit& shadow_res) const {
+      float dist2 = (shadow_res.hitPos - res.hitPos).length2();
+      float cos = dot(-wi, shadow_res.hitNormal);
       float pdf_A = shape->Pdf();
       return pdf_A * dist2/cos;
     };
