@@ -5,7 +5,7 @@
 #include "ray.h"
 #include "hit.h"
 #include "primitive.h"
-#include "sky.h"
+#include "lights/sky.h"
 #include "light.h"
 #include "accels/linear.h"
 class Scene {

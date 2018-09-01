@@ -19,11 +19,11 @@
 #include "primitive.h"
 #include "samplers/mt.h"
 
-#include "skys/ibl.h"
-#include "skys/uniformSky.h"
-
 #include "lights/pointLight.h"
 #include "lights/areaLight.h"
+#include "lights/sky.h"
+#include "lights/skys/uniformSky.h"
+#include "lights/skys/ibl.h"
 
 #include "scene.h"
 

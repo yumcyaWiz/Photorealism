@@ -11,7 +11,7 @@ class Direct : public Integrator {
       Hit res;
       if(scene.intersect(ray, res)) {
         if(res.hitPrimitive->light != nullptr) {
-          return res.hitPrimitive->light->Le(res);
+          return res.hitPrimitive->light->Le(res, ray);
         }
 
         auto hitMaterial = res.hitPrimitive->material;
@@ -79,7 +79,7 @@ class Direct : public Integrator {
         float brdf_light_pdf = 0;
         if(scene.intersect(shadowRay, shadow_res)) {
           if(shadow_res.hitPrimitive->light != nullptr) {
-            col_brdf += k * shadow_res.hitPrimitive->light->Le(shadow_res);
+            col_brdf += k * shadow_res.hitPrimitive->light->Le(shadow_res, shadowRay);
             
             //Light PDF
             brdf_light_pdf = shadow_res.hitPrimitive->light->Pdf(res, wi, shadow_res);
@@ -90,7 +90,7 @@ class Direct : public Integrator {
           }
         }
         else {
-          col_brdf += k * scene.sky->getColor(shadowRay);
+          col_brdf += k * scene.sky->Le(shadow_res, shadowRay);
         }
 
         //MIS Weight
@@ -104,7 +104,7 @@ class Direct : public Integrator {
         return w_light * col_light + w_brdf * col_brdf;
       }
       else {
-        return scene.sky->getColor(ray);
+        return scene.sky->Le(res, ray);
       }
     };
 

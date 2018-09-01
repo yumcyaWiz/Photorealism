@@ -31,7 +31,7 @@ class Pt : public Integrator {
         Hit res;
         if(scene.intersect(trace_ray, res)) {
           if(res.hitPrimitive->light != nullptr) {
-            col *= res.hitPrimitive->light->Le(res);
+            col *= res.hitPrimitive->light->Le(res, trace_ray);
             break;
           }
 
@@ -60,7 +60,7 @@ class Pt : public Integrator {
           col *= 1/russian_roulette * k;
         }
         else {
-          col *= 1/russian_roulette * scene.sky->getColor(trace_ray);
+          col *= 1/russian_roulette * scene.sky->Le(res, trace_ray);
           break;
         }
       }

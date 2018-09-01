@@ -27,7 +27,7 @@ class PtExplicit : public Integrator {
         if(scene.intersect(ray, res)) {
           if(res.hitPrimitive->light != nullptr) {
             if(depth == 0) {
-              return res.hitPrimitive->light->Le(res);
+              return res.hitPrimitive->light->Le(res, ray);
             }
             else {
               break;
@@ -108,7 +108,7 @@ class PtExplicit : public Integrator {
 
               if(scene.intersect(shadowRay, shadow_res)) {
                 if(shadow_res.hitPrimitive->light != nullptr) {
-                  direct_col += k * shadow_res.hitPrimitive->light->Le(shadow_res);
+                  direct_col += k * shadow_res.hitPrimitive->light->Le(shadow_res, shadowRay);
 
                   //Light PDF
                   brdf_light_pdf = shadow_res.hitPrimitive->light->Pdf(res, wi, shadow_res);
@@ -119,7 +119,7 @@ class PtExplicit : public Integrator {
                 }
               }
               else {
-                direct_col += k * scene.sky->getColor(shadowRay);
+                direct_col += k * scene.sky->Le(shadow_res, shadowRay);
               }
             }
 

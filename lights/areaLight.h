@@ -9,7 +9,7 @@ class AreaLight : public Light {
 
     AreaLight(const RGB& _power, const std::shared_ptr<Shape>& _shape) : Light(_power, LIGHT_TYPE::AREA), shape(_shape) {};
 
-    RGB Le(const Hit& res) const {
+    RGB Le(const Hit& res, const Ray& ray) const {
       return power;
     };
 

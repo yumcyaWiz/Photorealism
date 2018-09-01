@@ -5,7 +5,7 @@
 #include "../sky.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "../stb/stb_image.h"
+#include "../..//stb/stb_image.h"
 
 class IBL : public Sky {
   public:
@@ -24,7 +24,7 @@ class IBL : public Sky {
       stbi_image_free(data);
     };
 
-    RGB getColor(const Ray& ray) const {
+    RGB Le(const Hit& res, const Ray& ray) const {
       float phi = std::atan2(ray.direction.z, ray.direction.x);
       if(phi < 0) phi += 2*M_PI;
       float theta = std::acos(ray.direction.y);
@@ -36,6 +36,12 @@ class IBL : public Sky {
       int h = (int)(v * height);
       int adr = 3*w + 3*width*h;
       return RGB(data[adr], data[adr + 1], data[adr + 2]);
+    };
+    float Pdf(const Hit& res, const Vec3& wi, const Hit& shadow_res) const {
+      return 0;
+    };
+    RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const {
+      return 0;
     };
 };
 #endif

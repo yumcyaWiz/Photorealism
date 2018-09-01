@@ -9,7 +9,7 @@ class PointLight : public Light {
 
     PointLight(const RGB& _power, const Vec3& _lightPos) : Light(_power, LIGHT_TYPE::POINT), lightPos(_lightPos) {};
 
-    RGB Le(const Hit& res) const {
+    RGB Le(const Hit& res, const Ray& ray) const {
       return this->power;
     };
 
