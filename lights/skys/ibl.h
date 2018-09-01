@@ -38,10 +38,12 @@ class IBL : public Sky {
       return RGB(data[adr], data[adr + 1], data[adr + 2]);
     };
     float Pdf(const Hit& res, const Vec3& wi, const Hit& shadow_res) const {
-      return 0;
+      return 1/(4*M_PI);
     };
     RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const {
-      return 0;
+      wi = sampleSphere(sampler.getNext2D());
+      pdf = 1/(4*M_PI);
+      return Le(res, Ray(Vec3(), wi));
     };
 };
 #endif

@@ -1,6 +1,6 @@
 [renderer]
-samples = 10
-integrator = "pt-explicit"
+samples = 100
+integrator = "pt"
 
 [sampler]
 type = "mt"
@@ -9,8 +9,7 @@ type = "mt"
 resolution = [512, 512]
 
 [sky]
-type = "uniform"
-color = [1.0, 1.0, 1.0]
+type = "ibl"
 path = "PaperMill_E_3k.hdr"
 intensity = 1.0
 phi-offset = 0
