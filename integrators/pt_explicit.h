@@ -159,7 +159,12 @@ class PtExplicit : public Integrator {
           col2 *= k / russian_roulette;
         }
         else {
-          break;
+          if(depth == 0) {
+            return scene.sky->Le(res, ray);
+          }
+          else {
+            break;
+          }
         }
       }
       return col;
