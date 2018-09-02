@@ -121,7 +121,7 @@ class Distribution2D {
       return px[iy]->func[ix] / py->funcInt;
     };
 
-    void ppm_output(const std::string& filename) const {
+    void ppm_output_pdf(const std::string& filename) const {
       std::ofstream file(filename);
       file << "P3" << std::endl;
       file << nx << " " << ny << std::endl;
@@ -129,6 +129,20 @@ class Distribution2D {
       for(int j = 0; j < ny; j++) {
         for(int i = 0; i < nx; i++) {
           float intensity = px[j]->func[i] / py->funcInt;
+          int col = clamp((int)intensity, 0, 255);
+          file << col << " " << col << " " << col << std::endl;
+        }
+      }
+      file.close();
+    };
+    void ppm_output_cdf(const std::string& filename) const {
+      std::ofstream file(filename);
+      file << "P3" << std::endl;
+      file << nx << " " << ny << std::endl;
+      file << "255" << std::endl;
+      for(int j = 0; j < ny; j++) {
+        for(int i = 0; i < nx; i++) {
+          float intensity = 255*px[j]->cdf[i];
           int col = clamp((int)intensity, 0, 255);
           file << col << " " << col << " " << col << std::endl;
         }
