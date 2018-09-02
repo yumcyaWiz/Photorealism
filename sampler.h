@@ -6,6 +6,7 @@
 #include <memory>
 #include "vec2.h"
 #include "vec3.h"
+#include "util.h"
 class Sampler {
   public:
     Sampler() {};
@@ -105,6 +106,12 @@ class Distribution2D {
       float d1 = px[y]->sample(u.x, pdfx);
       pdf = pdfx * pdfy;
       return Vec2(d0, d1);
+    };
+
+    float Pdf(const Vec2& u) const {
+      int ix = clamp(int(u.x * px[0]->n), 0, px[0]->n - 1);
+      int iy = clamp(int(u.y * py->n), 0, py->n - 1);
+      return px[iy]->func[ix] / py->funcInt;
     };
 };
 #endif
