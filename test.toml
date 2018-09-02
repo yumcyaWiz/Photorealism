@@ -1,5 +1,5 @@
 [renderer]
-samples = 300
+samples = 100
 integrator = "direct"
 
 [sampler]
@@ -10,7 +10,7 @@ resolution = [512, 512]
 
 [sky]
 type = "ibl"
-path = "Tokyo_BigSight_3k.hdr"
+path = "PaperMill_E_3k.hdr"
 intensity = 1.0
 phi-offset = 0
 theta-offset = 0

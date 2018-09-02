@@ -83,6 +83,8 @@ class IBL : public Sky {
       Vec2 p = dist->sample(sampler.getNext2D(), pdf_p);
       int w = (int)(p.x*width);
       int h = (int)(p.y*height);
+      if(w == width) w--;
+      if(h == height) h--;
 
       float phi = std::fmod((float)w/width * 2*M_PI + offsetX, 2*M_PI);
       float theta = std::fmod((float)h/height * M_PI + offsetY, M_PI);
