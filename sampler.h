@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <memory>
 #include "vec2.h"
 #include "vec3.h"
 class Sampler {
@@ -67,12 +68,43 @@ class Distribution1D {
       }
     };
 
-    float sample(float u, float& pdf) const {
+    float sample(float u, float& pdf, int* offset = nullptr) const {
       int index = std::lower_bound(func.begin(), func.end(), u) - func.begin();
+      if(offset) offset = &index;
       float du = u - func[index];
       du /= func[index + 1] - func[index];
       pdf = func[index]/funcInt;
       return (index + du)/n;
+    };
+};
+
+
+class Distribution2D {
+  public:
+    int nx;
+    int ny;
+    std::vector<std::unique_ptr<Distribution1D>> px;
+    std::unique_ptr<Distribution1D> py;
+
+    Distribution2D(const float* f, int _nx, int _ny) : nx(_nx), ny(_ny) {
+      for(int y = 0; y < ny; y++) {
+        px.emplace_back(new Distribution1D(&f[y * nx], nx));
+      }
+
+      std::vector<float> marginal;
+      for(int y = 0; y < ny; y++) {
+        marginal.push_back(px[y]->funcInt);
+      }
+      py.reset(new Distribution1D(&marginal[0], ny));
+    };
+
+    Vec2 sample(const Vec2& u, float& pdf) const {
+      float pdfx, pdfy;
+      int y;
+      float d0 = py->sample(u.y, pdfy, &y);
+      float d1 = px[y]->sample(u.x, pdfx);
+      pdf = pdfx * pdfy;
+      return Vec2(d0, d1);
     };
 };
 #endif
