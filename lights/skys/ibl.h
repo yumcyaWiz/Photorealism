@@ -2,6 +2,7 @@
 #define IBL_H
 #include <cmath>
 #include <string>
+#include <memory>
 #include "../sky.h"
 #include "../../sampler.h"
 
@@ -17,6 +18,8 @@ class IBL : public Sky {
     float intensity;
     float offsetX;
     float offsetY;
+    std::unique_ptr<Distribution2D> dist;
+
 
     IBL(const std::string& filename, float _intensity, float _offsetX, float _offsetY) : intensity(_intensity), offsetX(_offsetX), offsetY(_offsetY) {
       int n;
@@ -33,11 +36,21 @@ class IBL : public Sky {
         index++;
       }
       stbi_image_free(img);
+
+      float* f = new float[width*height];
+      for(int i = 0; i < width*height; i++) {
+        f[i] = data_sample[i].length();
+      }
+      dist.reset(new Distribution2D(f, width, height));
+      delete[] f;
     };
+
+
     ~IBL() {
       delete[] data;
       delete[] data_sample;
     };
+
 
     RGB Le(const Hit& res, const Ray& ray) const {
       float phi = std::atan2(ray.direction.z, ray.direction.x);
@@ -51,13 +64,34 @@ class IBL : public Sky {
       int h = (int)(v * height);
       return data[w + width*h];
     };
+
+
     float Pdf(const Hit& res, const Vec3& wi, const Hit& shadow_res) const {
-      return 1/(4*M_PI);
+      float phi = std::atan2(wi.z, wi.x);
+      if(phi < 0) phi += 2*M_PI;
+      float theta = std::acos(wi.y);
+
+      float u = std::fmod(phi + offsetX, 2*M_PI)/(2*M_PI);
+      float v = std::fmod(theta + offsetY, M_PI)/M_PI;
+      int w = (int)(u * width);
+      int h = (int)(v * height);
+
+      return dist->Pdf(Vec2(w, h));
     };
+
+
     RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const {
-      wi = sampleSphere(sampler.getNext2D());
-      pdf = 1/(4*M_PI);
-      return Le(res, Ray(Vec3(), wi));
+      float pdf_p;
+      Vec2 p = dist->sample(sampler.getNext2D(), pdf_p);
+      int w = (int)p.x;
+      int h = (int)p.y;
+      float phi = std::fmod((float)w/width * 2*M_PI + offsetX, 2*M_PI);
+      float theta = std::fmod((float)h/height * M_PI + offsetY, M_PI);
+
+      wi = Vec3(std::cos(phi)*std::sin(theta), std::cos(theta), std::sin(phi)*std::sin(theta));
+      pdf = pdf_p/(M_PI*M_PI*std::sin(theta));
+
+      return data[w + width*h];
     };
 };
 #endif

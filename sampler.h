@@ -70,9 +70,9 @@ class Distribution1D {
     };
 
     float sample(float u, float& pdf, int* offset = nullptr) const {
-      int index = std::lower_bound(func.begin(), func.end(), u) - func.begin();
-      if(offset) offset = &index;
-      float du = u - func[index];
+      int index = std::lower_bound(cdf.begin(), cdf.end(), u) - func.begin();
+      offset = &index;
+      float du = u - cdf[index];
       du /= func[index + 1] - func[index];
       pdf = func[index]/funcInt;
       return (index + du)/n;

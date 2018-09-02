@@ -1,5 +1,5 @@
 [renderer]
-samples = 10
+samples = 100
 integrator = "pt"
 
 [sampler]
@@ -11,7 +11,7 @@ resolution = [512, 512]
 [sky]
 type = "ibl"
 path = "PaperMill_E_3k.hdr"
-intensity = 1.0
+intensity = 2.0
 phi-offset = 0
 theta-offset = 0
 
@@ -90,7 +90,7 @@ radius = 0.2
 [[object]]
 name = "floor"
 mesh = "bigSphere"
-material = "ggx"
+material = "white"
 [[object.transform]]
 type = "translate"
 vector = [0, -10001, 0]
