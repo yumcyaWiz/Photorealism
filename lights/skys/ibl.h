@@ -88,9 +88,11 @@ class IBL : public Sky {
 
       float phi = std::fmod(p.x * 2*M_PI + offsetX, 2*M_PI);
       float theta = std::fmod(p.y * M_PI + offsetY, M_PI);
+      //std::cout << theta << std::endl;
       if(std::sin(theta) == 0) return RGB(0);
 
       wi = Vec3(std::cos(phi)*std::sin(theta), std::cos(theta), std::sin(phi)*std::sin(theta));
+      //std::cout << wi << std::endl;
       pdf = pdf_p/(2*M_PI*M_PI*std::sin(theta));
 
       int w = (int)(p.x*width);

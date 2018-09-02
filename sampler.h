@@ -109,8 +109,8 @@ class Distribution2D {
       float pdfx, pdfy;
       int x;
       int y;
-      float d0 = py->sample(u.y, pdfy, y);
-      float d1 = px[y]->sample(u.x, pdfx, x);
+      float d1 = py->sample(u.y, pdfy, y);
+      float d0 = px[y]->sample(u.x, pdfx, x);
       pdf = pdfx * pdfy;
       return Vec2(d0, d1);
     };
