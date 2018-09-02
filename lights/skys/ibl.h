@@ -3,6 +3,7 @@
 #include <cmath>
 #include <string>
 #include "../sky.h"
+#include "../../sampler.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../..//stb/stb_image.h"
@@ -11,17 +12,31 @@ class IBL : public Sky {
   public:
     int width;
     int height;
-    float* data;
+    RGB* data;
+    RGB* data_sample;
     float intensity;
     float offsetX;
     float offsetY;
 
     IBL(const std::string& filename, float _intensity, float _offsetX, float _offsetY) : intensity(_intensity), offsetX(_offsetX), offsetY(_offsetY) {
       int n;
-      data = stbi_loadf(filename.c_str(), &width, &height, &n, 0);
+      float* img = stbi_loadf(filename.c_str(), &width, &height, &n, 0);
+
+      data = new RGB[width*height];
+      data_sample = new RGB[width*height];
+      int index = 0;
+      for(int i = 0; i < 3*width*height; i += 3) {
+        data[index] = RGB(img[i], img[i + 1], img[i + 2]);
+        int h = i / (3 * width);
+        float theta = std::fmod((float)h/height * M_PI + offsetY, M_PI);
+        data_sample[index] = std::sin(theta)*data[index];
+        index++;
+      }
+      stbi_image_free(img);
     };
     ~IBL() {
-      stbi_image_free(data);
+      delete[] data;
+      delete[] data_sample;
     };
 
     RGB Le(const Hit& res, const Ray& ray) const {
@@ -34,8 +49,7 @@ class IBL : public Sky {
       
       int w = (int)(u * width);
       int h = (int)(v * height);
-      int adr = 3*w + 3*width*h;
-      return RGB(data[adr], data[adr + 1], data[adr + 2]);
+      return data[w + width*h];
     };
     float Pdf(const Hit& res, const Vec3& wi, const Hit& shadow_res) const {
       return 1/(4*M_PI);
