@@ -1,6 +1,8 @@
 #ifndef SAMPLER_H
 #define SAMPLER_H
 #include <cmath>
+#include <vector>
+#include <algorithm>
 #include "vec2.h"
 #include "vec3.h"
 class Sampler {
@@ -44,4 +46,33 @@ inline Vec3 sampleNCosineHemisphere(const Vec2& u, float alpha) {
     const float phi = 2.0*M_PI*u.y;
     return Vec3(std::cos(phi)*std::sin(theta), std::cos(theta), std::sin(phi)*std::sin(theta));
 }
+
+
+class Distribution1D {
+  public:
+    int n;
+    std::vector<float> func;
+    std::vector<float> cdf;
+    float funcInt;
+
+    Distribution1D(const float* f, int _n) : n(_n), func(f, f + n), cdf(n + 1) {
+      cdf[0] = 0;
+      for(int i = 1; i <= n; i++) {
+        cdf[i] = cdf[i - 1] + func[i - 1]/n;
+      }
+      funcInt = cdf[n];
+
+      for(int i = 1; i <= n; i++) {
+        cdf[i] /= funcInt;
+      }
+    };
+
+    float sample(float u, float& pdf) const {
+      int index = std::lower_bound(func.begin(), func.end(), u) - func.begin();
+      float du = u - func[index];
+      du /= func[index + 1] - func[index];
+      pdf = func[index]/funcInt;
+      return (index + du)/n;
+    };
+};
 #endif
