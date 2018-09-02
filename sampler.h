@@ -4,6 +4,9 @@
 #include <vector>
 #include <algorithm>
 #include <memory>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include "vec2.h"
 #include "vec3.h"
 #include "util.h"
@@ -116,6 +119,21 @@ class Distribution2D {
       int ix = clamp(int(u.x * px[0]->n), 0, px[0]->n - 1);
       int iy = clamp(int(u.y * py->n), 0, py->n - 1);
       return px[iy]->func[ix] / py->funcInt;
+    };
+
+    void ppm_output(const std::string& filename) const {
+      std::ofstream file(filename);
+      file << "P3" << std::endl;
+      file << nx << " " << ny << std::endl;
+      file << "255" << std::endl;
+      for(int j = 0; j < ny; j++) {
+        for(int i = 0; i < nx; i++) {
+          float intensity = px[j]->func[i] / py->funcInt;
+          int col = clamp((int)intensity, 0, 255);
+          file << col << " " << col << " " << col << std::endl;
+        }
+      }
+      file.close();
     };
 };
 #endif

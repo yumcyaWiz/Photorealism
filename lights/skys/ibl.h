@@ -43,6 +43,8 @@ class IBL : public Sky {
       }
       dist.reset(new Distribution2D(f, width, height));
       delete[] f;
+
+      dist->ppm_output("ibl.ppm");
     };
 
 

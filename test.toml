@@ -10,7 +10,7 @@ resolution = [512, 512]
 
 [sky]
 type = "ibl"
-path = "PaperMill_E_3k.hdr"
+path = "Tokyo_BigSight_3k.hdr"
 intensity = 1.0
 phi-offset = 0
 theta-offset = 0
