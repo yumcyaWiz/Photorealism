@@ -76,20 +76,22 @@ class IBL : public Sky {
       int w = (int)(u * width);
       int h = (int)(v * height);
 
-      return dist->Pdf(Vec2(w, h));
+      return dist->Pdf(Vec2(w, h))/(2*M_PI*M_PI*std::sin(theta));
     };
 
 
     RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const {
       float pdf_p;
       Vec2 p = dist->sample(sampler.getNext2D(), pdf_p);
-      int w = (int)p.x;
-      int h = (int)p.y;
+      std::cout << pdf_p << std::endl;
+      int w = (int)(p.x*width);
+      int h = (int)(p.y*height);
+
       float phi = std::fmod((float)w/width * 2*M_PI + offsetX, 2*M_PI);
       float theta = std::fmod((float)h/height * M_PI + offsetY, M_PI);
 
       wi = Vec3(std::cos(phi)*std::sin(theta), std::cos(theta), std::sin(phi)*std::sin(theta));
-      pdf = pdf_p/(M_PI*M_PI*std::sin(theta));
+      pdf = pdf_p/(2*M_PI*M_PI*std::sin(theta));
 
       return data[w + width*h];
     };

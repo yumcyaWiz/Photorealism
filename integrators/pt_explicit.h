@@ -44,7 +44,7 @@ class PtExplicit : public Integrator {
           //Direct Illumination with One Sample MIS
           Vec3 direct_col;
           //Russian Roulette
-          bool light_or_brdf = (*this->sampler).getNext() > 0.5;
+          bool light_or_brdf = (*this->sampler).getNext() > 0;
 
           //Light Sampling
           if(light_or_brdf) {
@@ -80,6 +80,11 @@ class PtExplicit : public Integrator {
               else if(light->type == LIGHT_TYPE::POINT) {
                 scene.intersect(shadowRay, shadow_res);
                 if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
+                  direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f) / light_selection_pdf / 0.5;
+                }
+              }
+              else if(light->type == LIGHT_TYPE::SKY) {
+                if(!scene.intersect(shadowRay, shadow_res)) {
                   direct_col += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f) / light_selection_pdf / 0.5;
                 }
               }

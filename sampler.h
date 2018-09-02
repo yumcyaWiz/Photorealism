@@ -69,11 +69,14 @@ class Distribution1D {
       }
     };
 
-    float sample(float u, float& pdf, int* offset = nullptr) const {
-      int index = std::lower_bound(cdf.begin(), cdf.end(), u) - func.begin();
-      offset = &index;
+    float sample(float u, float& pdf, int& offset) const {
+      int index = std::lower_bound(cdf.begin(), cdf.end(), u) - cdf.begin();
+      if(index == n) index--;
+      offset = index;
       float du = u - cdf[index];
-      du /= func[index + 1] - func[index];
+      if(cdf[index + 1] - cdf[index] > 0) {
+        du /= cdf[index + 1] - cdf[index];
+      }
       pdf = func[index]/funcInt;
       return (index + du)/n;
     };
@@ -101,9 +104,10 @@ class Distribution2D {
 
     Vec2 sample(const Vec2& u, float& pdf) const {
       float pdfx, pdfy;
+      int x;
       int y;
-      float d0 = py->sample(u.y, pdfy, &y);
-      float d1 = px[y]->sample(u.x, pdfx);
+      float d0 = py->sample(u.y, pdfy, y);
+      float d1 = px[y]->sample(u.x, pdfx, x);
       pdf = pdfx * pdfy;
       return Vec2(d0, d1);
     };
