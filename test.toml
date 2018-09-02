@@ -1,6 +1,6 @@
 [renderer]
-samples = 100
-integrator = "direct"
+samples = 1000
+integrator = "pt"
 
 [sampler]
 type = "mt"
@@ -10,9 +10,9 @@ resolution = [512, 512]
 
 [sky]
 type = "ibl"
-path = "Alley8k_Ref.hdr"
+path = "PaperMill_E_3k.hdr"
 intensity = 1.0
-phi-offset = 2.0
+phi-offset = 0
 theta-offset = 0
 
 
