@@ -36,7 +36,7 @@ class TomlLoader {
         auto intensity = *sky->get_as<double>("intensity");
         auto theta_offset = *sky->get_as<double>("theta-offset");
         auto phi_offset = *sky->get_as<double>("phi-offset");
-        skyPtr = std::make_shared<IBL>(path, intensity, theta_offset, phi_offset);
+        skyPtr = std::make_shared<IBL>(path, intensity, phi_offset, theta_offset);
       }
       else {
         std::cerr << "Invalid Sky type" << std::endl;

@@ -58,6 +58,11 @@ class Direct : public Integrator {
               col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
             }
           }
+          else if(light->type == LIGHT_TYPE::SKY) {
+            if(!scene.intersect(shadowRay, shadow_res)) {
+              col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
+            }
+          }
         }
 
         //MIS Weight

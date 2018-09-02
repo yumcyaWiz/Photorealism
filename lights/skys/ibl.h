@@ -73,6 +73,7 @@ class IBL : public Sky {
       float phi = std::atan2(wi.z, wi.x);
       if(phi < 0) phi += 2*M_PI;
       float theta = std::acos(wi.y);
+      if(std::sin(theta) == 0) return 0;
 
       float u = std::fmod(phi + offsetX, 2*M_PI)/(2*M_PI);
       float v = std::fmod(theta + offsetY, M_PI)/M_PI;
@@ -84,17 +85,18 @@ class IBL : public Sky {
     RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const {
       float pdf_p;
       Vec2 p = dist->sample(sampler.getNext2D(), pdf_p);
-      int w = (int)(p.x*width);
-      int h = (int)(p.y*height);
-      if(w == width) w--;
-      if(h == height) h--;
 
-      float phi = std::fmod((float)w/width * 2*M_PI + offsetX, 2*M_PI);
-      float theta = std::fmod((float)h/height * M_PI + offsetY, M_PI);
+      float phi = std::fmod(p.x * 2*M_PI + offsetX, 2*M_PI);
+      float theta = std::fmod(p.y * M_PI + offsetY, M_PI);
+      if(std::sin(theta) == 0) return RGB(0);
 
       wi = Vec3(std::cos(phi)*std::sin(theta), std::cos(theta), std::sin(phi)*std::sin(theta));
       pdf = pdf_p/(2*M_PI*M_PI*std::sin(theta));
 
+      int w = (int)(p.x*width);
+      int h = (int)(p.y*height);
+      if(w == width) w--;
+      if(h == height) h--;
       return intensity * data[w + width*h];
     };
 };

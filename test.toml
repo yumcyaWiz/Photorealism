@@ -10,9 +10,9 @@ resolution = [512, 512]
 
 [sky]
 type = "ibl"
-path = "Tokyo_BigSight_3k.hdr"
+path = "Alley8k_Ref.hdr"
 intensity = 1.0
-phi-offset = 0
+phi-offset = 2.0
 theta-offset = 0
 
 
@@ -86,6 +86,13 @@ name = "light"
 type = "sphere"
 radius = 0.2
 
+[[object]]
+name = "floor"
+mesh = "bigSphere"
+material = "white"
+[[object.transform]]
+type = "translate"
+vector = [0, -10001, 0]
 
 [[object]]
 name = "left_ball"
