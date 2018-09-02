@@ -44,7 +44,7 @@ class PtExplicit : public Integrator {
           //Direct Illumination with One Sample MIS
           Vec3 direct_col;
           //Russian Roulette
-          bool light_or_brdf = (*this->sampler).getNext() > 0;
+          bool light_or_brdf = (*this->sampler).getNext() > 0.5;
 
           //Light Sampling
           if(light_or_brdf) {

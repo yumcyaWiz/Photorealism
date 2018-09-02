@@ -62,7 +62,7 @@ class IBL : public Sky {
       
       int w = (int)(u * width);
       int h = (int)(v * height);
-      return data[w + width*h];
+      return intensity * data[w + width*h];
     };
 
 
@@ -73,17 +73,14 @@ class IBL : public Sky {
 
       float u = std::fmod(phi + offsetX, 2*M_PI)/(2*M_PI);
       float v = std::fmod(theta + offsetY, M_PI)/M_PI;
-      int w = (int)(u * width);
-      int h = (int)(v * height);
 
-      return dist->Pdf(Vec2(w, h))/(2*M_PI*M_PI*std::sin(theta));
+      return dist->Pdf(Vec2(u, v))/(2*M_PI*M_PI*std::sin(theta));
     };
 
 
     RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const {
       float pdf_p;
       Vec2 p = dist->sample(sampler.getNext2D(), pdf_p);
-      std::cout << pdf_p << std::endl;
       int w = (int)(p.x*width);
       int h = (int)(p.y*height);
 
@@ -93,7 +90,7 @@ class IBL : public Sky {
       wi = Vec3(std::cos(phi)*std::sin(theta), std::cos(theta), std::sin(phi)*std::sin(theta));
       pdf = pdf_p/(2*M_PI*M_PI*std::sin(theta));
 
-      return data[w + width*h];
+      return intensity * data[w + width*h];
     };
 };
 #endif
