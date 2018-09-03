@@ -121,6 +121,7 @@ class PtExplicit : public Integrator {
             }
             else {
               direct_col_brdf += k * scene.sky->Le(shadow_res, shadowRay);
+              brdf_light_pdf = scene.sky->Pdf(res, wi, shadow_res);
             }
           }
 

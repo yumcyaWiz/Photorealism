@@ -31,7 +31,7 @@ class IBL : public Sky {
       for(int i = 0; i < 3*width*height; i += 3) {
         data[index] = RGB(img[i], img[i + 1], img[i + 2]);
         int h = i / (3 * width);
-        float theta = std::fmod((float)h/height * M_PI + offsetY, M_PI);
+        float theta = std::fmod(float(h)/height * M_PI + offsetY, M_PI);
         data_sample[index] = std::sin(theta)*data[index];
         index++;
       }

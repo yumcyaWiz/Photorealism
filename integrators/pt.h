@@ -21,7 +21,7 @@ class Pt : public Integrator {
 
       for(int depth = 0; ; depth++) {
         if(depth > 10) {
-          russian_roulette *= 0.9;
+          russian_roulette *= 0.95;
         }
         if((*this->sampler).getNext() > russian_roulette) {
           col = RGB(0);
