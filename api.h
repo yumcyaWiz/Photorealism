@@ -30,4 +30,8 @@
 #include "integrators/pt.h"
 #include "integrators/pt_explicit.h"
 #include "integrators/direct.h"
+
+#include "util.h"
+#include "timer.h"
+
 #endif

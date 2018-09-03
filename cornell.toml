@@ -1,5 +1,5 @@
 [renderer]
-samples = 300
+samples = 100
 integrator = "pt-explicit"
 
 [sampler]

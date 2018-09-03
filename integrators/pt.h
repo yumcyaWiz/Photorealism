@@ -8,6 +8,7 @@
 #include "../scene.h"
 #include "../material.h"
 #include "../integrator.h"
+#include "../timer.h"
 class Pt : public Integrator {
   public:
     int N;
@@ -72,7 +73,10 @@ class Pt : public Integrator {
       const int width = this->camera->film->width;
       const int height = this->camera->film->height;
 
+      Timer timer;
+      int ms = 0;
       for(int k = 0; k < N; k++) {
+        timer.start();
         for(int i = 0; i < width; i++) {
 #pragma omp parallel for schedule(dynamic, 1)
           for(int j = 0; j < height; j++) {
@@ -90,10 +94,11 @@ class Pt : public Integrator {
             }
 
             if(omp_get_thread_num() == 0) {
-              std::cout << progressbar(j + height*i + width*height*k, width*height*N) << " " << percentage(j + height*i + width*height*k, width*height*N) << "\r" << std::flush;
+              std::cout << progressbar(j + height*i + width*height*k, width*height*N) << " " << percentage(j + height*i + width*height*k, width*height*N) << " ETA: " << ms*(N - k)/1e3 << "s" << "\r" << std::flush;
             }
           }
         }
+        ms = timer.stop();
       }
       this->camera->film->divide(N);
       this->camera->film->gamma_correction();

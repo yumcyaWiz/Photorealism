@@ -1,6 +1,7 @@
 #ifndef PT_EXPLICIT_H
 #define PT_EXPLICIT_H
 #include "../integrator.h"
+#include "../timer.h"
 class PtExplicit : public Integrator {
   public:
     int N;
@@ -175,7 +176,10 @@ class PtExplicit : public Integrator {
       const int width = this->camera->film->width;
       const int height = this->camera->film->height;
 
+      Timer timer;
+      int ms = 0;
       for(int k = 0; k < N; k++) {
+        timer.start();
         for(int i = 0; i < width; i++) {
 #pragma omp parallel for schedule(dynamic, 1)
           for(int j = 0; j < height; j++) {
@@ -193,10 +197,11 @@ class PtExplicit : public Integrator {
             }
 
             if(omp_get_thread_num() == 0) {
-              std::cout << progressbar(width*height*k + height*i + j, width*height*N) << " " << percentage(width*height*k + height*i + j, width*height*N) << "\r" << std::flush;
+              std::cout << progressbar(width*height*k + height*i + j, width*height*N) << " " << percentage(width*height*k + height*i + j, width*height*N) << " ETA: " << ms*(N - k)/1e3 << "s" << "\r" << std::flush;
             }
           }
         }
+        ms = timer.stop();
       }
       this->camera->film->divide(N);
       this->camera->film->gamma_correction();
