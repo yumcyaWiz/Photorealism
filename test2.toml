@@ -1,5 +1,5 @@
 [renderer]
-samples = 100
+samples = 10
 integrator = "pt-explicit"
 
 [sampler]
@@ -61,7 +61,7 @@ albedo = [0.9, 0.9, 0.9]
 name = "glass"
 type = "glass"
 ior = 1.5
-albedo = [1.0, 1.0, 1.0]
+albedo = [0.2, 0.2, 0.8]
 
 [[material]]
 name = "beckmann"
@@ -92,22 +92,6 @@ radius = 1.0
 name = "light"
 type = "sphere"
 radius = 0.2
-
-[[object]]
-name = "floor"
-mesh = "bigSphere"
-material = "white"
-[[object.transform]]
-type = "translate"
-vector = [0, -10001, 0]
-
-[[object]]
-name = "left_ball"
-mesh = "sphere"
-material = "glass"
-[[object.transform]]
-type = "translate"
-vector = [-1.5, 0.0, 3.0]
 
 [[object]]
 name = "right_ball"

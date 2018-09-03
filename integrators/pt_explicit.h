@@ -21,7 +21,7 @@ class PtExplicit : public Integrator {
           break;
         }
 
-        if(col2.x == 0 && col2.y == 0 && col2.z == 0) break;
+        if(isZero(col2)) break;
 
         Hit res;
         if(scene.intersect(ray, res)) {
@@ -99,7 +99,7 @@ class PtExplicit : public Integrator {
           float brdf_pdf = 0;
           float brdf_light_pdf = 0;
           RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
-          float cos = std::max(cosTheta(wi_local), 0.0f);
+          float cos = absCosTheta(wi_local);
           Vec3 wi = localToWorld(wi_local, n, s, t);
           RGB k = brdf * cos/brdf_pdf;
 
@@ -110,19 +110,17 @@ class PtExplicit : public Integrator {
             if(scene.intersect(shadowRay, shadow_res)) {
               if(shadow_res.hitPrimitive->light != nullptr) {
                 direct_col_brdf += k * shadow_res.hitPrimitive->light->Le(shadow_res, shadowRay);
-
-                //Light PDF
                 brdf_light_pdf = shadow_res.hitPrimitive->light->Pdf(res, wi, shadow_res);
-                //handle Specular Case
-                if(hitMaterial->type == MATERIAL_TYPE::SPECULAR) {
-                  brdf_light_pdf = 0;
-                }
               }
             }
             else {
               direct_col_brdf += k * scene.sky->Le(shadow_res, shadowRay);
               brdf_light_pdf = scene.sky->Pdf(res, wi, shadow_res);
             }
+          }
+          //handle Specular Case
+          if(hitMaterial->type == MATERIAL_TYPE::SPECULAR) {
+            brdf_light_pdf = 0;
           }
 
           //MIS Weight
@@ -148,7 +146,7 @@ class PtExplicit : public Integrator {
           brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
           if(brdf_pdf == 0) break;
           wi = localToWorld(wi_local, n, s, t);
-          cos = std::max(cosTheta(wi_local), 0.0f);
+          cos = absCosTheta(wi_local);
           k = brdf * cos / brdf_pdf;
 
           if(isNan(k) || isInf(k)) {
