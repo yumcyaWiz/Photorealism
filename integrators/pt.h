@@ -90,7 +90,7 @@ class Pt : public Integrator {
             }
 
             if(omp_get_thread_num() == 0) {
-              std::cout << progressbar(k, N) << " " << percentage(k, N) << "\r" << std::flush;
+              std::cout << progressbar(j + height*i + width*height*k, width*height*N) << " " << percentage(j + height*i + width*height*k, width*height*N) << "\r" << std::flush;
             }
           }
         }
