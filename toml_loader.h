@@ -74,7 +74,8 @@ class TomlLoader {
 
 
       //material
-      std::map<std::string, std::shared_ptr<Material>> material_map;
+      std::vector<std::string> material_names;
+      std::vector<std::shared_ptr<Material>> material_ptrs;
       auto materials = toml->get_table_array("material");
       for(const auto& material : *materials) {
         auto name = *material->get_as<std::string>("name");
@@ -128,7 +129,8 @@ class TomlLoader {
           std::exit(1);
         }
 
-        material_map.insert(std::make_pair(name, mat));
+        material_names.push_back(name);
+        material_ptrs.push_back(mat);
       }
       std::cout << "Material Loaded" << std::endl;
 
@@ -139,7 +141,8 @@ class TomlLoader {
         float radius;
         MeshData() {};
       };
-      std::map<std::string, std::shared_ptr<MeshData>> mesh_map;
+      std::vector<std::string> mesh_names;
+      std::vector<std::shared_ptr<MeshData>> mesh_ptrs;
 
       auto meshes = toml->get_table_array("mesh");
       for(const auto& mesh : *meshes) {
@@ -156,7 +159,8 @@ class TomlLoader {
           std::exit(1);
         }
 
-        mesh_map.insert(std::make_pair(name, meshdata));
+        mesh_names.push_back(name);
+        mesh_ptrs.push_back(meshdata);
       }
       std::cout << "Mesh Loaded" << std::endl;
 
@@ -164,8 +168,9 @@ class TomlLoader {
       //object
       auto objects = toml->get_table_array("object");
       std::vector<std::shared_ptr<Primitive>> prims;
-      std::map<std::string, std::shared_ptr<Shape>> shape_map;
-      std::map<std::string, std::shared_ptr<Primitive>> prim_map;
+      std::vector<std::string> shape_names;
+      std::vector<std::shared_ptr<Shape>> shape_ptrs;
+      std::vector<std::shared_ptr<Primitive>> prim_ptrs;
 
       for(const auto& object : *objects) {
         auto name = *object->get_as<std::string>("name");
@@ -187,14 +192,17 @@ class TomlLoader {
           }
         }
 
-        auto meshdata = mesh_map.at(mesh);
-        auto mat = material_map.at(material);
+        int index = std::find(mesh_names.begin(), mesh_names.end(), mesh) - mesh_names.begin();
+        auto meshdata = mesh_ptrs[index];
+        index = std::find(material_names.begin(), material_names.end(), material) - material_names.begin();
+        auto mat = material_ptrs[index];
         if(meshdata->type == "sphere") {
           auto shape = std::make_shared<Sphere>(center, meshdata->radius);
           auto prim = std::make_shared<Primitive>(shape, mat);
           prims.push_back(prim);
-          shape_map.insert(std::make_pair(name, shape));
-          prim_map.insert(std::make_pair(name, prim));
+          shape_names.push_back(name);
+          shape_ptrs.push_back(shape);
+          prim_ptrs.push_back(prim);
         }
       }
       std::cout << "Object Loaded" << std::endl;
@@ -217,8 +225,9 @@ class TomlLoader {
           }
           else if(light_type == "area") {
             auto object = *light->get_as<std::string>("object");
-            auto shape = shape_map.at(object);
-            auto prim = prim_map.at(object);
+            int index = std::find(shape_names.begin(), shape_names.end(), object) - shape_names.begin();
+            auto shape = shape_ptrs[index];
+            auto prim = prim_ptrs[index];
             lightPtr = std::make_shared<AreaLight>(emission, shape);
             prim->light = lightPtr;
           }

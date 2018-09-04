@@ -4,7 +4,6 @@
 #include "api.h"
 #include "toml_loader.h"
 
-
 int main(int argc, char** argv) {
   std::string toml_filepath;
   int opt;
