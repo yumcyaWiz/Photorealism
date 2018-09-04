@@ -4,3 +4,4 @@ a.out
 *.hdr
 *.jpeg
 *.optrpt
+!figs/*

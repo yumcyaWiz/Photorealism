@@ -22,3 +22,5 @@ make build
 ## Scene File
 ***.toml is scene description file.
 
+## Example
+![](figs/fig1.png)
