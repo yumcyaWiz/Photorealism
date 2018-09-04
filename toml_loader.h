@@ -124,6 +124,12 @@ class TomlLoader {
           auto ior = *material->get_as<double>("ior");
           mat = std::make_shared<GGX>(reflectance, roughness, ior);
         }
+        else if(type == "plastic") {
+          auto albedo = *material->get_array_of<double>("albedo");
+          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto ior = *material->get_as<double>("ior");
+          mat = std::make_shared<Plastic>(reflectance, ior);
+        }
         else {
           std::cerr << "Invalid Material type" << std::endl;
           std::exit(1);

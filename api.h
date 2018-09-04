@@ -15,6 +15,7 @@
 #include "materials/oren_nayar.h"
 #include "materials/beckmann.h"
 #include "materials/ggx.h"
+#include "materials/plastic.h"
 
 #include "primitive.h"
 #include "samplers/mt.h"

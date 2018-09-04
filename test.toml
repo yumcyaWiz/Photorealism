@@ -1,5 +1,5 @@
 [renderer]
-samples = 100
+samples = 1000
 integrator = "pt"
 
 [sampler]
@@ -77,6 +77,12 @@ albedo = [1.0, 1.0, 1.0]
 roughness = 0.4
 ior = 8.0
 
+[[material]]
+name = "plastic"
+type = "plastic"
+albedo = [0.2, 0.8, 0.2]
+ior = 1.5
+
 
 [[mesh]]
 name = "bigSphere"
@@ -112,7 +118,7 @@ vector = [-1.5, 0.0, 3.0]
 [[object]]
 name = "right_ball"
 mesh = "sphere"
-material = "glass"
+material = "plastic"
 [[object.transform]]
 type = "translate"
 vector = [1.5, 0, 2]
