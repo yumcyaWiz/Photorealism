@@ -30,9 +30,10 @@ class Sphere : public Shape {
       }
 
       float t = t0;
+      if(t > ray.tmax) return false;
       if(t < ray.tmin) {
           t = t1;
-          if(t < ray.tmin) return false;
+          if(t < ray.tmin || t > ray.tmax) return false;
       }
 
       res.t = t;
