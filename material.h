@@ -4,6 +4,7 @@
 #include <memory>
 #include "vec3.h"
 #include "sampler.h"
+#include "texture.h"
 enum class MATERIAL_TYPE {
   DIFFUSE,
   SPECULAR,
