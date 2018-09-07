@@ -8,6 +8,7 @@
 #include "lights/sky.h"
 #include "light.h"
 #include "accels/linear.h"
+#include "accels/bvh.h"
 class Scene {
   public:
     std::vector<std::shared_ptr<Primitive>> prims;
