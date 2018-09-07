@@ -1,5 +1,5 @@
 [renderer]
-samples = 1000
+samples = 100
 integrator = "pt"
 
 [sampler]
@@ -21,7 +21,7 @@ theta-offset = 0
 type = "thin-lens"
 lens-distance = 1.0
 focus-point = [1.5, 0.0, 2.0]
-f-number = 2.8
+f-number = 3.5
 [camera.transform]
 type = "look-at"
 origin = [0.0, 1.0, -3.0]
@@ -96,7 +96,7 @@ ior = 8.0
 [[material]]
 name = "plastic"
 type = "plastic"
-albedo = "texture"
+albedo = "uv"
 ior = 1.5
 
 
@@ -134,7 +134,7 @@ vector = [-1.5, 0.0, 3.0]
 [[object]]
 name = "right_ball"
 mesh = "sphere"
-material = "uv"
+material = "plastic"
 [[object.transform]]
 type = "translate"
 vector = [1.5, 0, 2]

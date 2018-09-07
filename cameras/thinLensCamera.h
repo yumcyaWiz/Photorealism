@@ -12,7 +12,8 @@ class ThinLensCamera : public Camera {
     float lensRadius;
 
     ThinLensCamera(const Vec3& _camPos, const Vec3& _camForward, const std::shared_ptr<Film>& _film, const Vec3& focusPoint, float _a, float _Fnumber) : Camera(_camPos, _camForward, _film), a(_a), Fnumber(_Fnumber) {
-      b = (focusPoint - this->camPos).length() - a;
+      float cos = dot(camForward, normalize(focusPoint - this->camPos));
+      b = cos*(focusPoint - this->camPos).length() - a;
       f = 1/(1/a + 1/b);
       lensRadius = 0.5 * f/Fnumber;
       lensCenter = this->camPos + a*this->camForward;
