@@ -1,6 +1,6 @@
 [renderer]
-samples = 100
-integrator = "pt"
+samples = 1000
+integrator = "pt-explicit"
 
 [sampler]
 type = "mt"
@@ -36,6 +36,10 @@ color = [0.9, 0.9, 0.9]
 name = "uv"
 type = "image"
 path = "uv_test.png"
+[[texture]]
+name = "earth"
+type = "image"
+path = "earth2.jpg"
 
 
 [[material]]
@@ -80,6 +84,12 @@ ior = 1.5
 albedo = "texture"
 
 [[material]]
+name = "glass2"
+type = "glass"
+ior = 1.5
+albedo = "uv"
+
+[[material]]
 name = "beckmann"
 type = "beckmann"
 albedo = "texture"
@@ -96,8 +106,14 @@ ior = 8.0
 [[material]]
 name = "plastic"
 type = "plastic"
-albedo = "uv"
+albedo = "texture"
 ior = 1.5
+
+[[material]]
+name = "earth"
+type = "plastic"
+albedo = "earth"
+ior = 1.6
 
 
 [[mesh]]
@@ -134,7 +150,7 @@ vector = [-1.5, 0.0, 3.0]
 [[object]]
 name = "right_ball"
 mesh = "sphere"
-material = "plastic"
+material = "earth"
 [[object.transform]]
 type = "translate"
 vector = [1.5, 0, 2]

@@ -1,6 +1,7 @@
 a.out
 *.ppm
 *.png
+*.jpg
 *.hdr
 *.jpeg
 *.optrpt
