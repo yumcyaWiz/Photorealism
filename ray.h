@@ -6,6 +6,7 @@ class Ray {
     Vec3 origin;
     Vec3 direction;
     constexpr static float tmin = 0.01;
+    constexpr static float tmax = 10000;
 
     Ray() {};
     Ray(const Vec3& o, const Vec3& d) : origin(o), direction(d) {};

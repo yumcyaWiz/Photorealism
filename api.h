@@ -36,6 +36,8 @@
 #include "integrators/pt_explicit.h"
 #include "integrators/direct.h"
 
+#include "aabb.h"
+
 #include "util.h"
 #include "timer.h"
 

@@ -12,6 +12,11 @@ class Vec3 {
     Vec3(float _x) : x(_x), y(_x), z(_x) {};
     Vec3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {};
 
+    float operator[](int i) const {
+      if(i == 0) return x;
+      else if(i == 1) return y;
+      else return z;
+    };
     Vec3 operator-() const {
       return Vec3(-x, -y, -z);
     };
@@ -92,18 +97,18 @@ inline Vec3 cross(const Vec3& v1, const Vec3& v2) {
 }
 
 
-std::ostream& operator<<(std::ostream& stream, const Vec3& v) {
+inline std::ostream& operator<<(std::ostream& stream, const Vec3& v) {
   stream << "(" << v.x << ", " << v.y << ", " << v.z << ")";
   return stream;
 }
 
 
-Vec3 pow(const Vec3& v, float p) {
+inline Vec3 pow(const Vec3& v, float p) {
   return Vec3(std::pow(v.x, p), std::pow(v.y, p), std::pow(v.z, p));
 }
 
 
-void orthonormalBasis(const Vec3& n, Vec3& vx, Vec3& vz) {
+inline void orthonormalBasis(const Vec3& n, Vec3& vx, Vec3& vz) {
   if(n.x > 0.9) vx = Vec3(0, 1, 0);
   else vx = Vec3(1, 0, 0);
 
@@ -128,5 +133,13 @@ inline bool isInf(const Vec3& v) {
 }
 inline bool isZero(const Vec3& v) {
   return v.x == 0 && v.y == 0 && v.z == 0;
+}
+
+
+inline Vec3 min(const Vec3& v1, const Vec3& v2) {
+  return Vec3(std::min(v1.x, v2.x), std::min(v1.y, v2.y), std::min(v1.z, v2.z));
+}
+inline Vec3 max(const Vec3& v1, const Vec3& v2) {
+  return Vec3(std::max(v1.x, v2.x), std::max(v1.y, v2.y), std::max(v1.z, v2.z));
 }
 #endif
