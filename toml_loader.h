@@ -73,6 +73,33 @@ class TomlLoader {
       }
 
 
+      //texture
+      std::vector<std::string> texture_names;
+      std::vector<std::shared_ptr<Texture>> texture_ptrs;
+      auto textures = toml->get_table_array("texture");
+      for(const auto& texture : *textures) {
+        auto name = *texture->get_as<std::string>("name");
+        auto type = *texture->get_as<std::string>("type");
+        std::shared_ptr<Texture> tex;
+        if(type == "uniform") {
+          auto color = *texture->get_array_of<double>("color");
+          RGB col(color[0], color[1], color[2]);
+          tex = std::make_shared<UniformTexture>(col);
+        }
+        else if(type == "image") {
+          auto path = *texture->get_as<std::string>("path");
+          tex = std::make_shared<ImageTexture>(path);
+        }
+        else {
+          std::cerr << "Invalid Texture type" << std::endl;
+          std::exit(1);
+        }
+        texture_names.push_back(name);
+        texture_ptrs.push_back(tex);
+      }
+      std::cout << "Texture Loaded" << std::endl;
+
+
       //material
       std::vector<std::string> material_names;
       std::vector<std::shared_ptr<Material>> material_ptrs;
@@ -80,53 +107,62 @@ class TomlLoader {
       for(const auto& material : *materials) {
         auto name = *material->get_as<std::string>("name");
         auto type = *material->get_as<std::string>("type");
+
         std::shared_ptr<Material> mat;
         if(type == "lambert") {
-          auto albedo = *material->get_array_of<double>("albedo");
-          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto albedo = *material->get_as<std::string>("albedo");
+          int index = std::find(texture_names.begin(), texture_names.end(), albedo) - texture_names.begin();
+          auto reflectance = texture_ptrs[index];
           mat = std::make_shared<Lambert>(reflectance);
         }
         else if(type == "mirror") {
-          auto albedo = *material->get_array_of<double>("albedo");
-          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto albedo = *material->get_as<std::string>("albedo");
+          int index = std::find(texture_names.begin(), texture_names.end(), albedo) - texture_names.begin();
+          auto reflectance = texture_ptrs[index];
           mat = std::make_shared<Mirror>(reflectance);
         }
         else if(type == "glass") {
-          auto albedo = *material->get_array_of<double>("albedo");
-          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto albedo = *material->get_as<std::string>("albedo");
+          int index = std::find(texture_names.begin(), texture_names.end(), albedo) - texture_names.begin();
+          auto reflectance = texture_ptrs[index];
           auto ior = *material->get_as<double>("ior");
           mat = std::make_shared<Glass>(reflectance, ior);
         }
         else if(type == "phong") {
-          auto albedo = *material->get_array_of<double>("albedo");
-          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto albedo = *material->get_as<std::string>("albedo");
+          int index = std::find(texture_names.begin(), texture_names.end(), albedo) - texture_names.begin();
+          auto reflectance = texture_ptrs[index];
           auto kd = *material->get_as<double>("kd");
           auto alpha = *material->get_as<double>("alpha");
           mat = std::make_shared<Phong>(reflectance, kd, alpha);
         }
         else if(type == "oren-nayar") {
-          auto albedo = *material->get_array_of<double>("albedo");
-          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto albedo = *material->get_as<std::string>("albedo");
+          int index = std::find(texture_names.begin(), texture_names.end(), albedo) - texture_names.begin();
+          auto reflectance = texture_ptrs[index];
           auto sigma = *material->get_as<double>("sigma");
           mat = std::make_shared<OrenNayar>(reflectance, sigma);
         }
         else if(type == "beckmann") {
-          auto albedo = *material->get_array_of<double>("albedo");
-          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto albedo = *material->get_as<std::string>("albedo");
+          int index = std::find(texture_names.begin(), texture_names.end(), albedo) - texture_names.begin();
+          auto reflectance = texture_ptrs[index];
           auto roughness = *material->get_as<double>("roughness");
           auto ior = *material->get_as<double>("ior");
           mat = std::make_shared<Beckmann>(reflectance, roughness, ior);
         }
         else if(type == "ggx") {
-          auto albedo = *material->get_array_of<double>("albedo");
-          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto albedo = *material->get_as<std::string>("albedo");
+          int index = std::find(texture_names.begin(), texture_names.end(), albedo) - texture_names.begin();
+          auto reflectance = texture_ptrs[index];
           auto roughness = *material->get_as<double>("roughness");
           auto ior = *material->get_as<double>("ior");
           mat = std::make_shared<GGX>(reflectance, roughness, ior);
         }
         else if(type == "plastic") {
-          auto albedo = *material->get_array_of<double>("albedo");
-          Vec3 reflectance(albedo[0], albedo[1], albedo[2]);
+          auto albedo = *material->get_as<std::string>("albedo");
+          int index = std::find(texture_names.begin(), texture_names.end(), albedo) - texture_names.begin();
+          auto reflectance = texture_ptrs[index];
           auto ior = *material->get_as<double>("ior");
           mat = std::make_shared<Plastic>(reflectance, ior);
         }

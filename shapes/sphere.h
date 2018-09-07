@@ -39,6 +39,12 @@ class Sphere : public Shape {
       res.hitPos = ray(t);
       res.hitNormal = normalize(res.hitPos - center);
 
+      float phi = std::atan2(res.hitNormal.z, res.hitNormal.x);
+      if(phi < 0) phi += 2*M_PI;
+      float theta = std::acos(res.hitNormal.y);
+      res.u = phi/(2*M_PI);
+      res.v = theta/M_PI;
+
       return true;
     };
 

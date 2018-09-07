@@ -3,10 +3,10 @@
 #include "../hit.h"
 #include "../texture.h"
 
-#ifndef STB_IMAGE_IMPLEMENTAION
+#ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
-#endif
 #include "../stb/stb_image.h"
+#endif
 
 class ImageTexture : public Texture {
   public:

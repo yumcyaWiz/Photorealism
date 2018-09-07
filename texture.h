@@ -4,6 +4,6 @@
 #include "hit.h"
 class Texture {
   public:
-    virtual getColor(const Hit& res) const = 0;
+    virtual RGB getColor(const Hit& res) const = 0;
 };
 #endif

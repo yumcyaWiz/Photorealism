@@ -17,6 +17,10 @@
 #include "materials/ggx.h"
 #include "materials/plastic.h"
 
+#include "texture.h"
+#include "textures/uniformTexture.h"
+#include "textures/imageTexture.h"
+
 #include "primitive.h"
 #include "samplers/mt.h"
 

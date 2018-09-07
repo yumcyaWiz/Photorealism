@@ -1,6 +1,6 @@
 #ifndef UNIFORM_TEXTURE_H
 #define UNIFORM_TEXTURE_H
-#include "texture.h"
+#include "../texture.h"
 class UniformTexture : public Texture {
   public:
     RGB col;

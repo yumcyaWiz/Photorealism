@@ -3,16 +3,16 @@
 #include "../material.h"
 class OrenNayar : public Material {
   public:
-    RGB reflectance;
+    std::shared_ptr<Texture> reflectance;
     float A;
     float B;
 
-    OrenNayar(const RGB& _reflectance, float sigma) : Material(MATERIAL_TYPE::DIFFUSE), reflectance(_reflectance) {
+    OrenNayar(const std::shared_ptr<Texture>& _reflectance, float sigma) : Material(MATERIAL_TYPE::DIFFUSE), reflectance(_reflectance) {
       A = 1 - sigma*sigma/(2*(sigma*sigma + 0.33));
       B = 0.45*sigma*sigma/(sigma*sigma + 0.09);
     };
 
-    RGB f(const Vec3& wo, const Vec3& wi) const {
+    RGB f(const Hit& res, const Vec3& wo, const Vec3& wi) const {
       float sinThetaI = sinTheta(wi);
       float sinThetaO = sinTheta(wo);
       float maxCos = 0;
@@ -32,18 +32,18 @@ class OrenNayar : public Material {
         tanBeta = sinThetaO / absCosTheta(wo);
       }
 
-      return reflectance/M_PI * (A + B * maxCos  * sinAlpha * tanBeta);
+      return reflectance->getColor(res)/M_PI * (A + B * maxCos  * sinAlpha * tanBeta);
     };
 
     float Pdf(const Vec3& wo, const Vec3& wi) const {
       return absCosTheta(wi)/M_PI + 0.001f;
     };
 
-    RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {
+    RGB sample(const Hit& res, const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {
       Vec2 u = sampler.getNext2D();
       wi = sampleCosineHemisphere(u);
       pdf = Pdf(wo, wi);
-      return this->f(wo, wi);
+      return this->f(res, wo, wi);
     };
 };
 #endif

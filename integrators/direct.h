@@ -48,19 +48,19 @@ class Direct : public Integrator {
           if(light->type == LIGHT_TYPE::AREA) {
             if(scene.intersect(shadowRay, shadow_res)) {
               if(shadow_res.hitPrimitive->light == light && (samplePos - shadow_res.hitPos).length2() < 1e-6) {
-                col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
+                col_light += hitMaterial->f(res, wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
               }
             }
           }
           else if(light->type == LIGHT_TYPE::POINT) {
             scene.intersect(shadowRay, shadow_res);
             if(shadow_res.t >= (samplePos - shadowRay.origin).length()) {
-              col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
+              col_light += hitMaterial->f(res, wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
             }
           }
           else if(light->type == LIGHT_TYPE::SKY) {
             if(!scene.intersect(shadowRay, shadow_res)) {
-              col_light += hitMaterial->f(wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
+              col_light += hitMaterial->f(res, wo_local, wi_light_local) * le/light_pdf * std::max(cosTheta(wi_light_local), 0.0f)/light_selection_pdf;
             }
           }
         }
@@ -75,7 +75,7 @@ class Direct : public Integrator {
         Vec3 col_brdf;
         Vec3 wi_local;
         float brdf_pdf;
-        RGB brdf = hitMaterial->sample(wo_local, *this->sampler, wi_local, brdf_pdf);
+        RGB brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, brdf_pdf);
         float cos = absCosTheta(wi_local);
         Vec3 wi = localToWorld(wi_local, n, s, t);
         RGB k = brdf * cos/brdf_pdf;

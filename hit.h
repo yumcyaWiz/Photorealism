@@ -10,6 +10,8 @@ class Hit {
     Vec3 hitPos;
     Vec3 hitNormal;
     const Primitive* hitPrimitive;
+    float u;
+    float v;
 
     Hit() {
       t = 10000;

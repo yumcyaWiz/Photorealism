@@ -3,11 +3,11 @@
 #include "../material.h"
 class GGX : public Material {
   public:
-    RGB reflectance;
+    std::shared_ptr<Texture> reflectance;
     float alpha;
     float ior;
 
-    GGX(const RGB& _reflectance, float roughness, float _ior) : Material(MATERIAL_TYPE::GLOSSY), reflectance(_reflectance), ior(_ior) {
+    GGX(const std::shared_ptr<Texture>& _reflectance, float roughness, float _ior) : Material(MATERIAL_TYPE::GLOSSY), reflectance(_reflectance), ior(_ior) {
       alpha = roughness*roughness;
     };
 
@@ -32,7 +32,7 @@ class GGX : public Material {
     };
 
 
-    RGB f(const Vec3& wo, const Vec3& wi) const {
+    RGB f(const Hit& res, const Vec3& wo, const Vec3& wi) const {
       float cosThetaO = absCosTheta(wo), cosThetaI = absCosTheta(wi);
       Vec3 wh = wo + wi;
       if(cosThetaO == 0 || cosThetaI == 0) return RGB(0);
@@ -40,7 +40,7 @@ class GGX : public Material {
       wh = normalize(wh);
 
       float fr = fresnel(wi, wh, 1.0f, ior);
-      return reflectance * D(wh)*G(wo, wi)*fr / (4*cosThetaO*cosThetaI);
+      return reflectance->getColor(res) * D(wh)*G(wo, wi)*fr / (4*cosThetaO*cosThetaI);
     };
 
 
@@ -51,7 +51,7 @@ class GGX : public Material {
     };
 
 
-    RGB sample(const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {
+    RGB sample(const Hit& res, const Vec3& wo, Sampler& sampler, Vec3& wi, float& pdf) const {
       Vec2 u = sampler.getNext2D();
 
       float tan2 = alpha*alpha*u.x/std::max(1.0f - u.x, 0.0f);
@@ -66,7 +66,7 @@ class GGX : public Material {
       if(wo.y*wi.y < 0) return RGB(0);
 
       pdf = Pdf(wo, wi);
-      return f(wo, wi);
+      return f(res, wo, wi);
     };
 };
 #endif
