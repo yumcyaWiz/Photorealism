@@ -1,6 +1,6 @@
 [renderer]
 samples = 1000
-integrator = "pt-explicit"
+integrator = "pt"
 
 [sampler]
 type = "mt"
@@ -20,7 +20,7 @@ theta-offset = 0
 [camera]
 type = "thin-lens"
 lens-distance = 1.0
-focus-point = [0.0, 0.0, 2.5]
+focus-point = [1.5, 0.0, 2.0]
 f-number = 2.8
 [camera.transform]
 type = "look-at"
@@ -32,6 +32,10 @@ target = [0.0, 1.0, 5.0]
 name = "texture"
 type = "uniform"
 color = [0.9, 0.9, 0.9]
+[[texture]]
+name = "uv"
+type = "image"
+path = "uv_test.png"
 
 
 [[material]]
@@ -39,6 +43,12 @@ name = "white"
 type = "oren-nayar"
 sigma = 0.3
 albedo = "texture"
+
+[[material]]
+name = "uv"
+type = "oren-nayar"
+sigma = 0.3
+albedo = "uv"
 
 [[material]]
 name = "red"
@@ -124,7 +134,7 @@ vector = [-1.5, 0.0, 3.0]
 [[object]]
 name = "right_ball"
 mesh = "sphere"
-material = "plastic"
+material = "uv"
 [[object.transform]]
 type = "translate"
 vector = [1.5, 0, 2]

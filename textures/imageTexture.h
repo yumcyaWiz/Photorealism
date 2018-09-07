@@ -16,7 +16,7 @@ class ImageTexture : public Texture {
 
     ImageTexture(const std::string& filename) {
       int n;
-      img = stbi_load(filename.c_str(), &width, &height, &n, 9);
+      img = stbi_load(filename.c_str(), &width, &height, &n, 3);
     };
     ~ImageTexture() {
       stbi_image_free(img);
