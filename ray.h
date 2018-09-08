@@ -7,7 +7,7 @@ class Ray {
     Vec3 direction;
     constexpr static float tmin = 0.01;
     mutable float tmax;
-    int hitCount;
+    mutable int hitCount;
 
     Ray() {
       hitCount = 0;

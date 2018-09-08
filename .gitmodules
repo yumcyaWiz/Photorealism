@@ -4,3 +4,6 @@
 [submodule "cpptoml"]
 	path = cpptoml
 	url = https://github.com/skystrife/cpptoml.git
+[submodule "tinyobjloader"]
+	path = tinyobjloader
+	url = https://github.com/syoyo/tinyobjloader.git

@@ -123,6 +123,7 @@ class BVH : public Accel {
 
     bool intersect(BVHNode* node, const Ray& ray, Hit& res) const {
       if(!node->aabb.intersect(ray)) return false;
+      ray.hitCount++;
 
       if(node->nPrims != 0) {
         bool hit = false;

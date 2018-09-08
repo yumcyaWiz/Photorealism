@@ -35,6 +35,7 @@
 #include "integrators/pt.h"
 #include "integrators/pt_explicit.h"
 #include "integrators/direct.h"
+#include "integrators/debug.h"
 
 #include "aabb.h"
 #include "accel.h"
