@@ -1,9 +1,10 @@
 #ifndef LINEAR_H
 #define LINEAR_H
 #include "../accel.h"
-class Linear : public Accel {
+template <typename T>
+class Linear : public Accel<T> {
   public:
-    Linear(const std::vector<std::shared_ptr<Primitive>>& prims) : Accel(prims) {};
+    Linear(const std::vector<std::shared_ptr<T>>& prims) : Accel<T>(prims) {};
 
     bool intersect(const Ray& ray, Hit& res) const {
       bool hit = false;

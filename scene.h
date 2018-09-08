@@ -9,11 +9,11 @@
 #include "accel.h"
 class Scene {
   public:
-    std::shared_ptr<Accel> accel;
+    std::shared_ptr<Accel<Primitive>> accel;
     std::vector<std::shared_ptr<Light>> lights;
     std::shared_ptr<Sky> sky;
 
-    Scene(std::shared_ptr<Accel> _accel, const std::vector<std::shared_ptr<Light>>& _lights, const std::shared_ptr<Sky>& _sky) : accel(_accel), lights(_lights), sky(_sky) {
+    Scene(std::shared_ptr<Accel<Primitive>> _accel, const std::vector<std::shared_ptr<Light>>& _lights, const std::shared_ptr<Sky>& _sky) : accel(_accel), lights(_lights), sky(_sky) {
       lights.push_back(sky);
     };
 

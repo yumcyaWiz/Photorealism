@@ -10,7 +10,8 @@ enum class BVH_PARTITION_TYPE {
 };
 
 
-class BVH : public Accel {
+template <typename T>
+class BVH : public Accel<T> {
   private:
     struct BVHPrimitiveInfo {
       AABB aabb;
@@ -54,7 +55,7 @@ class BVH : public Accel {
     BVH_PARTITION_TYPE type;
     BVHNode* root;
 
-    BVH(const std::vector<std::shared_ptr<Primitive>>& _prims) : Accel(_prims) {
+    BVH(const std::vector<std::shared_ptr<T>>& _prims) : Accel<T>(_prims) {
       type = BVH_PARTITION_TYPE::MEDIAN;
       constructBVH();
     };
@@ -63,16 +64,17 @@ class BVH : public Accel {
     void constructBVH() {
       std::vector<BVHPrimitiveInfo> primInfo(this->prims.size());
       for(size_t i = 0; i < primInfo.size(); i++) {
-        primInfo[i] = BVHPrimitiveInfo(prims[i]->worldBound(), i);
+        AABB aabb = this->prims[i]->worldBound();
+        primInfo[i] = BVHPrimitiveInfo(aabb, i);
       }
 
-      std::vector<std::shared_ptr<Primitive>> orderedPrims;
+      std::vector<std::shared_ptr<T>> orderedPrims;
       root = buildBVH(0, this->prims.size(), primInfo, orderedPrims);
       this->prims.swap(orderedPrims);
     };
 
 
-    BVHNode* buildBVH(int start, int end, std::vector<BVHPrimitiveInfo>& primInfo, std::vector<std::shared_ptr<Primitive>>& orderedPrims) {
+    BVHNode* buildBVH(int start, int end, std::vector<BVHPrimitiveInfo>& primInfo, std::vector<std::shared_ptr<T>>& orderedPrims) {
       BVHNode* node = new BVHNode();
 
       int nPrims = end - start;
@@ -129,7 +131,7 @@ class BVH : public Accel {
         bool hit = false;
         for(int i = 0; i < node->nPrims; i++) {
           int index = node->offset + i;
-          if(prims[index]->intersect(ray, res)) {
+          if(this->prims[index]->intersect(ray, res)) {
             hit = true;
             ray.tmax = res.t;
           }

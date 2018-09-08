@@ -1,5 +1,5 @@
 #ifndef TRIANGLE_H
-#define TRIALGNE_H
+#define TRIANGLE_H
 #include "../vec2.h"
 #include "../vec3.h"
 #include "../ray.h"
@@ -61,9 +61,12 @@ class Triangle : public Shape {
       return AABB(min(p1, min(p2, p3)), max(p1, max(p2, p3)));
     };
 
+    float surfaceArea() const {
+      return 0.5f * std::abs(cross(p2 - p1, p3 - p1).length());
+    };
+
     float Pdf() const {
-      float area = 0.5f * std::abs(cross(p2 - p1, p3 - p1).length());
-      return 1/area;
+      return 1/surfaceArea();
     };
 
     Vec3 sample(const Hit& res, Sampler& sampler, Vec3& normal, float &pdf) const {

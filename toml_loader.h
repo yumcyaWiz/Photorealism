@@ -321,13 +321,13 @@ class TomlLoader {
         std::exit(1);
       }
 
-      std::shared_ptr<Accel> accelPtr;
+      std::shared_ptr<Accel<Primitive>> accelPtr;
       std::string accel = *renderer->get_as<std::string>("accel");
       if(accel == "linear") {
-        accelPtr = std::make_shared<Linear>(prims);
+        accelPtr = std::make_shared<Linear<Primitive>>(prims);
       }
       else if(accel == "bvh") {
-        accelPtr = std::make_shared<BVH>(prims);
+        accelPtr = std::make_shared<BVH<Primitive>>(prims);
       }
       std::cout << "Renderer Loaded" << std::endl;
 

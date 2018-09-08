@@ -6,6 +6,7 @@
 
 #include "shapes/sphere.h"
 #include "shapes/triangle.h"
+#include "shapes/polygon.h"
 
 #include "cameras/pinholeCamera.h"
 #include "cameras/thinLensCamera.h"
