@@ -1,6 +1,6 @@
 [renderer]
-samples = 10
-integrator = "pt-explicit"
+samples = 1000
+integrator = "debug"
 accel = "bvh"
 
 [sampler]
@@ -141,7 +141,7 @@ path = "dragon.obj"
 [[object]]
 name = "floor"
 mesh = "bigSphere"
-material = "white"
+material = "plastic"
 [[object.transform]]
 type = "translate"
 vector = [0, -10001, 0]
@@ -160,7 +160,7 @@ mesh = "dragon"
 material = "white"
 [[object.transform]]
 type = "translate"
-vector = [1.5, -0.5, 2.0]
+vector = [1.5, -1.0, 2.0]
 [[object.transform]]
 type = "scale"
 vector = [0.2, 0.2, 0.2]

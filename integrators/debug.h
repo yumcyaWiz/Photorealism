@@ -9,7 +9,7 @@ class Debug : public Integrator {
     RGB Li(const Ray& ray, Scene& scene) const {
       Hit res;
       scene.intersect(ray, res);
-      return ray.hitCount/10.0 * RGB(0, 1, 0);
+      return ray.hitCount * RGB(0, 1, 0);
     };
 
     void render(Scene& scene) const {
@@ -19,8 +19,8 @@ class Debug : public Integrator {
       for(int i = 0; i < width; i++) {
 #pragma omp parallel for schedule(dynamic, 1)
         for(int j = 0; j < height; j++) {
-          float u = (2.0*i - width + sampler->getNext())/width;
-          float v = (2.0*j - height + sampler->getNext())/width;
+          float u = (2.0*i - width)/width;
+          float v = (2.0*j - height)/width;
 
           Ray ray;
           float weight;
@@ -33,6 +33,17 @@ class Debug : public Integrator {
           }
         }
       }
+
+
+      float max = 0;
+      for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+          if(this->camera->film->getPixel(i, j).y > max) {
+            max = this->camera->film->getPixel(i, j).y;
+          }
+        }
+      }
+      this->camera->film->divide(max);
       this->camera->film->gamma_correction();
       this->camera->film->ppm_output("output.ppm");
     };
