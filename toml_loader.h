@@ -218,6 +218,7 @@ class TomlLoader {
       //object
       auto objects = toml->get_table_array("object");
       std::vector<std::shared_ptr<Primitive>> prims;
+      std::vector<std::shared_ptr<Light>> lights;
       std::vector<std::string> shape_names;
       std::vector<std::shared_ptr<Shape>> shape_ptrs;
       std::vector<std::shared_ptr<Primitive>> prim_ptrs;
@@ -260,13 +261,7 @@ class TomlLoader {
         }
         else if(meshdata->type == "obj") {
           std::cout << "obj" << std::endl;
-          auto triangles = loadObj(meshdata->path, center, scale);
-          auto shape = std::make_shared<Polygon>(triangles);
-          auto prim = std::make_shared<Primitive>(shape, mat);
-          prims.push_back(prim);
-          shape_names.push_back(name);
-          shape_ptrs.push_back(shape);
-          prim_ptrs.push_back(prim);
+          loadObj(meshdata->path, center, scale, mat, prims, lights);
         }
         else {
           std::cerr << "Invalid MeshData type" << std::endl;
@@ -278,7 +273,6 @@ class TomlLoader {
 
       //light
       auto light_toml = toml->get_table_array("light");
-      std::vector<std::shared_ptr<Light>> lights;
       if(light_toml) {
         for(const auto& light : *light_toml) {
           auto light_emission = *light->get_array_of<double>("emission");
