@@ -183,6 +183,7 @@ class TomlLoader {
       struct MeshData {
         std::string type;
         float radius;
+        std::string path;
         MeshData() {};
       };
       std::vector<std::string> mesh_names;
@@ -197,6 +198,11 @@ class TomlLoader {
           auto radius = *mesh->get_as<double>("radius");
           meshdata->type = type;
           meshdata->radius = radius;
+        }
+        else if(type == "obj") {
+          auto path = *mesh->get_as<std::string>("path");
+          meshdata->type = type;
+          meshdata->path = path;
         }
         else {
           std::cerr << "Invalid Mesh type" << std::endl;
@@ -230,6 +236,10 @@ class TomlLoader {
             auto vector = *transform->get_array_of<double>("vector");
             center = Vec3(vector[0], vector[1], vector[2]);
           }
+          else if(transform_type == "scale") {
+            auto vector = *transform->get_array_of<double>("scale");
+            scale = Vec3(vector[0], vector[1], vector[2]);
+          }
           else {
             std::cerr << "Invalid Transform type" << std::endl;
             std::exit(1);
@@ -242,6 +252,15 @@ class TomlLoader {
         auto mat = material_ptrs[index];
         if(meshdata->type == "sphere") {
           auto shape = std::make_shared<Sphere>(center, meshdata->radius);
+          auto prim = std::make_shared<Primitive>(shape, mat);
+          prims.push_back(prim);
+          shape_names.push_back(name);
+          shape_ptrs.push_back(shape);
+          prim_ptrs.push_back(prim);
+        }
+        else if(meshdata->type == "obj") {
+          auto triangles = loadObj(meshdata->path, center, scale);
+          auto shape = std::make_shared<Polygon>(triangles);
           auto prim = std::make_shared<Primitive>(shape, mat);
           prims.push_back(prim);
           shape_names.push_back(name);

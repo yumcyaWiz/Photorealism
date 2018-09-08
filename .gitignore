@@ -4,5 +4,6 @@ a.out
 *.jpg
 *.hdr
 *.jpeg
+*.obj
 *.optrpt
 !figs/*

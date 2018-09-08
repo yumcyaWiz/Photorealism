@@ -13,7 +13,7 @@
 #endif
 
 
-void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale) {
+std::vector<std::shared_ptr<Triangle>> loadObj(const std::string& filename, const Vec3& center, const Vec3& scale) {
   std::vector<std::shared_ptr<Triangle>> triangles;
 
   tinyobj::attrib_t attrib;
@@ -71,6 +71,6 @@ void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale)
   }
   std::cout << "Vertex: " << vertex_count << std::endl;
   std::cout << "Face: " << face_count << std::endl;
+  return triangles;
 }
 #endif
-
