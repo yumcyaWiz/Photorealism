@@ -237,7 +237,7 @@ class TomlLoader {
             center = Vec3(vector[0], vector[1], vector[2]);
           }
           else if(transform_type == "scale") {
-            auto vector = *transform->get_array_of<double>("scale");
+            auto vector = *transform->get_array_of<double>("vector");
             scale = Vec3(vector[0], vector[1], vector[2]);
           }
           else {
@@ -259,6 +259,7 @@ class TomlLoader {
           prim_ptrs.push_back(prim);
         }
         else if(meshdata->type == "obj") {
+          std::cout << "obj" << std::endl;
           auto triangles = loadObj(meshdata->path, center, scale);
           auto shape = std::make_shared<Polygon>(triangles);
           auto prim = std::make_shared<Primitive>(shape, mat);
@@ -266,6 +267,10 @@ class TomlLoader {
           shape_names.push_back(name);
           shape_ptrs.push_back(shape);
           prim_ptrs.push_back(prim);
+        }
+        else {
+          std::cerr << "Invalid MeshData type" << std::endl;
+          std::exit(1);
         }
       }
       std::cout << "Object Loaded" << std::endl;

@@ -1,6 +1,6 @@
 [renderer]
 samples = 10
-integrator = "pt"
+integrator = "pt-explicit"
 accel = "bvh"
 
 [sampler]
@@ -132,6 +132,12 @@ name = "light"
 type = "sphere"
 radius = 0.2
 
+[[mesh]]
+name = "dragon"
+type = "obj"
+path = "dragon.obj"
+
+
 [[object]]
 name = "floor"
 mesh = "bigSphere"
@@ -149,9 +155,12 @@ type = "translate"
 vector = [-1.5, 0.0, 3.0]
 
 [[object]]
-name = "right_ball"
-mesh = "sphere"
-material = "earth"
+name = "dragon"
+mesh = "dragon"
+material = "white"
 [[object.transform]]
 type = "translate"
-vector = [1.5, 0, 2]
+vector = [1.5, -0.5, 2.0]
+[[object.transform]]
+type = "scale"
+vector = [0.2, 0.2, 0.2]
