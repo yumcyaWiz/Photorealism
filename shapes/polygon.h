@@ -27,7 +27,7 @@ class Polygon : public Shape {
     };
 
     float Pdf() const {
-      return 1/surfaceArea;
+      return 1.0f/surfaceArea;
     };
 
     Vec3 sample(const Hit& res, Sampler& sampler, Vec3& normal, float &pdf) const {

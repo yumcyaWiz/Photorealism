@@ -1,0 +1,54 @@
+[renderer]
+samples = 10
+integrator = "pt"
+accel = "linear"
+
+[sampler]
+type = "mt"
+
+[film]
+resolution = [512, 512]
+
+[sky]
+type = "uniform"
+color = [0, 0, 0]
+path = "PaperMill_E_3k.hdr"
+intensity = 1.0
+phi-offset = 3.14
+theta-offset = 0
+
+
+[camera]
+type = "thin-lens"
+lens-distance = 1.0
+focus-point = [0.0, 1.0, 0.0]
+f-number = 3.5
+[camera.transform]
+type = "look-at"
+origin = [0.0, 1.0, 4.0]
+target = [0.0, 1.0, 0.0]
+
+
+[[texture]]
+name = "white"
+type = "uniform"
+color = [0.9, 0.9, 0.9]
+[[material]]
+name = "white"
+type = "lambert"
+albedo = "white"
+
+
+[[mesh]]
+name = "cornell"
+type = "obj"
+path = "CornellBox-Original.obj"
+
+
+[[object]]
+name = "cornell"
+mesh = "cornell"
+material = "white"
+[[object.transform]]
+type = "translate"
+vector = [0.0, 0.0, 0.0]

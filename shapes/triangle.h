@@ -76,7 +76,7 @@ class Triangle : public Shape {
             normal = normalize((1.0f - u.x - u.y)*n1 + u.x*n2 + u.y*n3);
         else
             normal = face_normal;
-        pdf = Pdf();
+        pdf = 1.0f;
         return samplePos;
     };
 };
