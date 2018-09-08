@@ -7,6 +7,7 @@
 #include <vector>
 #include "api.h"
 #include "cpptoml/include/cpptoml.h"
+#include "obj_loader.h"
 class TomlLoader {
   public:
     TomlLoader() {};

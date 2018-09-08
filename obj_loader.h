@@ -2,13 +2,20 @@
 #define OBJ_LOADER_H
 #include <string>
 #include <vector>
+#include "vec2.h"
+#include "vec3.h"
+#include "primitive.h"
+#include "material.h"
 
 #ifndef TINYOBJLOADER_IMPLEMENTATION
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tinyobjloader/tiny_obj_loader.h"
+#endif
 
 
-loadObj(const std::string& filename) {
+void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale) {
+  std::vector<std::shared_ptr<Triangle>> triangles;
+
   tinyobj::attrib_t attrib;
   std::vector<tinyobj::shape_t> shapes;
   std::vector<tinyobj::material_t> materials;
@@ -27,11 +34,10 @@ loadObj(const std::string& filename) {
   for(size_t s = 0; s < shapes.size(); s++) {
     std::cout << "Loading " << shapes[s].name << std::endl;
 
-    std::vector<std::shared_ptr<Triangle>> triangles;
     size_t index_offset = 0;
     int prev_material_id = 0;
     for(size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-      int fv = shapes[s].mesh.num_face_vertices[f];
+      size_t fv = shapes[s].mesh.num_face_vertices[f];
       std::vector<Vec3> vertex;
       std::vector<Vec3> normal;
       std::vector<Vec2> uv;
@@ -46,7 +52,7 @@ loadObj(const std::string& filename) {
           tinyobj::real_t nx = attrib.normals[3*idx.normal_index+0];
           tinyobj::real_t ny = attrib.normals[3*idx.normal_index+1];
           tinyobj::real_t nz = attrib.normals[3*idx.normal_index+2];
-          normal.push_back(Vec3((float)vx, (float)vy, (float)vz));
+          normal.push_back(Vec3((float)nx, (float)ny, (float)nz));
         }
         vertex_count++;
       }
@@ -66,6 +72,5 @@ loadObj(const std::string& filename) {
   std::cout << "Vertex: " << vertex_count << std::endl;
   std::cout << "Face: " << face_count << std::endl;
 }
-
-
 #endif
+
