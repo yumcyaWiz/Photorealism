@@ -49,7 +49,6 @@ void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::v
 
 
 void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale, const std::shared_ptr<Material>& mat, std::vector<std::shared_ptr<Primitive>>& prims, std::vector<std::shared_ptr<Light>>& lights) {
-  std::vector<std::shared_ptr<Triangle>> triangles;
 
   tinyobj::attrib_t attrib;
   std::vector<tinyobj::shape_t> shapes;
@@ -67,6 +66,7 @@ void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale,
   int face_count = 0;
   int vertex_count = 0;
   for(size_t s = 0; s < shapes.size(); s++) {
+    std::vector<std::shared_ptr<Triangle>> triangles;
     std::cout << "Loading " << shapes[s].name << std::endl;
 
     size_t index_offset = 0;
@@ -106,6 +106,7 @@ void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale,
       if(f != 0 && shapes[s].mesh.material_ids[f] != prev_material_id) {
         auto material = materials[shapes[s].mesh.material_ids[f]];
         loadPolygon(triangles, prims, lights, mat, mtl, material);
+        triangles.clear();
       }
       prev_material_id = shapes[s].mesh.material_ids[f];
     }
