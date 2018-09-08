@@ -6,10 +6,14 @@ class Ray {
     Vec3 origin;
     Vec3 direction;
     constexpr static float tmin = 0.01;
-    constexpr static float tmax = 10000;
+    mutable float tmax;
 
-    Ray() {};
-    Ray(const Vec3& o, const Vec3& d) : origin(o), direction(d) {};
+    Ray() {
+      tmax = 10000;
+    };
+    Ray(const Vec3& o, const Vec3& d) : origin(o), direction(d) {
+      tmax = 10000;
+    };
 
     Vec3 operator()(float t) const {
       return origin + t*direction;

@@ -4,6 +4,7 @@
 #include "shape.h"
 #include "material.h"
 #include "light.h"
+#include "aabb.h"
 class Primitive {
   public:
     std::shared_ptr<Shape> shape;
@@ -20,6 +21,10 @@ class Primitive {
       else {
         return false;
       }
+    };
+
+    AABB worldBound() const {
+      return shape->worldBound();
     };
 };
 #endif

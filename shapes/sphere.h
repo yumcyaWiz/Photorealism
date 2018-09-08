@@ -65,5 +65,9 @@ class Sphere : public Shape {
       normal = normalize(samplePos - center);
       return samplePos;
     };
+
+    AABB worldBound() const {
+      return AABB(center - Vec3(radius), center + Vec3(radius));
+    };
 };
 #endif
