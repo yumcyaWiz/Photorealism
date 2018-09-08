@@ -1,6 +1,7 @@
 [renderer]
 samples = 100
 integrator = "pt"
+accel = "linear"
 
 [sampler]
 type = "mt"

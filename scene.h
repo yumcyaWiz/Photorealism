@@ -4,20 +4,16 @@
 #include <memory>
 #include "ray.h"
 #include "hit.h"
-#include "primitive.h"
 #include "lights/sky.h"
 #include "light.h"
-#include "accels/linear.h"
-#include "accels/bvh.h"
+#include "accel.h"
 class Scene {
   public:
-    std::vector<std::shared_ptr<Primitive>> prims;
+    std::shared_ptr<Accel> accel;
     std::vector<std::shared_ptr<Light>> lights;
     std::shared_ptr<Sky> sky;
-    std::shared_ptr<Accel> accel;
 
-    Scene(const std::vector<std::shared_ptr<Primitive>>& _prims, const std::vector<std::shared_ptr<Light>>& _lights, const std::shared_ptr<Sky>& _sky) : prims(_prims), lights(_lights), sky(_sky) {
-      accel = std::make_shared<Linear>(prims);
+    Scene(std::shared_ptr<Accel> _accel, const std::vector<std::shared_ptr<Light>>& _lights, const std::shared_ptr<Sky>& _sky) : accel(_accel), lights(_lights), sky(_sky) {
       lights.push_back(sky);
     };
 

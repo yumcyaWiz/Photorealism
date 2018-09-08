@@ -37,6 +37,9 @@
 #include "integrators/direct.h"
 
 #include "aabb.h"
+#include "accel.h"
+#include "accels/linear.h"
+#include "accels/bvh.h"
 
 #include "util.h"
 #include "timer.h"

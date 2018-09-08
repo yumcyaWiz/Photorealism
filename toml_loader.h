@@ -71,6 +71,7 @@ class TomlLoader {
         std::cerr << "Invalid Camera type" << std::endl;
         std::exit(1);
       }
+      std::cout << "Camera Loaded" << std::endl;
 
 
       //texture
@@ -297,10 +298,6 @@ class TomlLoader {
       std::cout << "Sampler Loaded" << std::endl;
 
 
-      //init scene
-      scene = std::make_shared<Scene>(prims, lights, skyPtr);
-
-
       //renderer
       auto renderer = toml->get_table("renderer");
       if(!renderer) { std::cerr << "Missing Renderer" << std::endl; std::exit(1); }
@@ -319,7 +316,20 @@ class TomlLoader {
         std::cerr << "Invalid Integrator type" << std::endl;
         std::exit(1);
       }
+
+      std::shared_ptr<Accel> accelPtr;
+      std::string accel = *renderer->get_as<std::string>("accel");
+      if(accel == "linear") {
+        accelPtr = std::make_shared<Linear>(prims);
+      }
+      else if(accel == "bvh") {
+        accelPtr = std::make_shared<BVH>(prims);
+      }
       std::cout << "Renderer Loaded" << std::endl;
+
+
+      //init scene
+      scene = std::make_shared<Scene>(accelPtr, lights, skyPtr);
     };
 };
 #endif
