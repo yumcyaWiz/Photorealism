@@ -30,9 +30,19 @@ void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::v
 
     //diffuse
     Vec3 kd(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
+    Vec3 ks(material.specular[0], material.specular[1], material.specular[2]);
     if(illum == 2) {
       auto tex = std::make_shared<UniformTexture>(kd);
       mat = std::make_shared<Lambert>(tex);
+    }
+    //mirror
+    else if(illum == 5) {
+      auto tex = std::make_shared<UniformTexture>(ks);
+      mat = std::make_shared<Mirror>(tex);
+    }
+    else if(illum == 7) {
+      auto tex = std::make_shared<UniformTexture>(ks);
+      mat = std::make_shared<Glass>(tex, 1.5f);
     }
     else {
       auto tex = std::make_shared<UniformTexture>(kd);

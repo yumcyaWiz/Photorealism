@@ -148,11 +148,16 @@ class PtExplicit : public Integrator {
           if(brdf_pdf == 0) break;
           wi = localToWorld(wi_local, n, s, t);
           cos = absCosTheta(wi_local);
+          if(cos == 0) break;
           k = brdf * cos / brdf_pdf;
 
           if(isNan(k) || isInf(k)) {
             std::cerr << "NaN or Inf detected at BRDF Sampling" << std::endl;
+            std::cerr << "BRDF: " << brdf << std::endl;
+            std::cerr << "cos: " << cos << std::endl;
             std::cerr << "BRDF PDF: " << brdf_pdf << std::endl;
+            std::cerr << "wi_local: " << wi_local << std::endl;
+            std::cerr << "wi: " << wi << std::endl;
             break;
           }
 
