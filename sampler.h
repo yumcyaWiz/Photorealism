@@ -25,6 +25,12 @@ inline Vec2 sampleDisk(const Vec2& u) {
 }
 
 
+inline Vec2 sampleTriangle(const Vec2& u) {
+  float sqrt = std::sqrt(u.x);
+  return Vec2(1 - sqrt, u.y*sqrt);
+}
+
+
 inline Vec3 sampleSphere(const Vec2& u) {
   const float z = 1 - 2*u.x;
   const float r = std::sqrt(std::max(0.0f, 1.0f - z*z));

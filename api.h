@@ -3,7 +3,9 @@
 #include "vec3.h"
 #include "ray.h"
 #include "hit.h"
+
 #include "shapes/sphere.h"
+#include "shapes/triangle.h"
 
 #include "cameras/pinholeCamera.h"
 #include "cameras/thinLensCamera.h"
