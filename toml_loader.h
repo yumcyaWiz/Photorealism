@@ -345,7 +345,7 @@ class TomlLoader {
         accelPtr = std::make_shared<Linear<Primitive>>(prims);
       }
       else if(accel == "bvh") {
-        accelPtr = std::make_shared<BVH<Primitive>>(prims);
+        accelPtr = std::make_shared<BVH<Primitive>>(prims, 12);
       }
       std::cout << "Renderer Loaded" << std::endl;
 

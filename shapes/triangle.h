@@ -24,7 +24,7 @@ class Triangle : public Shape {
     };
 
     bool intersect(const Ray& ray, Hit& res) const {
-        const float eps = 1e-6;
+        const float eps = 0.0001f;
         const Vec3 edge1 = p2 - p1;
         const Vec3 edge2 = p3 - p1;
         const Vec3 h = cross(ray.direction, edge2);

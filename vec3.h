@@ -109,7 +109,7 @@ inline Vec3 pow(const Vec3& v, float p) {
 
 
 inline void orthonormalBasis(const Vec3& n, Vec3& vx, Vec3& vz) {
-  if(n.x > 0.9) vx = Vec3(0, 1, 0);
+  if(std::abs(n.x) > 0.9) vx = Vec3(0, 1, 0);
   else vx = Vec3(1, 0, 0);
 
   vx = normalize(vx - n*dot(vx, n));

@@ -5,7 +5,7 @@ class Ray {
   public:
     Vec3 origin;
     Vec3 direction;
-    constexpr static float tmin = 0.01;
+    constexpr static float tmin = 0.005;
     mutable float tmax;
     mutable int hitCount;
 

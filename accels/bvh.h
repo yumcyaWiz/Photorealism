@@ -54,8 +54,9 @@ class BVH : public Accel<T> {
   public:
     BVH_PARTITION_TYPE type;
     BVHNode* root;
+    int maxPrimsInLeaf;
 
-    BVH(const std::vector<std::shared_ptr<T>>& _prims) : Accel<T>(_prims) {
+    BVH(const std::vector<std::shared_ptr<T>>& _prims, int _maxPrimsInLeaf) : Accel<T>(_prims), maxPrimsInLeaf(_maxPrimsInLeaf) {
       type = BVH_PARTITION_TYPE::MEDIAN;
       constructBVH();
     };
@@ -83,7 +84,7 @@ class BVH : public Accel<T> {
         aabb = mergeAABB(aabb, primInfo[i].aabb);
       }
 
-      if(nPrims <= 4) {
+      if(nPrims <= maxPrimsInLeaf) {
         int offset = orderedPrims.size();
         for(int i = start; i < end; i++) {
           orderedPrims.push_back(this->prims[primInfo[i].index]);
@@ -132,6 +133,9 @@ class BVH : public Accel<T> {
         for(int i = 0; i < node->nPrims; i++) {
           int index = node->offset + i;
           if(this->prims[index]->intersect(ray, res)) {
+            if(isNan(res.hitPos)) {
+              std::cout << "asdf" << std::endl;
+            }
             hit = true;
             ray.tmax = res.t;
           }

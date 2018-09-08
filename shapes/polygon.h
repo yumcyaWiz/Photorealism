@@ -2,6 +2,7 @@
 #define POLYGON_H
 #include "../shape.h"
 #include "triangle.h"
+#include "../accels/linear.h"
 #include "../accels/bvh.h"
 class Polygon : public Shape {
   public:
@@ -10,7 +11,8 @@ class Polygon : public Shape {
     float surfaceArea;
 
     Polygon(const std::vector<std::shared_ptr<Triangle>>& _triangles) : triangles(_triangles) {
-      accel = std::make_shared<BVH<Triangle>>(triangles);
+      accel = std::make_shared<BVH<Triangle>>(triangles, 4);
+      //accel = std::make_shared<Linear<Triangle>>(triangles);
 
       surfaceArea = 0;
       for(const auto& triangle : triangles) {
