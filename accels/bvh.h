@@ -136,7 +136,16 @@ class BVH : public Accel {
         return hit;
       }
       else {
-        return intersect(node->left, ray, res) || intersect(node->right, ray, res);
+        bool hit_left, hit_right;
+        if(ray.direction[node->axis] > 0) {
+          hit_left = intersect(node->left, ray, res);
+          hit_right = intersect(node->right, ray, res);
+        }
+        else {
+          hit_right = intersect(node->right, ray, res);
+          hit_left = intersect(node->left, ray, res);
+        }
+        return hit_left || hit_right;
       }
     };
 
