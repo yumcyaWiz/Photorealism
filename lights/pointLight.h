@@ -10,7 +10,7 @@ class PointLight : public Light {
     PointLight(const RGB& _power, const Vec3& _lightPos) : Light(_power, LIGHT_TYPE::POINT), lightPos(_lightPos) {};
 
     RGB Le(const Hit& res, const Ray& ray) const {
-      return this->power;
+      return RGB(0);
     };
 
     float Pdf(const Hit& res, const Vec3& wi, const Hit& shadow_res) const {

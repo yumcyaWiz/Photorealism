@@ -1,6 +1,6 @@
 [renderer]
 samples = 100
-integrator = "pt"
+integrator = "direct"
 accel = "bvh"
 
 [sampler]
@@ -19,13 +19,13 @@ theta-offset = 0
 
 
 [camera]
-type = "ideal-pinhole"
+type = "thin-lens"
 lens-distance = 1.0
 focus-point = [0.0, 1.0, 0.0]
-f-number = 3.5
+f-number = 5.6
 [camera.transform]
 type = "look-at"
-origin = [0.0, 1.0, 2.5]
+origin = [0.0, 1.0, 3.5]
 target = [0.0, 1.0, 0.0]
 
 
@@ -42,7 +42,7 @@ albedo = "white"
 [[mesh]]
 name = "cornell"
 type = "obj"
-path = "CornellBox-Sphere.obj"
+path = "CornellBox-Original.obj"
 
 
 [[object]]

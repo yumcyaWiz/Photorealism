@@ -41,7 +41,7 @@ void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::v
       mat = std::make_shared<Mirror>(tex);
     }
     else if(illum == 7) {
-      auto tex = std::make_shared<UniformTexture>(ks);
+      auto tex = std::make_shared<UniformTexture>(RGB(1));
       mat = std::make_shared<Glass>(tex, 1.5f);
     }
     else {
