@@ -153,7 +153,6 @@ class PtExplicit : public Integrator {
 
           //Direct Illumination
           //Light Sampling
-          Vec3 direct_col_light;
           unsigned int light_index = (int)(scene.lights.size() * (*this->sampler).getNext());
           if(light_index == scene.lights.size()) light_index--;
           const auto light = scene.lights[light_index];

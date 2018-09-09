@@ -21,8 +21,8 @@ class Pt : public Integrator {
       float russian_roulette = 1.0;
 
       for(int depth = 0; ; depth++) {
-        if(depth > 10) {
-          russian_roulette *= 0.95;
+        if(depth > 3) {
+          russian_roulette = std::max(col.length()*0.577f, 0.05f);
         }
         if((*this->sampler).getNext() > russian_roulette) {
           col = RGB(0);
