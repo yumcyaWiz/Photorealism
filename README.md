@@ -6,7 +6,9 @@ Physically Based Path Tracer
 * Explicit Light Sampling
 * BRDF Importance Sampling
 * IBL Importance Sampling
-* Multi Importance Sampling
+* Multi Importance Sampling(MIS)
+* Bounding Volume Hierarchy(BVH)
+* Image Texture
 
 ## Usage
 ### Build
@@ -24,3 +26,5 @@ make build
 
 ## Example
 ![](figs/fig1.png)
+![](figs/fig2.png)
+![](figs/fig3.png)
