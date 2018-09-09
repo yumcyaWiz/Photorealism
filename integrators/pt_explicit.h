@@ -55,17 +55,17 @@ class PtExplicit : public Integrator {
     };
 
 
-    RGB sampleBRDF(const Ray& ray, Scene& scene, Hit& res, const Vec3& wo_local, const Vec3& n, const Vec3& s, const Vec3& t, const std::shared_ptr<Light>& light) const {
+    RGB sampleBRDF(const Ray& ray, Scene& scene, Hit& res, const Vec3& wo_local, const Vec3& n, const Vec3& s, const Vec3& t, const std::shared_ptr<Light>& light, Vec3& wi, RGB& brdf, float& cos, float& brdf_pdf) const {
       Vec3 col_brdf;
       auto hitMaterial = res.hitPrimitive->material;
 
       //BRDF Sampling
       Vec3 wi_local;
-      float brdf_pdf;
-      RGB brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, brdf_pdf);
+      brdf_pdf;
+      brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, brdf_pdf);
       if(isZero(brdf) || brdf_pdf == 0) return RGB(0);
-      float cos = absCosTheta(wi_local);
-      Vec3 wi = localToWorld(wi_local, n, s, t);
+      cos = absCosTheta(wi_local);
+      wi = localToWorld(wi_local, n, s, t);
       RGB k = brdf * cos/brdf_pdf;
 
       //Visibility Test
@@ -159,7 +159,11 @@ class PtExplicit : public Integrator {
           const auto light = scene.lights[light_index];
 
           //Calc Direct Illumination
-          Vec3 direct_col = scene.lights.size() * (sampleLight(ray, scene, res, wo_local, n, s, t, light) + sampleBRDF(ray, scene, res, wo_local, n, s, t, light));
+          Vec3 wi;
+          RGB brdf;
+          float cos;
+          float brdf_pdf;
+          Vec3 direct_col = scene.lights.size() * (sampleLight(ray, scene, res, wo_local, n, s, t, light) + sampleBRDF(ray, scene, res, wo_local, n, s, t, light, wi, brdf, cos, brdf_pdf));
 
           //if Direct Illumination is inf or nan
           if(isNan(direct_col) || isInf(direct_col)) {
@@ -167,26 +171,14 @@ class PtExplicit : public Integrator {
             break;
           }
 
-          //next ray
-          Vec3 wi_local;
-          float brdf_pdf = 0;
-          RGB brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, brdf_pdf);
           if(isZero(brdf) || brdf_pdf == 0) break;
-          Vec3 wi = localToWorld(wi_local, n, s, t);
-          float cos = absCosTheta(wi_local);
-          if(cos == 0) break;
           RGB k = brdf * cos / brdf_pdf;
-
           if(isNan(k) || isInf(k)) {
             std::cerr << "NaN or Inf detected at BRDF Sampling" << std::endl;
-            std::cerr << "BRDF: " << brdf << std::endl;
-            std::cerr << "cos: " << cos << std::endl;
-            std::cerr << "BRDF PDF: " << brdf_pdf << std::endl;
-            std::cerr << "wi_local: " << wi_local << std::endl;
-            std::cerr << "wi: " << wi << std::endl;
             break;
           }
 
+          //next ray
           ray = Ray(res.hitPos, wi);
           col += direct_col * col2 / russian_roulette;
           col2 *= k / russian_roulette;
