@@ -1,6 +1,6 @@
 [renderer]
 samples = 100
-integrator = "pt"
+integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
 
@@ -43,7 +43,7 @@ albedo = "white"
 [[mesh]]
 name = "cornell"
 type = "obj"
-path = "CornellBox-Water.obj"
+path = "CornellBox-Original.obj"
 
 
 [[object]]

@@ -55,17 +55,18 @@ class PtExplicit : public Integrator {
     };
 
 
-    RGB sampleBRDF(const Ray& ray, Scene& scene, Hit& res, const Vec3& wo_local, const Vec3& n, const Vec3& s, const Vec3& t, const std::shared_ptr<Light>& light, Vec3& wi, RGB& brdf, float& cos, float& brdf_pdf) const {
+    RGB sampleBRDF(const Ray& ray, Scene& scene, Hit& res, const Vec3& wo_local, const Vec3& n, const Vec3& s, const Vec3& t, const std::shared_ptr<Light>& light) const {
       Vec3 col_brdf;
       auto hitMaterial = res.hitPrimitive->material;
 
       //BRDF Sampling
       Vec3 wi_local;
-      brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, brdf_pdf);
+      float brdf_pdf;
+      RGB brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, brdf_pdf);
       if(isZero(brdf) || brdf_pdf == 0) return RGB(0);
-      cos = absCosTheta(wi_local);
+      float cos = absCosTheta(wi_local);
       if(cos == 0) return RGB(0);
-      wi = localToWorld(wi_local, n, s, t);
+      Vec3 wi = localToWorld(wi_local, n, s, t);
       RGB k = brdf * cos/brdf_pdf;
 
       //Visibility Test
@@ -122,13 +123,6 @@ class PtExplicit : public Integrator {
       Ray ray = _ray;
 
       for(int depth = 0; ; depth++) {
-        if(depth > 10) {
-          russian_roulette *= 0.95f;
-        }
-        if((*this->sampler).getNext() > russian_roulette) {
-          break;
-        }
-
         if(isZero(col2)) break;
 
         Hit res;
@@ -158,11 +152,7 @@ class PtExplicit : public Integrator {
           const auto light = scene.lights[light_index];
 
           //Calc Direct Illumination
-          Vec3 wi;
-          RGB brdf;
-          float cos;
-          float brdf_pdf;
-          Vec3 direct_col = scene.lights.size() * (sampleLight(ray, scene, res, wo_local, n, s, t, light) + sampleBRDF(ray, scene, res, wo_local, n, s, t, light, wi, brdf, cos, brdf_pdf));
+          Vec3 direct_col = scene.lights.size() * (sampleLight(ray, scene, res, wo_local, n, s, t, light) + sampleBRDF(ray, scene, res, wo_local, n, s, t, light));
 
           //if Direct Illumination is inf or nan
           if(isNan(direct_col) || isInf(direct_col)) {
@@ -170,6 +160,11 @@ class PtExplicit : public Integrator {
             break;
           }
 
+          //Sample BRDF for next ray direction
+          Vec3 wi_local;
+          float brdf_pdf;
+          RGB brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, brdf_pdf);
+          float cos = absCosTheta(wi_local);
           if(isZero(brdf) || brdf_pdf == 0 || cos == 0) break;
           RGB k = brdf * cos / brdf_pdf;
           if(isNan(k) || isInf(k)) {
@@ -178,11 +173,21 @@ class PtExplicit : public Integrator {
             std::cerr << "cos: " << cos << std::endl;
             break;
           }
+          Vec3 wi = localToWorld(wi_local, n, s, t);
 
           //next ray
           ray = Ray(res.hitPos, wi);
-          col += direct_col * col2 / russian_roulette;
-          col2 *= k / russian_roulette;
+          col += direct_col * col2;
+          col2 *= k;
+
+          //russian roulette
+          if(depth > 3) {
+            russian_roulette = std::max(col2.length()*0.577f, 0.05f);
+            if((*this->sampler).getNext() > russian_roulette) {
+              break;
+            }
+            col2 /= russian_roulette;
+          }
         }
         else {
           if(depth == 0) {
