@@ -24,28 +24,6 @@ class TomlLoader {
       std::cout << "Film Loaded" << std::endl;
 
 
-      //sky
-      auto sky = toml->get_table("sky");
-      auto sky_type = *sky->get_as<std::string>("type");
-      std::shared_ptr<Sky> skyPtr;
-      if(sky_type == "uniform") {
-        auto color = *sky->get_array_of<double>("color");
-        skyPtr = std::make_shared<UniformSky>(RGB(color[0], color[1], color[2]));
-      }
-      else if(sky_type == "ibl") {
-        auto path = *sky->get_as<std::string>("path");
-        auto intensity = *sky->get_as<double>("intensity");
-        auto theta_offset = *sky->get_as<double>("theta-offset");
-        auto phi_offset = *sky->get_as<double>("phi-offset");
-        skyPtr = std::make_shared<IBL>(path, intensity, phi_offset, theta_offset);
-      }
-      else {
-        std::cerr << "Invalid Sky type" << std::endl;
-        std::exit(1);
-      }
-      std::cout << "Sky Loaded" << std::endl;
-
-
       //camera
       auto camera = toml->get_table("camera");
       auto camera_type = *camera->get_as<std::string>("type");
@@ -73,6 +51,66 @@ class TomlLoader {
         std::exit(1);
       }
       std::cout << "Camera Loaded" << std::endl;
+
+
+      //sampler
+      std::shared_ptr<Sampler> sampler;
+      auto sampler_toml = toml->get_table("sampler");
+      auto sampler_type = *sampler_toml->get_as<std::string>("type");
+      if(sampler_type == "mt") {
+        sampler = std::make_shared<Mt>();
+      }
+      else {
+        std::cerr << "Invalid Sampler type" << std::endl;
+      }
+      std::cout << "Sampler Loaded" << std::endl;
+
+
+      //renderer
+      auto renderer = toml->get_table("renderer");
+      if(!renderer) { std::cerr << "Missing Renderer" << std::endl; std::exit(1); }
+      int samples = *renderer->get_as<int>("samples");
+      std::string integrator = *renderer->get_as<std::string>("integrator");
+      if(integrator == "pt") {
+        integ = std::make_shared<Pt>(cam, sampler, samples);
+      }
+      else if(integrator == "pt-explicit") {
+        integ = std::make_shared<PtExplicit>(cam, sampler, samples);
+      }
+      else if(integrator == "direct") {
+        integ = std::make_shared<Direct>(cam, sampler, samples);
+      }
+      else if(integrator == "debug") {
+        integ = std::make_shared<Debug>(cam, sampler);
+      }
+      else {
+        std::cerr << "Invalid Integrator type" << std::endl;
+        std::exit(1);
+      }
+      std::string polygon_accel = *renderer->get_as<std::string>("polygon-accel");
+      std::cout << "Renderer Loaded" << std::endl;
+
+
+      //sky
+      auto sky = toml->get_table("sky");
+      auto sky_type = *sky->get_as<std::string>("type");
+      std::shared_ptr<Sky> skyPtr;
+      if(sky_type == "uniform") {
+        auto color = *sky->get_array_of<double>("color");
+        skyPtr = std::make_shared<UniformSky>(RGB(color[0], color[1], color[2]));
+      }
+      else if(sky_type == "ibl") {
+        auto path = *sky->get_as<std::string>("path");
+        auto intensity = *sky->get_as<double>("intensity");
+        auto theta_offset = *sky->get_as<double>("theta-offset");
+        auto phi_offset = *sky->get_as<double>("phi-offset");
+        skyPtr = std::make_shared<IBL>(path, intensity, phi_offset, theta_offset);
+      }
+      else {
+        std::cerr << "Invalid Sky type" << std::endl;
+        std::exit(1);
+      }
+      std::cout << "Sky Loaded" << std::endl;
 
 
       //texture
@@ -188,7 +226,6 @@ class TomlLoader {
       };
       std::vector<std::string> mesh_names;
       std::vector<std::shared_ptr<MeshData>> mesh_ptrs;
-
       auto meshes = toml->get_table_array("mesh");
       for(const auto& mesh : *meshes) {
         auto name = *mesh->get_as<std::string>("name");
@@ -261,7 +298,7 @@ class TomlLoader {
         }
         else if(meshdata->type == "obj") {
           std::cout << "obj" << std::endl;
-          loadObj(meshdata->path, center, scale, mat, prims, lights);
+          loadObj(meshdata->path, center, scale, mat, prims, lights, polygon_accel);
         }
         else {
           std::cerr << "Invalid MeshData type" << std::endl;
@@ -304,41 +341,7 @@ class TomlLoader {
       std::cout << "Light Loaded" << std::endl;
 
 
-      //sampler
-      std::shared_ptr<Sampler> sampler;
-      auto sampler_toml = toml->get_table("sampler");
-      auto sampler_type = *sampler_toml->get_as<std::string>("type");
-      if(sampler_type == "mt") {
-        sampler = std::make_shared<Mt>();
-      }
-      else {
-        std::cerr << "Invalid Sampler type" << std::endl;
-      }
-      std::cout << "Sampler Loaded" << std::endl;
-
-
-      //renderer
-      auto renderer = toml->get_table("renderer");
-      if(!renderer) { std::cerr << "Missing Renderer" << std::endl; std::exit(1); }
-      int samples = *renderer->get_as<int>("samples");
-      std::string integrator = *renderer->get_as<std::string>("integrator");
-      if(integrator == "pt") {
-        integ = std::make_shared<Pt>(cam, sampler, samples);
-      }
-      else if(integrator == "pt-explicit") {
-        integ = std::make_shared<PtExplicit>(cam, sampler, samples);
-      }
-      else if(integrator == "direct") {
-        integ = std::make_shared<Direct>(cam, sampler, samples);
-      }
-      else if(integrator == "debug") {
-        integ = std::make_shared<Debug>(cam, sampler);
-      }
-      else {
-        std::cerr << "Invalid Integrator type" << std::endl;
-        std::exit(1);
-      }
-
+      //Init Accel
       std::shared_ptr<Accel<Primitive>> accelPtr;
       std::string accel = *renderer->get_as<std::string>("accel");
       if(accel == "linear") {
@@ -347,7 +350,6 @@ class TomlLoader {
       else if(accel == "bvh") {
         accelPtr = std::make_shared<BVH<Primitive>>(prims, 12);
       }
-      std::cout << "Renderer Loaded" << std::endl;
 
 
       //init scene

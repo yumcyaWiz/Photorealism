@@ -13,8 +13,8 @@
 #endif
 
 
-void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::vector<std::shared_ptr<Primitive>>& prims, std::vector<std::shared_ptr<Light>>& lights, const std::shared_ptr<Material>& _mat, bool mtl, const tinyobj::material_t material) {
-  std::shared_ptr<Shape> shape = std::make_shared<Polygon>(triangles);
+void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::vector<std::shared_ptr<Primitive>>& prims, std::vector<std::shared_ptr<Light>>& lights, const std::shared_ptr<Material>& _mat, bool mtl, const tinyobj::material_t material, const std::string& polygon_accel) {
+  std::shared_ptr<Shape> shape = std::make_shared<Polygon>(triangles, polygon_accel);
   std::shared_ptr<Material> mat;
   std::shared_ptr<Light> light;
 
@@ -58,7 +58,7 @@ void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::v
 }
 
 
-void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale, const std::shared_ptr<Material>& mat, std::vector<std::shared_ptr<Primitive>>& prims, std::vector<std::shared_ptr<Light>>& lights) {
+void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale, const std::shared_ptr<Material>& mat, std::vector<std::shared_ptr<Primitive>>& prims, std::vector<std::shared_ptr<Light>>& lights, const std::string& polygon_accel) {
 
   tinyobj::attrib_t attrib;
   std::vector<tinyobj::shape_t> shapes;
@@ -115,7 +115,7 @@ void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale,
 
       if(f != 0 && shapes[s].mesh.material_ids[f] != prev_material_id) {
         auto material = materials[shapes[s].mesh.material_ids[f]];
-        loadPolygon(triangles, prims, lights, mat, mtl, material);
+        loadPolygon(triangles, prims, lights, mat, mtl, material, polygon_accel);
         triangles.clear();
       }
       prev_material_id = shapes[s].mesh.material_ids[f];
@@ -124,10 +124,10 @@ void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale,
     tinyobj::material_t material;
     if(mtl) {
       material = materials[shapes[s].mesh.material_ids[0]];
-      loadPolygon(triangles, prims, lights, mat, mtl, material);
+      loadPolygon(triangles, prims, lights, mat, mtl, material, polygon_accel);
     }
     else {
-      loadPolygon(triangles, prims, lights, mat, false, material);
+      loadPolygon(triangles, prims, lights, mat, false, material, polygon_accel);
     }
   }
   std::cout << "Vertex: " << vertex_count << std::endl;

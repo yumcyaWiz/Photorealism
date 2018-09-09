@@ -1,7 +1,8 @@
 [renderer]
-samples = 10
+samples = 100
 integrator = "pt-explicit"
-accel = "bvh"
+accel = "linear"
+polygon-accel = "bvh"
 
 [sampler]
 type = "mt"
