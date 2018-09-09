@@ -2,6 +2,7 @@
 samples = 1000
 integrator = "pt-explicit"
 accel = "bvh"
+polygon-accel = "bvh"
 
 [sampler]
 type = "mt"
@@ -42,7 +43,7 @@ albedo = "white"
 [[mesh]]
 name = "cornell"
 type = "obj"
-path = "CornellBox-Sphere.obj"
+path = "CornellBox-Water.obj"
 
 
 [[object]]
