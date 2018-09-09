@@ -61,10 +61,10 @@ class PtExplicit : public Integrator {
 
       //BRDF Sampling
       Vec3 wi_local;
-      brdf_pdf;
       brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, brdf_pdf);
       if(isZero(brdf) || brdf_pdf == 0) return RGB(0);
       cos = absCosTheta(wi_local);
+      if(cos == 0) return RGB(0);
       wi = localToWorld(wi_local, n, s, t);
       RGB k = brdf * cos/brdf_pdf;
 
@@ -171,10 +171,12 @@ class PtExplicit : public Integrator {
             break;
           }
 
-          if(isZero(brdf) || brdf_pdf == 0) break;
+          if(isZero(brdf) || brdf_pdf == 0 || cos == 0) break;
           RGB k = brdf * cos / brdf_pdf;
           if(isNan(k) || isInf(k)) {
             std::cerr << "NaN or Inf detected at BRDF Sampling" << std::endl;
+            std::cerr << "BRDF PDF: " << brdf_pdf << std::endl;
+            std::cerr << "cos: " << cos << std::endl;
             break;
           }
 

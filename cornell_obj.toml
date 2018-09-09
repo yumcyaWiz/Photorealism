@@ -1,5 +1,5 @@
 [renderer]
-samples = 100
+samples = 1000
 integrator = "pt-explicit"
 accel = "bvh"
 
@@ -42,7 +42,7 @@ albedo = "white"
 [[mesh]]
 name = "cornell"
 type = "obj"
-path = "CornellBox-Original.obj"
+path = "CornellBox-Sphere.obj"
 
 
 [[object]]
