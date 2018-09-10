@@ -47,7 +47,6 @@ class Pt : public Integrator {
           float pdf;
           RGB brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, pdf);
           float cos = absCosTheta(wi_local);
-          if(cos == 0) break;
           Vec3 wi = localToWorld(wi_local, n, s, t);
 
           trace_ray = Ray(res.hitPos, wi);
