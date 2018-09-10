@@ -14,7 +14,6 @@ class Scene {
     std::shared_ptr<Sky> sky;
 
     Scene(std::shared_ptr<Accel<Primitive>> _accel, const std::vector<std::shared_ptr<Light>>& _lights, const std::shared_ptr<Sky>& _sky) : accel(_accel), lights(_lights), sky(_sky) {
-      lights.push_back(sky);
     };
 
     bool intersect(const Ray& ray, Hit& res) const {

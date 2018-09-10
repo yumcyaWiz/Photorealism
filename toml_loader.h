@@ -92,12 +92,17 @@ class TomlLoader {
 
 
       //sky
+      std::vector<std::shared_ptr<Light>> lights;
       auto sky = toml->get_table("sky");
       auto sky_type = *sky->get_as<std::string>("type");
       std::shared_ptr<Sky> skyPtr;
       if(sky_type == "uniform") {
         auto color = *sky->get_array_of<double>("color");
+        RGB col = RGB(color[0], color[1], color[2]);
         skyPtr = std::make_shared<UniformSky>(RGB(color[0], color[1], color[2]));
+        if(!isZero(col)) {
+          lights.push_back(skyPtr);
+        }
       }
       else if(sky_type == "ibl") {
         auto path = *sky->get_as<std::string>("path");
@@ -105,6 +110,7 @@ class TomlLoader {
         auto theta_offset = *sky->get_as<double>("theta-offset");
         auto phi_offset = *sky->get_as<double>("phi-offset");
         skyPtr = std::make_shared<IBL>(path, intensity, phi_offset, theta_offset);
+        lights.push_back(skyPtr);
       }
       else {
         std::cerr << "Invalid Sky type" << std::endl;
@@ -255,7 +261,6 @@ class TomlLoader {
       //object
       auto objects = toml->get_table_array("object");
       std::vector<std::shared_ptr<Primitive>> prims;
-      std::vector<std::shared_ptr<Light>> lights;
       std::vector<std::string> shape_names;
       std::vector<std::shared_ptr<Shape>> shape_ptrs;
       std::vector<std::shared_ptr<Primitive>> prim_ptrs;
