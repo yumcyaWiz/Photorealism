@@ -79,5 +79,9 @@ class Triangle : public Shape {
         pdf = 1.0f;
         return samplePos;
     };
+    Vec3 sample2(Sampler& sampler, Vec3& normal, float& pdf) const {
+      Hit res;
+      return sample(res, sampler, normal, pdf);
+    };
 };
 #endif

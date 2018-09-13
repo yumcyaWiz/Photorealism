@@ -48,5 +48,9 @@ class Polygon : public Shape {
       pdf = Pdf();
       return samplePos;
     };
+    Vec3 sample2(Sampler& sampler, Vec3& normal, float& pdf) const {
+      Hit res;
+      return sample(res, sampler, normal, pdf);
+    };
 };
 #endif

@@ -34,5 +34,22 @@ class AreaLight : public Light {
 
       return power;
     };
+
+    RGB sample_Le(Sampler& sampler, Ray& wo, Vec3& normal, float& pdf_pos, float& pdf_dir) const {
+      Vec3 samplePos = shape->sample2(sampler, normal, pdf_pos);
+
+      Vec3 dir_local = sampleCosineHemisphere(sampler.getNext2D());
+      pdf_dir = absCosTheta(dir_local)/M_PI;
+      Vec3 s, t;
+      orthonormalBasis(normal, s, t);
+      Vec3 dir = localToWorld(dir_local, normal, s, t);
+      wo = Ray(samplePos, dir);
+
+      return power;
+    };
+    void Pdf_Le(const Ray& ray, const Vec3& normal, float& pdf_pos, float& pdf_dir) const {
+      pdf_pos = shape->Pdf();
+      pdf_dir = std::max(dot(ray.direction, normal)/M_PI, 0.0);
+    };
 };
 #endif

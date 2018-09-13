@@ -10,6 +10,7 @@ class Shape {
     virtual bool intersect(const Ray& ray, Hit& res) const = 0;
     virtual float Pdf() const = 0;
     virtual Vec3 sample(const Hit& res, Sampler& sampler, Vec3& normal, float& pdf) const = 0;
+    virtual Vec3 sample2(Sampler& sampler, Vec3& normal, float& pdf) const = 0;
     virtual AABB worldBound() const = 0;
 };
 #endif

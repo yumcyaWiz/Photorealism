@@ -24,5 +24,17 @@ class PointLight : public Light {
       pdf = 1.0f * dist2;
       return this->power;
     };
+
+    RGB sample_Le(Sampler& sampler, Ray& wo, Vec3& normal, float& pdf_pos, float& pdf_dir) const {
+      wo = Ray(lightPos, sampleSphere(sampler.getNext2D()));
+      normal = wo.direction;
+      pdf_pos = 1.0f;
+      pdf_dir = 1/(4*M_PI);
+      return this->power;
+    };
+    void Pdf_Le(const Ray& ray, const Vec3& normal, float& pdf_pos, float& pdf_dir) const {
+      pdf_pos = 0.0f;
+      pdf_dir = 1/(4*M_PI);
+    };
 };
 #endif

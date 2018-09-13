@@ -65,6 +65,11 @@ class Sphere : public Shape {
       normal = normalize(samplePos - center);
       return samplePos;
     };
+    Vec3 sample2(Sampler& sampler, Vec3& normal, float& pdf) const {
+      Vec3 samplePos = center + radius*sampleSphere(sampler.getNext2D());
+      pdf = 1/(4*M_PI*radius*radius);
+      return samplePos;
+    };
 
     AABB worldBound() const {
       return AABB(center - Vec3(radius), center + Vec3(radius));

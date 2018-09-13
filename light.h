@@ -21,5 +21,8 @@ class Light {
     virtual RGB Le(const Hit& res, const Ray& ray) const = 0;
     virtual float Pdf(const Hit& res, const Vec3& wi, const Hit& shadow_res) const = 0;
     virtual RGB sample(const Hit& res, Sampler& sampler, Vec3& wi, Vec3& samplePos, float& pdf) const = 0;
+
+    virtual RGB sample_Le(Sampler& sampler, Ray& wo, Vec3& normal, float& pdf_pos, float& pdf_dir) const = 0;
+    virtual void Pdf_Le(const Ray& ray, const Vec3& normal, float& pdf_pos, float& pdf_dir) const = 0;
 };
 #endif
