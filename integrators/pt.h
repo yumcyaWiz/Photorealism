@@ -90,7 +90,7 @@ class Pt : public Integrator {
             }
             else {
               RGB li = weight*this->Li(ray, scene);
-              this->camera->film->setPixel(i, j, this->camera->film->getPixel(i, j) + li);
+              this->camera->film->addSample(i, j, li);
             }
 
             if(omp_get_thread_num() == 0) {
@@ -100,8 +100,6 @@ class Pt : public Integrator {
         }
         ms = timer.stop();
       }
-      this->camera->film->divide(N);
-      this->camera->film->gamma_correction();
       this->camera->film->ppm_output("output.ppm");
     };
 };

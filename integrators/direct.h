@@ -153,11 +153,11 @@ class Direct : public Integrator {
             Ray ray;
             float weight;
             if(!this->camera->getRay(u, v, *(this->sampler), ray, weight)) {
-              this->camera->film->setPixel(i, j, Vec3(0, 0, 0));
+              this->camera->film->addSample(i, j, RGB(0, 0, 0));
             }
             else {
               RGB li = weight*this->Li(ray, scene);
-              this->camera->film->setPixel(i, j, this->camera->film->getPixel(i, j) + li);
+              this->camera->film->addSample(i, j, li);
             }
 
             if(omp_get_thread_num() == 0) {
@@ -166,8 +166,6 @@ class Direct : public Integrator {
           }
         }
       }
-      this->camera->film->divide(N);
-      this->camera->film->gamma_correction();
       this->camera->film->ppm_output("output.ppm");
     };
 };
