@@ -32,5 +32,20 @@ class ThinLensCamera : public Camera {
       weight = cos*cos / (lensPos - sensorPos).length2();
       return true;
     };
+
+    float We(const Ray& ray, Vec2& pFilm) const {
+      float cos = dot(ray.direction, camForward);
+      if(cos < 0) return 0;
+
+      Vec3 p = ray(b/cos);
+      Vec3 l = normalize(lensCenter - p);
+      float cos2 = dot(-l, camForward);
+      Vec3 pf = p + (a + b)/cos2 * l;
+      pf = worldToLocal(pf, camUp, camRight, camForward);
+      pFilm = Vec2(pf.x, pf.y);
+      if(std::abs(pFilm.x) > 1 || std::abs(pFilm.y) > 1) return 0;
+
+      return 1;
+    };
 };
 #endif

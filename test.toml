@@ -1,6 +1,6 @@
 [renderer]
-samples = 100
-integrator = "pt-explicit"
+samples = 10
+integrator = "pt"
 accel = "bvh"
 polygon-accel = "bvh"
 
@@ -26,8 +26,8 @@ focus-point = [1.5, 0.0, 2.0]
 f-number = 3.5
 [camera.transform]
 type = "look-at"
-origin = [2.5, 0.5, -2.0]
-target = [0.0, 0, 5.0]
+origin = [-1.5, -0.5, -2.0]
+target = [-1.5, 0.0, 3.0]
 
 
 [[texture]]
@@ -82,7 +82,7 @@ albedo = "texture"
 [[material]]
 name = "glass"
 type = "glass"
-ior = 1.5
+ior = 0.8
 albedo = "texture"
 
 [[material]]
@@ -142,7 +142,7 @@ path = "dragon.obj"
 [[object]]
 name = "floor"
 mesh = "bigSphere"
-material = "plastic"
+material = "white"
 [[object.transform]]
 type = "translate"
 vector = [0, -10001, 0]

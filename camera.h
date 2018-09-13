@@ -1,6 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 #include <memory>
+#include "vec2.h"
 #include "vec3.h"
 #include "sampler.h"
 #include "film.h"
@@ -18,5 +19,11 @@ class Camera {
     };
 
     virtual bool getRay(float u, float v, Sampler& sampler, Ray& ray, float& weight) const = 0;
+    virtual float We(const Ray& ray, Vec2& pFilm) const {
+      return 0;
+    };
+    virtual float We_Pdf(const Ray& ray, float& pdf_pos, float& pdf_dir) const {
+      return 0;
+    };
 };
 #endif
