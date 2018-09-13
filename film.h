@@ -19,9 +19,11 @@ class Film {
     int width;
     int height;
     Pixel* data;
+    std::shared_ptr<Filter> filter;
 
     Film(int _width, int _height) : width(_width), height(_height) {
       data = new Pixel[width*height];
+      filter = std::make_shared<BoxFilter>(1.0f);
     };
     ~Film() {
       delete[] data;

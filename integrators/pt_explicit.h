@@ -214,15 +214,16 @@ class PtExplicit : public Integrator {
           for(int j = 0; j < height; j++) {
             float u = (2.0*i - width + sampler->getNext())/width;
             float v = (2.0*j - height + sampler->getNext())/width;
+            Vec2 uv(u, v);
 
             Ray ray;
             float weight;
             if(!this->camera->getRay(u, v, *(this->sampler), ray, weight)) {
-              this->camera->film->addSample(i, j, RGB(0, 0, 0));
+              this->camera->film->addSample(uv, RGB(0, 0, 0));
             }
             else {
               RGB li = weight*this->Li(ray, scene);
-              this->camera->film->addSample(i, j, li);
+              this->camera->film->addSample(uv, li);
             }
 
             if(omp_get_thread_num() == 0) {

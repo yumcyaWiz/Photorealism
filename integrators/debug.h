@@ -21,15 +21,16 @@ class Debug : public Integrator {
         for(int j = 0; j < height; j++) {
           float u = (2.0*i - width)/width;
           float v = (2.0*j - height)/width;
+          Vec2 uv(u, v);
 
           Ray ray;
           float weight;
           if(!this->camera->getRay(u, v, *(this->sampler), ray, weight)) {
-            this->camera->film->addSample(i, j, RGB(0, 0, 0));
+            this->camera->film->addSample(uv, RGB(0, 0, 0));
           }
           else {
             RGB li = weight*this->Li(ray, scene);
-            this->camera->film->addSample(i, j, li);
+            this->camera->film->addSample(uv, li);
           }
         }
       }
