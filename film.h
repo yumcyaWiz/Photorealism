@@ -75,15 +75,13 @@ class Film {
     void addSample(const Vec2& u, const RGB& L) const {
       float i = (u.x + 1.0f)/2.0f * width;
       float j = (u.y + 1.0f)/2.0f * height;
-      int i_int = i;
-      int j_int = j;
       float rx = filter->radius.x;
       float ry = filter->radius.y;
-      for(int iy = j_int - ry + 0.5; iy <= j_int + ry + 0.5; iy++) {
-        for(int ix = i_int - rx + 0.5; ix <= i_int + rx + 0.5; ix++) {
+      for(int iy = j - ry; iy <= j + ry; iy++) {
+        for(int ix = i - rx; ix <= i + rx; ix++) {
           if(ix < 0 || ix >= width || iy < 0 || iy >= height) continue;
           Vec2 pixelPos(ix + 0.5, iy + 0.5);
-          Vec2 p = pixelPos - Vec2(i, j);
+          Vec2 p = Vec2(i, j) - pixelPos;
           float f = filter->eval(p);
           data[ix + width*iy].color += f*L;
           data[ix + width*iy].n_sample++;

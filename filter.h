@@ -17,7 +17,8 @@ class BoxFilter : public Filter {
         BoxFilter(const Vec2& _radius) : Filter(_radius) {};
 
         float eval(const Vec2& p) const {
-            return 1.0f;
+            if(std::abs(p.x) >= radius.x || std::abs(p.y) >= radius.y) return 0;
+            else return 1;
         };
 };
 

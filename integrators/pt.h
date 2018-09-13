@@ -73,15 +73,19 @@ class Pt : public Integrator {
       const int width = this->camera->film->width;
       const int height = this->camera->film->height;
 
+      const int N_sqrt = std::sqrt(N);
+
       Timer timer;
       int ms = 0;
-      for(int k = 0; k < N; k++) {
+      for(int i = 0; i < width; i++) {
         timer.start();
-        for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
 #pragma omp parallel for schedule(dynamic, 1)
-          for(int j = 0; j < height; j++) {
-            float u = (2.0*i - width + sampler->getNext())/width;
-            float v = (2.0*j - height + sampler->getNext())/width;
+          for(int k = 0; k < N; k++) {
+            float sx = k%N_sqrt * 2.0/width + 2.0/width*sampler->getNext();
+            float sy = k/N_sqrt * 2.0/height + 2.0/height*sampler->getNext();
+            float u = (2.0*i - width + sx)/width;
+            float v = (2.0*j - height + sy)/width;
             Vec2 uv(u, v);
 
             Ray ray;
@@ -95,7 +99,8 @@ class Pt : public Integrator {
             }
 
             if(omp_get_thread_num() == 0) {
-              std::cout << progressbar(j + height*i + width*height*k, width*height*N) << " " << percentage(j + height*i + width*height*k, width*height*N) << " ETA: " << ms*(N - k)/1e3 << "s" << "\r" << std::flush;
+              int index = k + N*j + N*height*i;
+              std::cout << progressbar(index, width*height*N) << " " << percentage(index, width*height*N) << " ETA: " << ms*(width - i)/1e3 << "s" << "\r" << std::flush;
             }
           }
         }

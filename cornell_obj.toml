@@ -1,11 +1,15 @@
 [renderer]
-samples = 10
+samples = 100
 integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
 
 [sampler]
 type = "mt"
+
+[filter]
+type = "box"
+radius = [0.5, 0.5]
 
 [film]
 resolution = [512, 512]
@@ -20,13 +24,13 @@ theta-offset = 0
 
 
 [camera]
-type = "ideal-pinhole"
+type = "thin-lens"
 lens-distance = 1.0
 focus-point = [0.0, 1.0, 0.0]
-f-number = 5.6
+f-number = 2.8 
 [camera.transform]
 type = "look-at"
-origin = [0.0, 1.0, 2.5]
+origin = [0.0, 1.0, 3.0]
 target = [0.0, 1.0, 0.0]
 
 
@@ -43,7 +47,7 @@ albedo = "white"
 [[mesh]]
 name = "cornell"
 type = "obj"
-path = "CornellBox-Water.obj"
+path = "CornellBox-Original.obj"
 
 
 [[object]]

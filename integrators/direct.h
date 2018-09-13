@@ -143,12 +143,16 @@ class Direct : public Integrator {
       const int width = this->camera->film->width;
       const int height = this->camera->film->height;
 
-      for(int k = 0; k < N; k++) {
-        for(int i = 0; i < width; i++) {
+      const int N_sqrt = std::sqrt(N);
+
+      for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
 #pragma omp parallel for schedule(dynamic, 1)
-          for(int j = 0; j < height; j++) {
-            float u = (2.0*i - width + sampler->getNext())/width;
-            float v = (2.0*j - height + sampler->getNext())/width;
+          for(int k = 0; k < N; k++) {
+            float sx = k%N_sqrt * 2.0/width + 2.0/width*sampler->getNext();
+            float sy = k/N_sqrt * 2.0/height + 2.0/height*sampler->getNext();
+            float u = (2.0*i - width + sx)/width;
+            float v = (2.0*j - height + sy)/width;
             Vec2 uv(u, v);
 
             Ray ray;
@@ -162,7 +166,7 @@ class Direct : public Integrator {
             }
 
             if(omp_get_thread_num() == 0) {
-              std::cout << progressbar(k, N) << " " << percentage(k, N) << "\r" << std::flush;
+              std::cout << progressbar(i, width) << " " << percentage(i, width) << "\r" << std::flush;
             }
           }
         }
