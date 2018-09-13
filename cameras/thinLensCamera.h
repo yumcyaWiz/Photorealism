@@ -47,5 +47,18 @@ class ThinLensCamera : public Camera {
 
       return 1;
     };
+
+    float Sample_Wi(const Hit& res, Sampler& sampler, Vec3& wi, float& pdf, Vec2& pFilm) const {
+      Vec2 l = sampleDisk(sampler.getNext2D());
+      Vec3 pLens = lensCenter + lensRadius*(l.x*this->camRight + l.y*this->camUp);
+      wi = normalize(pLens - res.hitPos);
+
+      float dist2 = (pLens - res.hitPos).length2();
+      float cos = dot(camForward, -wi);
+      if(cos < 0) return 0;
+      pdf = dist2/(M_PI*lensRadius*lensRadius*cos);
+
+      return We(Ray(pLens, -wi), pFilm);
+    };
 };
 #endif

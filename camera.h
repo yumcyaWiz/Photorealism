@@ -25,5 +25,8 @@ class Camera {
     virtual float We_Pdf(const Ray& ray, float& pdf_pos, float& pdf_dir) const {
       return 0;
     };
+    virtual float sample_Wi(const Hit& res, Sampler& sampler, Vec3& wi, float& pdf, Vec2& pFilm) const {
+      return 0;
+    };
 };
 #endif
