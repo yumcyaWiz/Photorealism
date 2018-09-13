@@ -8,9 +8,10 @@
 struct Pixel {
   RGB color;
   int n_sample;
+  float filter_accum;
 
-  Pixel() : color(RGB(0)), n_sample(0) {};
-  Pixel(const RGB& _color) : color(_color), n_sample(0) {};
+  Pixel() : color(RGB(0)), n_sample(0), filter_accum(0) {};
+  Pixel(const RGB& _color) : color(_color), n_sample(0), filter_accum(0) {};
 };
 
 
@@ -18,12 +19,12 @@ class Film {
   public:
     int width;
     int height;
+    Vec2 radius;
     Pixel* data;
     std::shared_ptr<Filter> filter;
 
-    Film(int _width, int _height) : width(_width), height(_height) {
+    Film(int _width, int _height, const std::shared_ptr<Filter>& _filter) : width(_width), height(_height), filter(_filter) {
       data = new Pixel[width*height];
-      filter = std::make_shared<BoxFilter>(1.0f);
     };
     ~Film() {
       delete[] data;
@@ -34,7 +35,7 @@ class Film {
         std::cerr << "Invalid Indexes" << std::endl;
         std::exit(1);
       }
-      return data[i + width*j].color/data[i + width*j].n_sample;
+      return data[i + width*j].color/data[i + width*j].filter_accum;
     };
     void setPixel(int i, int j, const RGB& c) {
       if(i < 0 || i >= width || j < 0 || j >= height) {
@@ -72,14 +73,23 @@ class Film {
       data[i + width*j].n_sample++;
     };
     void addSample(const Vec2& u, const RGB& L) const {
-      int i = (u.x + 1.0f)/2.0f * width;
-      int j = (u.y + 1.0f)/2.0f * height;
-      if(i < 0 || i >= width || j < 0 || j >= height) {
-        std::cerr << "Invalid Indexes" << std::endl;
-        std::exit(1);
+      float i = (u.x + 1.0f)/2.0f * width;
+      float j = (u.y + 1.0f)/2.0f * height;
+      int i_int = i;
+      int j_int = j;
+      float rx = filter->radius.x;
+      float ry = filter->radius.y;
+      for(int iy = j_int - ry + 0.5; iy <= j_int + ry + 0.5; iy++) {
+        for(int ix = i_int - rx + 0.5; ix <= i_int + rx + 0.5; ix++) {
+          if(ix < 0 || ix >= width || iy < 0 || iy >= height) continue;
+          Vec2 pixelPos(ix + 0.5, iy + 0.5);
+          Vec2 p = pixelPos - Vec2(i, j);
+          float f = filter->eval(p);
+          data[ix + width*iy].color += f*L;
+          data[ix + width*iy].n_sample++;
+          data[ix + width*iy].filter_accum += f;
+        }
       }
-      data[i + width*j].color += L;
-      data[i + width*j].n_sample++;
     };
 };
 #endif

@@ -15,12 +15,33 @@ class TomlLoader {
     void load(const std::string& filename, std::shared_ptr<Scene>& scene, std::shared_ptr<Integrator>& integ) const {
       auto toml = cpptoml::parse_file(filename);
 
+      //filter
+      std::shared_ptr<Filter> filter;
+      auto filter_toml = toml->get_table("filter");
+      if(!filter_toml) { std::cerr << "Missing Filter" << std::endl; std::exit(1); }
+      auto filter_type = *filter_toml->get_as<std::string>("type");
+      auto filter_radius = *filter_toml->get_array_of<double>("radius");
+      Vec2 fr(filter_radius[0], filter_radius[1]);
+      if(filter_type == "box") {
+        filter = std::make_shared<BoxFilter>(fr);
+      }
+      else if(filter_type == "triangle") {
+        filter = std::make_shared<TriangleFilter>(fr);
+      }
+      else if(filter_type == "gaussian") {
+        auto alpha = *filter_toml->get_as<double>("alpha");
+        filter = std::make_shared<GaussianFilter>(fr, alpha);
+      }
+      else {
+        std::cerr << "Invalid Filter type" << std::endl;
+        std::exit(1);
+      }
 
       //film
       auto film_toml = toml->get_table("film");
       if(!film_toml) { std::cerr << "Missing Film" << std::endl; std::exit(1); };
       auto resolution = *film_toml->get_array_of<int64_t>("resolution");
-      std::shared_ptr<Film> film = std::make_shared<Film>(resolution[0], resolution[1]);
+      std::shared_ptr<Film> film = std::make_shared<Film>(resolution[0], resolution[1], filter);
       std::cout << "Film Loaded" << std::endl;
 
 
