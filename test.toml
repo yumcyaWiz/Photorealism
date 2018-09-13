@@ -1,6 +1,6 @@
 [renderer]
 samples = 10
-integrator = "pt"
+integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
 
@@ -82,7 +82,7 @@ albedo = "texture"
 [[material]]
 name = "glass"
 type = "glass"
-ior = 0.8
+ior = 1.5
 albedo = "texture"
 
 [[material]]

@@ -4,6 +4,7 @@
 #include <fstream>
 #include "vec3.h"
 #include "util.h"
+#include "filter.h"
 struct Pixel {
   RGB color;
   int n_sample;
