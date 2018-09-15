@@ -155,17 +155,34 @@ class TomlLoader {
           auto color = *texture->get_array_of<double>("color");
           RGB col(color[0], color[1], color[2]);
           tex = std::make_shared<UniformTexture>(col);
+          texture_names.push_back(name);
+          texture_ptrs.push_back(tex);
         }
         else if(type == "image") {
           auto path = *texture->get_as<std::string>("path");
           tex = std::make_shared<ImageTexture>(path);
+          texture_names.push_back(name);
+          texture_ptrs.push_back(tex);
+        }
+        else if(type == "checkerboard") {
+          auto odd = *texture->get_as<std::string>("odd");
+          auto even = *texture->get_as<std::string>("even");
+          double alphaX = *texture->get_as<double>("alphaX");
+          double alphaY = *texture->get_as<double>("alphaY");
+
+          int index = std::find(texture_names.begin(), texture_names.end(), odd) - texture_names.begin();
+          auto odd_tex = texture_ptrs[index];
+          index = std::find(texture_names.begin(), texture_names.end(), even) - texture_names.begin();
+          auto even_tex = texture_ptrs[index];
+
+          tex = std::make_shared<Checkerboard>(odd_tex, even_tex, alphaX, alphaY);
+          texture_names.push_back(name);
+          texture_ptrs.push_back(tex);
         }
         else {
           std::cerr << "Invalid Texture type" << std::endl;
           std::exit(1);
         }
-        texture_names.push_back(name);
-        texture_ptrs.push_back(tex);
       }
       std::cout << "Texture Loaded" << std::endl;
 

@@ -1,6 +1,6 @@
 [renderer]
-samples = 16
-integrator = "bdpt"
+samples = 10
+integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
 
@@ -16,7 +16,7 @@ resolution = [512, 512]
 
 [sky]
 type = "uniform"
-color = [0, 0, 0]
+color = [1, 1, 1]
 path = "PaperMill_E_3k.hdr"
 intensity = 1.0
 phi-offset = 3.14

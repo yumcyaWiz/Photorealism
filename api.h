@@ -23,6 +23,7 @@
 #include "texture.h"
 #include "textures/uniformTexture.h"
 #include "textures/imageTexture.h"
+#include "textures/checkerboard.h"
 
 #include "primitive.h"
 #include "samplers/mt.h"
