@@ -41,14 +41,14 @@ class ThinLensCamera : public Camera {
       Vec3 l = normalize(lensCenter - p);
       float cos2 = dot(-l, camForward);
       Vec3 pf = p + (a + b)/cos2 * l;
-      pf = worldToLocal(pf, camUp, camRight, camForward);
+      pf = worldToLocal(pf - camPos, camUp, camRight, camForward);
       pFilm = Vec2(pf.x, pf.y);
       if(std::abs(pFilm.x) > 1 || std::abs(pFilm.y) > 1) return 0;
 
       return 1;
     };
 
-    float Sample_Wi(const Hit& res, Sampler& sampler, Vec3& wi, float& pdf, Vec2& pFilm) const {
+    float sample_Wi(const Hit& res, Sampler& sampler, Vec3& wi, float& pdf, Vec2& pFilm) const {
       Vec2 l = sampleDisk(sampler.getNext2D());
       Vec3 pLens = lensCenter + lensRadius*(l.x*this->camRight + l.y*this->camUp);
       wi = normalize(pLens - res.hitPos);

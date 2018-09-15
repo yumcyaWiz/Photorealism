@@ -39,6 +39,7 @@
 #include "integrators/pt_explicit.h"
 #include "integrators/direct.h"
 #include "integrators/debug.h"
+#include "integrators/bdpt.h"
 
 #include "aabb.h"
 #include "accel.h"

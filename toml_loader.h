@@ -104,6 +104,9 @@ class TomlLoader {
       else if(integrator == "debug") {
         integ = std::make_shared<Debug>(cam, sampler);
       }
+      else if(integrator == "bdpt") {
+        integ = std::make_shared<BDPT>(cam, sampler, samples);
+      }
       else {
         std::cerr << "Invalid Integrator type" << std::endl;
         std::exit(1);

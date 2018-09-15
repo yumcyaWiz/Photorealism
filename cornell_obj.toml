@@ -1,6 +1,6 @@
 [renderer]
-samples = 100
-integrator = "pt-explicit"
+samples = 16
+integrator = "bdpt"
 accel = "bvh"
 polygon-accel = "bvh"
 
@@ -8,7 +8,7 @@ polygon-accel = "bvh"
 type = "mt"
 
 [filter]
-type = "box"
+type = "triangle"
 radius = [0.5, 0.5]
 
 [film]
@@ -27,7 +27,7 @@ theta-offset = 0
 type = "thin-lens"
 lens-distance = 1.0
 focus-point = [0.0, 1.0, 0.0]
-f-number = 2.8 
+f-number = 2.8
 [camera.transform]
 type = "look-at"
 origin = [0.0, 1.0, 3.0]
