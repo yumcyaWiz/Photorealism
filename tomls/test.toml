@@ -1,6 +1,6 @@
 [renderer]
-samples = 100
-integrator = "pt"
+samples = 10000
+integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
 
@@ -15,22 +15,22 @@ radius = [0.5, 0.5]
 resolution = [512, 512]
 
 [sky]
-type = "uniform"
+type = "ibl"
 color = [1.0, 1.0, 1.0]
-path = "PaperMill_E_3k.hdr"
+path = "spruit_sunrise_8k.hdr"
 intensity = 1.0
-phi-offset = 0.0
+phi-offset = 3.14
 theta-offset = 0
 
 
 [camera]
-type = "ideal-pinhole"
+type = "thin-lens"
 lens-distance = 1.0
-focus-point = [1.5, 0.0, 2.0]
-f-number = 3.5
+focus-point = [0.0, 0.0, 0.0]
+f-number = 5.6
 [camera.transform]
 type = "look-at"
-origin = [0.0, 0.0, -3.0]
+origin = [2.0, 0.0, -4.0]
 target = [0.0, 0.0, 0.0]
 
 
@@ -142,7 +142,7 @@ albedo = "check"
 [[mesh]]
 name = "bigSphere"
 type = "sphere"
-radius = 1000.0
+radius = 3000.0
 
 [[mesh]]
 name = "sphere"
@@ -159,14 +159,19 @@ name = "dragon"
 type = "obj"
 path = "dragon.obj"
 
+[[mesh]]
+name = "floor"
+type = "obj"
+path = "plane.obj"
+
 
 [[object]]
 name = "floor"
-mesh = "bigSphere"
+mesh = "floor"
 material = "check"
 [[object.transform]]
 type = "translate"
-vector = [0, -1001, 0]
+vector = [0, -1, 0]
 
 [[object]]
 name = "left_ball"

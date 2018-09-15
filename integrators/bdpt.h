@@ -63,19 +63,22 @@ class BDPT : public Integrator {
       const int width = camera->film->width;
       const int height = camera->film->height;
 
+      for(int i = 0; i < width; i++) {
 #pragma omp parallel for schedule(dynamic, 1)
-      for(int k = 0; k < width*height*N; k++) {
-        unsigned int light_index = (int)(scene.lights.size() * sampler->getNext());
-        if(light_index == scene.lights.size()) light_index--;
-        const auto light = scene.lights[light_index];
-        lightTrace(scene, light);
+        for(int j = 0; j < height; j++) {
+          for(int k = 0; k < N; k++) {
+            unsigned int light_index = (int)(scene.lights.size() * sampler->getNext());
+            if(light_index == scene.lights.size()) light_index--;
+            const auto light = scene.lights[light_index];
+            lightTrace(scene, light);
 
-        if(omp_get_thread_num() == 0) {
-          int index = k;
-          std::cout << progressbar(index, width*height*N) << " " << percentage(index, width*height*N) << "\r" << std::flush;
+            if(omp_get_thread_num() == 0) {
+              int index = k + N*j + height*N*i;
+              std::cout << progressbar(index, width*height*N) << " " << percentage(index, width*height*N) << "\r" << std::flush;
+            }
+          }
         }
       }
-
       camera->film->ppm_output("output.ppm");
     };
 };
