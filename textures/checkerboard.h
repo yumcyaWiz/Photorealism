@@ -8,11 +8,12 @@ class Checkerboard : public Texture {
     std::shared_ptr<Texture> even;
     float alphaX;
     float alphaY;
+    float alphaZ;
 
-    Checkerboard(const std::shared_ptr<Texture>& _odd, const std::shared_ptr<Texture>& _even, float _alphaX, float _alphaY) : odd(_odd), even(_even), alphaX(_alphaX), alphaY(_alphaY) {};
+    Checkerboard(const std::shared_ptr<Texture>& _odd, const std::shared_ptr<Texture>& _even, float _alphaX, float _alphaY, float _alphaZ) : odd(_odd), even(_even), alphaX(_alphaX), alphaY(_alphaY), alphaZ(_alphaZ) {};
 
     RGB getColor(const Hit& res) const {
-      float f = std::sin(res.u*alphaX*2*M_PI) * std::sin(res.v*alphaY*2*M_PI);
+      float f = std::sin(res.hitPos.x*alphaX*2*M_PI) * std::sin(res.hitPos.y*alphaY*2*M_PI) * std::sin(res.hitPos.z*alphaZ*2*M_PI);
       if(f > 0)
         return odd->getColor(res);
       else

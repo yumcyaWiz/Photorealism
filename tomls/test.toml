@@ -1,5 +1,5 @@
 [renderer]
-samples = 10
+samples = 100
 integrator = "pt"
 accel = "bvh"
 polygon-accel = "bvh"
@@ -8,7 +8,7 @@ polygon-accel = "bvh"
 type = "mt"
 
 [filter]
-type = "box"
+type = "triangle"
 radius = [0.5, 0.5]
 
 [film]
@@ -47,8 +47,9 @@ name= "check"
 type = "checkerboard"
 odd = "texture"
 even = "black"
-alphaX = 10.0
-alphaY = 10.0
+alphaX = 1.0
+alphaY = 1.0
+alphaZ = 1.0
 [[texture]]
 name = "uv"
 type = "image"
@@ -63,7 +64,7 @@ path = "earth2.jpg"
 name = "white"
 type = "oren-nayar"
 sigma = 0.3
-albedo = "texture"
+albedo = "check"
 
 [[material]]
 name = "uv"
@@ -132,11 +133,16 @@ type = "plastic"
 albedo = "earth"
 ior = 1.6
 
+[[material]]
+name = "check"
+type = "lambert"
+albedo = "check"
+
 
 [[mesh]]
 name = "bigSphere"
 type = "sphere"
-radius = 10000.0
+radius = 1000.0
 
 [[mesh]]
 name = "sphere"
@@ -157,15 +163,15 @@ path = "dragon.obj"
 [[object]]
 name = "floor"
 mesh = "bigSphere"
-material = "white"
+material = "check"
 [[object.transform]]
 type = "translate"
-vector = [0, -10001, 0]
+vector = [0, -1001, 0]
 
 [[object]]
 name = "left_ball"
 mesh = "sphere"
-material = "white"
+material = "earth"
 [[object.transform]]
 type = "translate"
 vector = [0.0, 0.0, 0.0]

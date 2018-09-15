@@ -146,8 +146,8 @@ class Direct : public Integrator {
       const int N_sqrt = std::sqrt(N);
 
       for(int i = 0; i < width; i++) {
-        for(int j = 0; j < height; j++) {
 #pragma omp parallel for schedule(dynamic, 1)
+        for(int j = 0; j < height; j++) {
           for(int k = 0; k < N; k++) {
             float sx = k%N_sqrt * 2.0/width + 2.0/width*sampler->getNext();
             float sy = k/N_sqrt * 2.0/height + 2.0/height*sampler->getNext();

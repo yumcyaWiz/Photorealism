@@ -79,11 +79,11 @@ class Pt : public Integrator {
       int ms = 0;
       for(int i = 0; i < width; i++) {
         timer.start();
-        for(int j = 0; j < height; j++) {
 #pragma omp parallel for schedule(dynamic, 1)
+        for(int j = 0; j < height; j++) {
           for(int k = 0; k < N; k++) {
-            float sx = k%N_sqrt * 2.0/width + 2.0/width*sampler->getNext();
-            float sy = k/N_sqrt * 2.0/height + 2.0/height*sampler->getNext();
+            float sx = (k%N_sqrt) * 2.0/width + 2.0/width*sampler->getNext();
+            float sy = (k/N_sqrt) * 2.0/height + 2.0/height*sampler->getNext();
             float u = (2.0*i - width + sx)/width;
             float v = (2.0*j - height + sy)/width;
             Vec2 uv(u, v);
@@ -95,6 +95,10 @@ class Pt : public Integrator {
             }
             else {
               RGB li = weight*this->Li(ray, scene);
+              if(isNan(li)) {
+                std::cerr << "NaN" << std::endl;
+                continue;
+              }
               this->camera->film->addSample(uv, li);
             }
 

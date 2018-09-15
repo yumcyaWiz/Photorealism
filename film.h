@@ -10,8 +10,14 @@ struct Pixel {
   int n_sample;
   float filter_accum;
 
-  Pixel() : color(RGB(0)), n_sample(0), filter_accum(0) {};
-  Pixel(const RGB& _color) : color(_color), n_sample(0), filter_accum(0) {};
+  Pixel() : color(RGB(0)) {
+    n_sample = 0;
+    filter_accum = 0;
+  };
+  Pixel(const RGB& _color) : color(_color) {
+    n_sample = 0;
+    filter_accum = 0;
+  };
 };
 
 

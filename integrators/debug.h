@@ -16,8 +16,8 @@ class Debug : public Integrator {
       const int width = this->camera->film->width;
       const int height = this->camera->film->height;
 
-      for(int i = 0; i < width; i++) {
 #pragma omp parallel for schedule(dynamic, 1)
+      for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
           float u = (2.0*i - width)/width;
           float v = (2.0*j - height)/width;

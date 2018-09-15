@@ -169,13 +169,14 @@ class TomlLoader {
           auto even = *texture->get_as<std::string>("even");
           double alphaX = *texture->get_as<double>("alphaX");
           double alphaY = *texture->get_as<double>("alphaY");
+          double alphaZ = *texture->get_as<double>("alphaZ");
 
           int index = std::find(texture_names.begin(), texture_names.end(), odd) - texture_names.begin();
           auto odd_tex = texture_ptrs[index];
           index = std::find(texture_names.begin(), texture_names.end(), even) - texture_names.begin();
           auto even_tex = texture_ptrs[index];
 
-          tex = std::make_shared<Checkerboard>(odd_tex, even_tex, alphaX, alphaY);
+          tex = std::make_shared<Checkerboard>(odd_tex, even_tex, alphaX, alphaY, alphaZ);
           texture_names.push_back(name);
           texture_ptrs.push_back(tex);
         }
