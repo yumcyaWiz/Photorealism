@@ -99,18 +99,28 @@ void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale,
         tinyobj::real_t vz = attrib.vertices[3*idx.vertex_index+2];
         vertex.push_back(Vec3((float)vx, (float)vy, (float)vz));
 
-        if(idx.normal_index > 0) {
+        if(idx.normal_index >= 0) {
           tinyobj::real_t nx = attrib.normals[3*idx.normal_index+0];
           tinyobj::real_t ny = attrib.normals[3*idx.normal_index+1];
           tinyobj::real_t nz = attrib.normals[3*idx.normal_index+2];
           normal.push_back(Vec3((float)nx, (float)ny, (float)nz));
         }
+
+        if(idx.texcoord_index >= 0) {
+          tinyobj::real_t u = attrib.texcoords[2*idx.texcoord_index+0];
+          tinyobj::real_t v = attrib.texcoords[2*idx.texcoord_index+1];
+          uv.push_back(Vec2(float(u), float(v)));
+        }
+
         vertex_count++;
       }
       index_offset += fv;
 
       std::shared_ptr<Triangle> triangle;
-      if(normal.size() > 0) {
+      if(normal.size() > 0 && uv.size() > 0) {
+        triangle = std::make_shared<Triangle>(center + scale*vertex[0], center + scale*vertex[1], center + scale*vertex[2], normal[0], normal[1], normal[2], uv[0], uv[1], uv[2]);
+      }
+      else if(normal.size() > 0) {
         triangle = std::make_shared<Triangle>(center + scale*vertex[0], center + scale*vertex[1], center + scale*vertex[2], normal[0], normal[1], normal[2]);
       }
       else {

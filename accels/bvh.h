@@ -133,9 +133,6 @@ class BVH : public Accel<T> {
         for(int i = 0; i < node->nPrims; i++) {
           int index = node->offset + i;
           if(this->prims[index]->intersect(ray, res)) {
-            if(isNan(res.hitPos)) {
-              std::cout << "asdf" << std::endl;
-            }
             hit = true;
             ray.tmax = res.t;
           }
