@@ -11,18 +11,21 @@ class Triangle : public Shape {
     Vec3 n1, n2, n3;
     Vec2 t1, t2, t3;
     Vec3 face_normal;
-    bool vertex_normal;
+    bool vertex_normal = false;
+    bool vertex_uv = false;
 
     Triangle(const Vec3& _p1, const Vec3& _p2, const Vec3& _p3) : p1(_p1), p2(_p2), p3(_p3) {
       Vec3 a = normalize(p2 - p1);
       Vec3 b = normalize(p3 - p1);
       face_normal = normalize(cross(a, b));
-      vertex_normal = false;
     };
     Triangle(const Vec3& _p1, const Vec3& _p2, const Vec3& _p3, const Vec3& _n1, const Vec3& _n2, const Vec3& _n3) : p1(_p1), p2(_p2), p3(_p3), n1(_n1), n2(_n2), n3(_n3) {
       vertex_normal = true;
     };
-    Triangle(const Vec3& _p1, const Vec3& _p2, const Vec3& _p3, const Vec3& _n1, const Vec3& _n2, const Vec3& _n3, const Vec2& _t1, const Vec2& _t2, const Vec2& _t3) : p1(_p1), p2(_p2), p3(_p3), n1(_n1), n2(_n2), n3(_n3), t1(_t1), t2(_t2), t3(_t3) {};
+    Triangle(const Vec3& _p1, const Vec3& _p2, const Vec3& _p3, const Vec3& _n1, const Vec3& _n2, const Vec3& _n3, const Vec2& _t1, const Vec2& _t2, const Vec2& _t3) : p1(_p1), p2(_p2), p3(_p3), n1(_n1), n2(_n2), n3(_n3), t1(_t1), t2(_t2), t3(_t3) {
+      vertex_normal = true;
+      vertex_uv = true;
+    };
 
     bool intersect(const Ray& ray, Hit& res) const {
         const float eps = 0.0001f;
@@ -53,8 +56,16 @@ class Triangle : public Shape {
         else {
             res.hitNormal = face_normal;
         }
-        res.u = u;
-        res.v = v;
+        
+        if(vertex_uv) {
+          Vec2 uv = (1.0f - u - v)*t1 + u*t2 + v*t3;
+          res.u = uv.x;
+          res.v = uv.y;
+        }
+        else {
+          res.u = u;
+          res.v = v;
+        }
         return true;
     };
 

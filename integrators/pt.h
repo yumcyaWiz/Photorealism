@@ -89,7 +89,7 @@ class Pt : public Integrator {
             Vec2 uv(u, v);
 
             Ray ray;
-            float weight;
+            float weight = 1.0f;
             if(!this->camera->getRay(u, v, *(this->sampler), ray, weight)) {
               this->camera->film->addSample(uv, RGB(0, 0, 0));
             }

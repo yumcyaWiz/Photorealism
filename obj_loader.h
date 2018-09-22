@@ -51,7 +51,13 @@ void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::v
       mat = std::make_shared<Glass>(tex, 1.5f);
     }
     else {
+      /*
       auto tex = std::make_shared<UniformTexture>(kd);
+      mat = std::make_shared<Lambert>(tex);
+      */
+      auto tex1 = std::make_shared<UniformTexture>(RGB(0.2));
+      auto tex2 = std::make_shared<UniformTexture>(RGB(0.9));
+      auto tex = std::make_shared<Checkerboard>(tex1, tex2, 1.0f, 1.0f, 1.0f);
       mat = std::make_shared<Lambert>(tex);
     }
   }

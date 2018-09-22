@@ -1,6 +1,6 @@
 [renderer]
 samples = 1
-integrator = "pt-explicit"
+integrator = "pt"
 accel = "bvh"
 polygon-accel = "bvh"
 
@@ -30,8 +30,8 @@ focus-point = [0.0, 1.0, 0.0]
 f-number = 22.0
 [camera.transform]
 type = "look-at"
-origin = [0.0, 100.0, 0.0]
-target = [1000.0, 100.0, 0.0]
+origin = [0.0, 0.0, -2.0]
+target = [0.0, 0.0, 0.0]
 
 
 [[texture]]
@@ -139,13 +139,13 @@ type = "lambert"
 albedo = "check"
 
 [[mesh]]
-name = "sponza"
+name = "cube"
 type = "obj"
-path = "sponza.obj"
+path = "cube.obj"
 
 [[object]]
-name = "sponza"
-mesh = "sponza"
+name = "cube"
+mesh = "cube"
 material = "white"
 [[object.transform]]
 type = "translate"
