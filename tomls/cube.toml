@@ -1,5 +1,5 @@
 [renderer]
-samples = 1
+samples = 10
 integrator = "pt"
 accel = "bvh"
 polygon-accel = "bvh"
@@ -18,7 +18,7 @@ resolution = [512, 512]
 type = "uniform"
 color = [1.0, 1.0, 1.0]
 path = "HDR_040_Field_Ref.hdr"
-intensity = 1.2
+intensity = 1.0
 phi-offset = 3.14
 theta-offset = 0
 
@@ -30,7 +30,7 @@ focus-point = [0.0, 1.0, 0.0]
 f-number = 22.0
 [camera.transform]
 type = "look-at"
-origin = [0.0, 0.0, -2.0]
+origin = [1.0, 1.0, -2.0]
 target = [0.0, 0.0, 0.0]
 
 

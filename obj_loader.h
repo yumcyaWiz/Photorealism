@@ -28,37 +28,39 @@ void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::v
       lights.push_back(light);
     }
 
-    Vec3 kd, ks;
-    if(material.diffuse != nullptr) {
-      kd = Vec3(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
+    Vec3 kd = Vec3(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
+    Vec3 ks = Vec3(material.specular[0], material.specular[1], material.specular[2]);
+    
+    std::shared_ptr<Texture> kd_tex;
+    if(material.diffuse_texname.size()) {
+      kd_tex = std::make_shared<ImageTexture>(material.diffuse_texname);
     }
-    if(material.specular != nullptr) {
-      ks = Vec3(material.specular[0], material.specular[1], material.specular[2]);
+    else {
+      kd_tex = std::make_shared<UniformTexture>(kd);
+    }
+
+    std::shared_ptr<Texture> ks_tex;
+    if(material.specular_texname.size()) {
+      ks_tex = std::make_shared<ImageTexture>(material.specular_texname);
+    }
+    else {
+      ks_tex = std::make_shared<UniformTexture>(ks);
     }
 
     //diffuse
     if(illum == 2) {
-      auto tex = std::make_shared<UniformTexture>(kd);
-      mat = std::make_shared<Lambert>(tex);
+      mat = std::make_shared<Lambert>(kd_tex);
     }
     //mirror
     else if(illum == 5) {
-      auto tex = std::make_shared<UniformTexture>(ks);
-      mat = std::make_shared<Mirror>(tex);
+      mat = std::make_shared<Mirror>(ks_tex);
     }
     else if(illum == 7) {
       auto tex = std::make_shared<UniformTexture>(RGB(1));
       mat = std::make_shared<Glass>(tex, 1.5f);
     }
     else {
-      /*
-      auto tex = std::make_shared<UniformTexture>(kd);
-      mat = std::make_shared<Lambert>(tex);
-      */
-      auto tex1 = std::make_shared<UniformTexture>(RGB(0.2));
-      auto tex2 = std::make_shared<UniformTexture>(RGB(0.9));
-      auto tex = std::make_shared<Checkerboard>(tex1, tex2, 1.0f, 1.0f, 1.0f);
-      mat = std::make_shared<Lambert>(tex);
+      mat = std::make_shared<Lambert>(kd_tex);
     }
   }
   else {
