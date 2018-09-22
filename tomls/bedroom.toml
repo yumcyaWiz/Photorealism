@@ -1,6 +1,6 @@
 [renderer]
-samples = 100
-integrator = "pt-explicit"
+samples = 1
+integrator = "pt"
 accel = "bvh"
 polygon-accel = "bvh"
 
@@ -30,8 +30,8 @@ focus-point = [0.0, 1.0, 0.0]
 f-number = 22.0
 [camera.transform]
 type = "look-at"
-origin = [0.0, 3, 0.0]
-target = [-1.0, 3, 0.0]
+origin = [3.0, -20.0, 0.0]
+target = [0.0, -20.0, 0.0]
 
 
 [[texture]]
@@ -65,14 +65,14 @@ albedo = "check"
 
 
 [[mesh]]
-name = "sponza"
+name = "bedroom"
 type = "obj"
-path = "sponza.obj"
+path = "iscv2.obj"
 
 
 [[object]]
-name = "sponza"
-mesh = "sponza"
+name = "bedroom"
+mesh = "bedroom"
 material = "white"
 [[object.transform]]
 type = "translate"

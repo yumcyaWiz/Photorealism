@@ -30,7 +30,7 @@ focus-point = [-0.5, 1.0, 0.0]
 f-number = 22.0
 [camera.transform]
 type = "look-at"
-origin = [0.0, 1.0, -3.0]
+origin = [-3.0, 1.0, 0.0]
 target = [0.0, 1.0, 0.0]
 
 
@@ -52,6 +52,16 @@ even = "black"
 alphaX = 1.0
 alphaY = 1.0
 alphaZ = 1.0
+
+[[texture]]
+name = "img"
+type = "image"
+path = "textures/vase_plant.png"
+
+[[texture]]
+name = "pokemon"
+type = "image"
+path = "pokemon.png"
 
 
 [[material]]
@@ -114,11 +124,21 @@ name = "check"
 type = "lambert"
 albedo = "check"
 
+[[material]]
+name = "img"
+type = "lambert"
+albedo = "img"
+
+[[material]]
+name = "pokemon"
+type = "lambert"
+albedo = "pokemon"
+
 
 [[mesh]]
 name = "sphere"
 type = "sphere"
-radius = 1.0
+radius = 0.5
 
 [[mesh]]
 name = "floor"
@@ -129,15 +149,15 @@ path = "plane.obj"
 [[object]]
 name = "floor"
 mesh = "floor"
-material = "check"
+material = "img"
 [[object.transform]]
 type = "translate"
-vector = [0, 0, 0]
+vector = [0, -1, 0]
 
 [[object]]
 name = "sphere"
 mesh = "sphere"
-material = "check"
+material = "pokemon"
 [[object.transform]]
 type = "translate"
 vector = [0, 0, 0]

@@ -17,9 +17,12 @@ class ImageTexture : public Texture {
     ImageTexture(const std::string& filename) {
       int n;
       img = stbi_load(filename.c_str(), &width, &height, &n, 3);
+      std::cout << "Loading Image" << std::endl;
+      std::cout << "path: " << filename.c_str() << std::endl;
       if(!img) {
         std::cout << "Loading Image Failed" << std::endl;
-        std::cout << "path: " << filename.c_str() << std::endl;
+        std::cout << "channels: " << n << std::endl;
+        std::cout << stbi_failure_reason() << std::endl;
         std::exit(1);
       }
     };
