@@ -1,5 +1,5 @@
 [renderer]
-samples = 10
+samples = 1000
 integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
@@ -24,26 +24,24 @@ theta-offset = 0
 
 
 [camera]
-type = "ideal-pinhole"
+type = "thin-lens"
 lens-distance = 1.0
 focus-point = [-0.5, 1.0, 0.0]
 f-number = 22.0
 [camera.transform]
 type = "look-at"
-origin = [0.0, 1.0, -3.0]
-target = [0.0, 1.0, 0.0]
+origin = [2.0, 1.0, 4.5]
+target = [-0.5, 1.0, 0.0]
 
 
 [[texture]]
 name = "texture"
 type = "uniform"
 color = [0.9, 0.9, 0.9]
-
 [[texture]]
 name = "black"
 type = "uniform"
 color = [0.2, 0.2, 0.2]
-
 [[texture]]
 name= "check"
 type = "checkerboard"
@@ -52,6 +50,14 @@ even = "black"
 alphaX = 1.0
 alphaY = 1.0
 alphaZ = 1.0
+[[texture]]
+name = "uv"
+type = "image"
+path = "uv_test.png"
+[[texture]]
+name = "earth"
+type = "image"
+path = "earth2.jpg"
 
 
 [[material]]
@@ -59,6 +65,12 @@ name = "white"
 type = "oren-nayar"
 sigma = 0.3
 albedo = "texture"
+
+[[material]]
+name = "uv"
+type = "oren-nayar"
+sigma = 0.3
+albedo = "uv"
 
 [[material]]
 name = "red"
@@ -90,6 +102,12 @@ ior = 1.5
 albedo = "texture"
 
 [[material]]
+name = "glass2"
+type = "glass"
+ior = 1.5
+albedo = "uv"
+
+[[material]]
 name = "beckmann"
 type = "beckmann"
 albedo = "texture"
@@ -110,10 +128,21 @@ albedo = "texture"
 ior = 1.5
 
 [[material]]
+name = "earth"
+type = "plastic"
+albedo = "earth"
+ior = 1.6
+
+[[material]]
 name = "check"
 type = "lambert"
 albedo = "check"
 
+
+[[mesh]]
+name = "bigSphere"
+type = "sphere"
+radius = 3000.0
 
 [[mesh]]
 name = "sphere"
@@ -121,23 +150,38 @@ type = "sphere"
 radius = 1.0
 
 [[mesh]]
+name = "light"
+type = "sphere"
+radius = 0.2
+
+[[mesh]]
+name = "dragon"
+type = "obj"
+path = "dragon.obj"
+
+[[mesh]]
 name = "floor"
 type = "obj"
 path = "plane.obj"
+
+[[mesh]]
+name = "car"
+type = "obj"
+path = "sportsCar.obj"
 
 
 [[object]]
 name = "floor"
 mesh = "floor"
-material = "check"
+material = "mirror"
 [[object.transform]]
 type = "translate"
 vector = [0, 0, 0]
 
 [[object]]
-name = "sphere"
-mesh = "sphere"
-material = "check"
+name = "car"
+mesh = "car"
+material = "white"
 [[object.transform]]
 type = "translate"
-vector = [0, 0, 0]
+vector = [0.0, 0.0, 0.0]

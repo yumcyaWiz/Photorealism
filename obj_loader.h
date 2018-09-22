@@ -32,7 +32,7 @@ void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::v
     Vec3 ks = Vec3(material.specular[0], material.specular[1], material.specular[2]);
     
     std::shared_ptr<Texture> kd_tex;
-    if(material.diffuse_texname.size()) {
+    if(material.diffuse_texname.size() > 0) {
       kd_tex = std::make_shared<ImageTexture>(material.diffuse_texname);
     }
     else {
@@ -40,7 +40,7 @@ void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::v
     }
 
     std::shared_ptr<Texture> ks_tex;
-    if(material.specular_texname.size()) {
+    if(material.specular_texname.size() > 0) {
       ks_tex = std::make_shared<ImageTexture>(material.specular_texname);
     }
     else {

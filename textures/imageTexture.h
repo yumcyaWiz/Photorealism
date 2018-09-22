@@ -17,6 +17,11 @@ class ImageTexture : public Texture {
     ImageTexture(const std::string& filename) {
       int n;
       img = stbi_load(filename.c_str(), &width, &height, &n, 3);
+      if(!img) {
+        std::cout << "Loading Image Failed" << std::endl;
+        std::cout << "path: " << filename.c_str() << std::endl;
+        std::exit(1);
+      }
     };
     ~ImageTexture() {
       stbi_image_free(img);
