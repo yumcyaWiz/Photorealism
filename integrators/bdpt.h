@@ -7,6 +7,13 @@ class BDPT : public Integrator {
 
     BDPT(const std::shared_ptr<Camera>& _camera, std::shared_ptr<Sampler>& _sampler, int _N) : Integrator(_camera, _sampler), N(_N) {};
 
+    float solidToArea(float pdf_solid, const Hit& res, const Ray& ray) const {
+      return std::max(dot(-ray.direction, res.hitNormal), 0.0f)/(res.hitPos - ray.origin).length2() * pdf_solid;
+    };
+    float areaToSolid(float pdf_area, const Hit& res, const Ray& ray) const {
+      return (res.hitPos - ray.origin).length2()/std::max(dot(-ray.direction, res.hitNormal), 0.0f) * pdf_area;
+    };
+
     void lightTrace(Scene& scene, const std::shared_ptr<Light>& light) const {
       float russian_rolette = 1.0f;
       RGB L;
@@ -25,7 +32,6 @@ class BDPT : public Integrator {
 
           Vec3 wo = -ray.direction;
           Vec3 n = res.hitNormal;
-          T *= std::max(dot(wo, n), 0.0f);
           Vec3 s, t;
           orthonormalBasis(n, s, t);
           Vec3 wo_local = worldToLocal(wo, n, s, t);
@@ -34,11 +40,12 @@ class BDPT : public Integrator {
           float camera_pdf;
           Vec2 pFilm;
           float We = camera->sample_Wi(res, *sampler, wi_camera, camera_pdf, pFilm);
+          Vec3 wi_camera_local = worldToLocal(wi_camera, n, s, t);
           Hit res_camera;
           bool camera_hit = scene.intersect(Ray(res.hitPos, wi_camera), res_camera);
           if(!camera_hit || (res_camera.hitPos - res.hitPos).length2() > (camera->camPos - res.hitPos).length2()) {
-            RGB brdf = hitMaterial->f(res, wi_camera, wo);
-            camera->film->addSample(pFilm, 20*brdf*We*T/camera_pdf);
+            RGB brdf = hitMaterial->f(res, wi_camera_local, wo_local);
+            camera->film->addSample(pFilm, 50*brdf*We*T/camera_pdf);
           }
 
           Vec3 wi_local;
@@ -46,7 +53,7 @@ class BDPT : public Integrator {
           RGB brdf = hitMaterial->sample(res, wo_local, *this->sampler, wi_local, brdf_pdf);
           float cos = absCosTheta(wi_local);
           if(isZero(brdf) || brdf_pdf == 0 || cos == 0) break;
-          RGB k = brdf * cos/brdf_pdf;
+          RGB k = brdf/brdf_pdf;
           if(isNan(k) || isInf(k)) break;
           Vec3 wi = localToWorld(wi_local, n, s, t);
 

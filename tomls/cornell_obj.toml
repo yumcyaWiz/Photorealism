@@ -30,7 +30,7 @@ focus-point = [0.0, 1.0, 0.0]
 f-number = 2.8
 [camera.transform]
 type = "look-at"
-origin = [0.0, 1.0, 3.0]
+origin = [0.0, 1.0, 4.0]
 target = [0.0, 1.0, 0.0]
 
 

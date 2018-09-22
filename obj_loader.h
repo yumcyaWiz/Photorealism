@@ -28,9 +28,15 @@ void loadPolygon(const std::vector<std::shared_ptr<Triangle>>& triangles, std::v
       lights.push_back(light);
     }
 
+    Vec3 kd, ks;
+    if(material.diffuse != nullptr) {
+      kd = Vec3(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
+    }
+    if(material.specular != nullptr) {
+      ks = Vec3(material.specular[0], material.specular[1], material.specular[2]);
+    }
+
     //diffuse
-    Vec3 kd(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
-    Vec3 ks(material.specular[0], material.specular[1], material.specular[2]);
     if(illum == 2) {
       auto tex = std::make_shared<UniformTexture>(kd);
       mat = std::make_shared<Lambert>(tex);
@@ -122,7 +128,7 @@ void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale,
     }
 
     tinyobj::material_t material;
-    if(mtl) {
+    if(mtl && shapes[s].mesh.material_ids[0] >= 0 && shapes[s].mesh.material_ids[0] < materials.size()) {
       material = materials[shapes[s].mesh.material_ids[0]];
       loadPolygon(triangles, prims, lights, mat, mtl, material, polygon_accel);
     }

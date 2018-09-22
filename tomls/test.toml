@@ -1,5 +1,5 @@
 [renderer]
-samples = 10000
+samples = 5000
 integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
@@ -17,8 +17,8 @@ resolution = [512, 512]
 [sky]
 type = "ibl"
 color = [1.0, 1.0, 1.0]
-path = "spruit_sunrise_8k.hdr"
-intensity = 1.0
+path = "HDR_040_Field_Ref.hdr"
+intensity = 1.2
 phi-offset = 3.14
 theta-offset = 0
 
@@ -26,12 +26,12 @@ theta-offset = 0
 [camera]
 type = "thin-lens"
 lens-distance = 1.0
-focus-point = [0.0, 0.0, 0.0]
-f-number = 5.6
+focus-point = [-0.5, 1.0, 0.0]
+f-number = 22.0
 [camera.transform]
 type = "look-at"
-origin = [2.0, 0.0, -4.0]
-target = [0.0, 0.0, 0.0]
+origin = [2.0, 1.0, 4.5]
+target = [-0.5, 1.0, 0.0]
 
 
 [[texture]]
@@ -64,7 +64,7 @@ path = "earth2.jpg"
 name = "white"
 type = "oren-nayar"
 sigma = 0.3
-albedo = "check"
+albedo = "texture"
 
 [[material]]
 name = "uv"
@@ -164,19 +164,24 @@ name = "floor"
 type = "obj"
 path = "plane.obj"
 
+[[mesh]]
+name = "car"
+type = "obj"
+path = "sportsCar.obj"
+
 
 [[object]]
 name = "floor"
 mesh = "floor"
-material = "check"
+material = "mirror"
 [[object.transform]]
 type = "translate"
-vector = [0, -1, 0]
+vector = [0, 0, 0]
 
 [[object]]
-name = "left_ball"
-mesh = "sphere"
-material = "earth"
+name = "car"
+mesh = "car"
+material = "white"
 [[object.transform]]
 type = "translate"
 vector = [0.0, 0.0, 0.0]
