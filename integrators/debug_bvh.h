@@ -1,10 +1,10 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 #include "../integrator.h"
-class Debug : public Integrator {
+class DebugBVH : public Integrator {
   public:
 
-    Debug(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler) : Integrator(_camera, _sampler) {};
+    DebugBVH(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler) : Integrator(_camera, _sampler) {};
 
     RGB Li(const Ray& ray, Scene& scene) const {
       Hit res;

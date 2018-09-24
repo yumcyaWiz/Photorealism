@@ -1,6 +1,6 @@
 [renderer]
-samples = 1
-integrator = "debug"
+samples = 10
+integrator = "pt"
 accel = "bvh"
 polygon-accel = "bvh"
 
