@@ -8,8 +8,8 @@ polygon-accel = "bvh"
 type = "mt"
 
 [filter]
-type = "triangle"
-radius = [0.5, 0.5]
+type = "box"
+radius = [0.499, 0.499]
 
 [film]
 resolution = [512, 512]

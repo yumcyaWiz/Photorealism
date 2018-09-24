@@ -149,10 +149,12 @@ class Direct : public Integrator {
 #pragma omp parallel for schedule(dynamic, 1)
         for(int j = 0; j < height; j++) {
           for(int k = 0; k < N; k++) {
-            float sx = k%N_sqrt * 2.0/width + 2.0/width*sampler->getNext();
-            float sy = k/N_sqrt * 2.0/height + 2.0/height*sampler->getNext();
-            float u = (2.0*i - width + sx)/width;
-            float v = (2.0*j - height + sy)/width;
+            float rx = 2*sampler->getNext() - 1;
+            float ry = 2*sampler->getNext() - 1;
+            float sx = float(k%N_sqrt)/N_sqrt + rx/(2.0*N_sqrt) + 1/(2.0*N_sqrt);
+            float sy = k/N_sqrt * 1/float(N_sqrt) + ry/(2.0*N_sqrt) + 1/(2.0*N_sqrt);
+            float u = (2.0*(i + sx) - width)/width;
+            float v = (2.0*(j + sy) - height)/width;
             Vec2 uv(u, v);
 
             Ray ray;
