@@ -1,15 +1,24 @@
-#ifndef DEBUG_BVH_H
-#define DEBUG_BVH_H
+#ifndef DEBUG_UV_H
+#define DEBUG_UV_H
 #include "../integrator.h"
-class DebugBVH : public Integrator {
-  public:
+#include "../textures/imageTexture.h"
+class DebugUV : public Integrator {
+  private:
+    std::shared_ptr<Texture> uv_img;
 
-    DebugBVH(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler) : Integrator(_camera, _sampler) {};
+  public:
+    DebugUV(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler) : Integrator(_camera, _sampler) {
+      uv_img = std::make_shared<ImageTexture>("uv_test.png");
+    };
 
     RGB Li(const Ray& ray, Scene& scene) const {
       Hit res;
-      scene.intersect(ray, res);
-      return ray.hitCount * RGB(0, 1, 0);
+      if(scene.intersect(ray, res)) {
+        return uv_img->getColor(res);
+      }
+      else {
+        return RGB(0);
+      }
     };
 
     void render(Scene& scene) const {
@@ -34,22 +43,6 @@ class DebugBVH : public Integrator {
           }
         }
       }
-
-
-      float max = 0;
-      for(int i = 0; i < width; i++) {
-        for(int j = 0; j < height; j++) {
-          RGB col = this->camera->film->getPixel(i, j);
-          if(isInf(col)) {
-            std::cout << Vec2(i, j) << std::endl;
-          }
-          if(col.y > max) {
-            max = col.y;
-          }
-        }
-      }
-      std::cout << max << std::endl;
-      this->camera->film->divide(max);
       this->camera->film->ppm_output("output.ppm");
     };
 };

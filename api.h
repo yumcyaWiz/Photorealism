@@ -40,6 +40,7 @@
 #include "integrators/pt_explicit.h"
 #include "integrators/direct.h"
 #include "integrators/debug_bvh.h"
+#include "integrators/debug_uv.h"
 #include "integrators/bdpt.h"
 
 #include "aabb.h"
