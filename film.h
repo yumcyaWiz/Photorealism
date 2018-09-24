@@ -5,6 +5,8 @@
 #include "vec3.h"
 #include "util.h"
 #include "filter.h"
+
+
 struct Pixel {
   RGB color;
   int n_sample;
@@ -76,6 +78,7 @@ class Film {
         std::exit(1);
       }
       data[i + width*j].color += L;
+      data[i + width*j].filter_accum++;
       data[i + width*j].n_sample++;
     };
     void addSample(const Vec2& u, const RGB& L) const {
@@ -86,12 +89,20 @@ class Film {
       for(int iy = j - ry; iy <= j + ry; iy++) {
         for(int ix = i - rx; ix <= i + rx; ix++) {
           if(ix < 0 || ix >= width || iy < 0 || iy >= height) continue;
-          Vec2 pixelPos(ix + 0.5, iy + 0.5);
+          Vec2 pixelPos(ix + 0.5f, iy + 0.5f);
           Vec2 p = Vec2(i, j) - pixelPos;
           float f = filter->eval(p);
           data[ix + width*iy].color += f*L;
           data[ix + width*iy].n_sample++;
           data[ix + width*iy].filter_accum += f;
+        }
+      }
+    };
+
+    void divide(float denom) {
+      for(int j = 0; j < height; j++) {
+        for(int i = 0; i < width; i++) {
+          data[i + width*j].color /= denom;
         }
       }
     };

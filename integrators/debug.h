@@ -19,12 +19,12 @@ class Debug : public Integrator {
 #pragma omp parallel for schedule(dynamic, 1)
       for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
-          float u = (2.0*i - width)/width;
-          float v = (2.0*j - height)/width;
+          float u = (2.0*(i + 0.5f) - width)/width;
+          float v = (2.0*(j + 0.5f) - height)/width;
           Vec2 uv(u, v);
 
           Ray ray;
-          float weight;
+          float weight = 1.0f;
           if(!this->camera->getRay(u, v, *(this->sampler), ray, weight)) {
             this->camera->film->addSample(uv, RGB(0, 0, 0));
           }
@@ -39,11 +39,17 @@ class Debug : public Integrator {
       float max = 0;
       for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
-          if(this->camera->film->getPixel(i, j).y > max) {
-            max = this->camera->film->getPixel(i, j).y;
+          RGB col = this->camera->film->getPixel(i, j);
+          if(isInf(col)) {
+            std::cout << Vec2(i, j) << std::endl;
+          }
+          if(col.y > max) {
+            max = col.y;
           }
         }
       }
+      std::cout << max << std::endl;
+      this->camera->film->divide(max);
       this->camera->film->ppm_output("output.ppm");
     };
 };
