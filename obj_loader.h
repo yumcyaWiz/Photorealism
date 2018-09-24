@@ -117,6 +117,9 @@ void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale,
         if(idx.texcoord_index >= 0) {
           tinyobj::real_t u = attrib.texcoords[2*idx.texcoord_index+0];
           tinyobj::real_t v = attrib.texcoords[2*idx.texcoord_index+1];
+          if(u < 0 || u > 1 || v < 0 || v > 1) {
+            std::cout << "uv load" << u << ", " << v << std::endl;
+          }
           uv.push_back(Vec2(float(u), float(v)));
         }
 
