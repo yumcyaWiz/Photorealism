@@ -131,6 +131,9 @@ void loadObj(const std::string& filename, const Vec3& center, const Vec3& scale,
       else if(normal.size() > 0) {
         triangle = std::make_shared<Triangle>(center + scale*vertex[0], center + scale*vertex[1], center + scale*vertex[2], normal[0], normal[1], normal[2]);
       }
+      else if(uv.size() > 0) {
+        triangle = std::make_shared<Triangle>(center + scale*vertex[0], center + scale*vertex[1], center + scale*vertex[2], uv[0], uv[1], uv[2]);
+      }
       else {
         triangle = std::make_shared<Triangle>(center + scale*vertex[0], center + scale*vertex[1], center + scale*vertex[2]);
       }

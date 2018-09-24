@@ -14,6 +14,9 @@ class DebugUV : public Integrator {
     RGB Li(const Ray& ray, Scene& scene) const {
       Hit res;
       if(scene.intersect(ray, res)) {
+        if(res.u < 0 || res.u > 1.0 || res.v < 0 || res.v > 1.0) {
+          std::cout << res.u << ", " << res.v << std::endl;
+        }
         return uv_img->getColor(res);
       }
       else {

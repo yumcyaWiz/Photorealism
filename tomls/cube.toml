@@ -1,6 +1,6 @@
 [renderer]
 samples = 36
-integrator = "pt"
+integrator = "debug-uv"
 accel = "bvh"
 polygon-accel = "bvh"
 

@@ -2,6 +2,7 @@
 #define IMAGE_TEXTURE_H
 #include "../hit.h"
 #include "../texture.h"
+#include "../util.h"
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -31,8 +32,8 @@ class ImageTexture : public Texture {
     };
 
     RGB getColor(const Hit& res) const {
-      int i = (int)(res.u*width);
-      int j = (int)(res.v*height);
+      int i = clamp((int)(res.u*width), 0, width - 1);
+      int j = clamp((int)(res.v*height), 0, height - 1);
       int adr = 3*i + 3*width*j;
       return RGB(img[adr]/255.0f, img[adr+1]/255.0f, img[adr+2]/255.0f);
     };

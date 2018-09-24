@@ -22,6 +22,9 @@ class Triangle : public Shape {
     Triangle(const Vec3& _p1, const Vec3& _p2, const Vec3& _p3, const Vec3& _n1, const Vec3& _n2, const Vec3& _n3) : p1(_p1), p2(_p2), p3(_p3), n1(_n1), n2(_n2), n3(_n3) {
       vertex_normal = true;
     };
+    Triangle(const Vec3& _p1, const Vec3& _p2, const Vec3& _p3, const Vec2& _t1, const Vec2& _t2, const Vec2& _t3) : p1(_p1), p2(_p2), p3(_p3), t1(_t1), t2(_t2), t3(_t3) {
+      vertex_uv = true;
+    };
     Triangle(const Vec3& _p1, const Vec3& _p2, const Vec3& _p3, const Vec3& _n1, const Vec3& _n2, const Vec3& _n3, const Vec2& _t1, const Vec2& _t2, const Vec2& _t3) : p1(_p1), p2(_p2), p3(_p3), n1(_n1), n2(_n2), n3(_n3), t1(_t1), t2(_t2), t3(_t3) {
       vertex_normal = true;
       vertex_uv = true;

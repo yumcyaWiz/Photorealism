@@ -1,5 +1,5 @@
 [renderer]
-samples = 16
+samples = 4
 integrator = "debug-uv"
 accel = "bvh"
 polygon-accel = "bvh"
@@ -8,7 +8,7 @@ polygon-accel = "bvh"
 type = "mt"
 
 [filter]
-type = "triangle"
+type = "box"
 radius = [0.499, 0.499]
 
 [film]
@@ -17,7 +17,7 @@ resolution = [512, 512]
 [sky]
 type = "uniform"
 color = [1.0, 1.0, 1.0]
-path = "HDR_040_Field_Ref.hdr"
+path = "PaperMill_E_3k.hdr"
 intensity = 1.0
 phi-offset = 3.14
 theta-offset = 0
@@ -30,26 +30,14 @@ focus-point = [0.0, 1.0, 0.0]
 f-number = 22.0
 [camera.transform]
 type = "look-at"
-origin = [0.0, 3, 0.0]
-target = [-1.0, 3, 0.0]
+origin = [0.0, 30.0, -100.0]
+target = [0.0, 30.0, 0.0]
 
 
 [[texture]]
 name = "texture"
 type = "uniform"
 color = [0.9, 0.9, 0.9]
-[[texture]]
-name = "black"
-type = "uniform"
-color = [0.2, 0.2, 0.2]
-[[texture]]
-name= "check"
-type = "checkerboard"
-odd = "texture"
-even = "black"
-alphaX = 1.0
-alphaY = 1.0
-alphaZ = 1.0
 
 
 [[material]]
@@ -58,21 +46,15 @@ type = "oren-nayar"
 sigma = 0.3
 albedo = "texture"
 
-[[material]]
-name = "check"
-type = "lambert"
-albedo = "check"
-
 
 [[mesh]]
-name = "sponza"
+name = "teapot"
 type = "obj"
-path = "sponza.obj"
-
+path = "teapot.obj"
 
 [[object]]
-name = "sponza"
-mesh = "sponza"
+name = "teapot"
+mesh = "teapot"
 material = "white"
 [[object.transform]]
 type = "translate"
