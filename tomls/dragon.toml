@@ -7,6 +7,10 @@ polygon-accel = "bvh"
 [sampler]
 type = "mt"
 
+[filter]
+type = "box"
+radius = [0.499, 0.499]
+
 [film]
 resolution = [512, 512]
 

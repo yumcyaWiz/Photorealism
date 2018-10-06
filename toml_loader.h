@@ -107,6 +107,9 @@ class TomlLoader {
       else if(integrator == "debug-uv") {
         integ = std::make_shared<DebugUV>(cam, sampler);
       }
+      else if(integrator == "debug-normal") {
+        integ = std::make_shared<DebugNormal>(cam, sampler);
+      }
       else if(integrator == "bdpt") {
         integ = std::make_shared<BDPT>(cam, sampler, samples);
       }
