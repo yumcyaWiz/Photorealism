@@ -87,8 +87,8 @@ class Pt : public Integrator {
             float ry = 2*sampler->getNext() - 1;
             float sx = float(k%N_sqrt)/N_sqrt + rx/(2.0*N_sqrt) + 1/(2.0*N_sqrt);
             float sy = k/N_sqrt * 1/float(N_sqrt) + ry/(2.0*N_sqrt) + 1/(2.0*N_sqrt);
-            float u = (2.0*(i + sx) - width)/width;
-            float v = (2.0*(j + sy) - height)/width;
+            float u = (2.0*(i + sx) - width)/height;
+            float v = (2.0*(j + sy) - height)/height;
             Vec2 uv(u, v);
 
             Ray ray;
