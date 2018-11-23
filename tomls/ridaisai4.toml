@@ -1,0 +1,175 @@
+[renderer]
+samples = 300
+integrator = "pt-explicit"
+accel = "bvh"
+polygon-accel = "bvh"
+
+[sampler]
+type = "mt"
+
+[filter]
+type = "box"
+radius = [0.499, 0.499]
+
+[film]
+resolution = [2138, 1536]
+
+[sky]
+type = "ibl"
+color = [0.0, 0.0, 0.0]
+path = "PaperMill_E_3k.hdr"
+intensity = 1.0
+phi-offset = 3.14
+theta-offset = 0
+
+
+[camera]
+type = "thin-lens"
+lens-distance = 1.0
+focus-point = [0.0, 1.0, 0.0]
+f-number = 8.0
+[camera.transform]
+type = "look-at"
+origin = [0.0, -0.5, -3.8]
+target = [0.0, -0.5, 0.0]
+
+
+[[texture]]
+name = "white"
+type = "uniform"
+color = [0.9, 0.9, 0.9]
+[[texture]]
+name = "red"
+type = "uniform"
+color = [0.8, 0.2, 0.2]
+[[texture]]
+name = "green"
+type = "uniform"
+color = [0.2, 0.8, 0.2]
+[[texture]]
+name = "blue"
+type = "uniform"
+color = [0.2, 0.2, 0.8]
+[[texture]]
+name = "uv"
+type = "image"
+path = "uv_test.png"
+[[texture]]
+name = "earth"
+type = "image"
+path = "earth2.jpg"
+
+
+[[material]]
+name = "white"
+type = "oren-nayar"
+sigma = 0.3
+albedo = "white"
+
+[[material]]
+name = "uv"
+type = "oren-nayar"
+sigma = 0.3
+albedo = "uv"
+
+[[material]]
+name = "red"
+type = "oren-nayar"
+sigma = 0.3
+albedo = "red"
+
+[[material]]
+name = "green"
+type = "oren-nayar"
+sigma = 0.3
+albedo = "green"
+
+[[material]]
+name = "blue"
+type = "oren-nayar"
+sigma = 0.3
+albedo = "blue"
+
+[[material]]
+name = "mirror"
+type = "mirror"
+albedo = "white"
+
+[[material]]
+name = "glass"
+type = "glass"
+ior = 1.5
+albedo = "white"
+
+[[material]]
+name = "glass2"
+type = "glass"
+ior = 1.5
+albedo = "uv"
+
+[[material]]
+name = "beckmann"
+type = "beckmann"
+albedo = "white"
+roughness = 0.4
+ior = 8.0
+
+[[material]]
+name = "ggx"
+type = "ggx"
+albedo = "white"
+roughness = 0.4
+ior = 8.0
+
+[[material]]
+name = "plastic"
+type = "plastic"
+albedo = "white"
+ior = 1.5
+
+[[material]]
+name = "earth"
+type = "plastic"
+albedo = "earth"
+ior = 1.6
+
+
+[[mesh]]
+name = "bigSphere"
+type = "sphere"
+radius = 10000.0
+
+[[mesh]]
+name = "sphere"
+type = "sphere"
+radius = 1.0
+
+[[mesh]]
+name = "light"
+type = "sphere"
+radius = 1.0
+
+[[mesh]]
+name = "dragon"
+type = "obj"
+path = "dragon.obj"
+
+
+[[object]]
+name = "floor"
+mesh = "bigSphere"
+material = "ggx"
+[[object.transform]]
+type = "translate"
+vector = [0, -10001, 0]
+
+[[object]]
+name = "dragon"
+mesh = "dragon"
+material = "glass"
+[[object.transform]]
+type = "translate"
+vector = [0.0, -1.0, 0.0]
+[[object.transform]]
+type = "scale"
+vector = [0.2, 0.2, 0.2]
