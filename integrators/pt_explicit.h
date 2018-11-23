@@ -209,6 +209,7 @@ class PtExplicit : public Integrator {
 
       Timer timer;
       int ms = 0;
+      std::cout << width << ", " << height << std::endl;
       for(int i = 0; i < width; i++) {
         timer.start();
 #pragma omp parallel for schedule(dynamic, 1)

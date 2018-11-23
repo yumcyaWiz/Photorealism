@@ -1,5 +1,5 @@
 [renderer]
-samples = 10
+samples = 300
 integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
@@ -26,12 +26,12 @@ theta-offset = 0
 [camera]
 type = "thin-lens"
 lens-distance = 1.0
-focus-point = [0.0, 1.0, 0.0]
+focus-point = [0.0, 0.5, 0.0]
 f-number = 8.0
 [camera.transform]
 type = "look-at"
-origin = [0.0, 1.0, 4.0]
-target = [0.0, 1.0, 0.0]
+origin = [0.0, 0.5, 4.0]
+target = [0.0, 0.5, 0.0]
 
 
 [[texture]]

@@ -83,7 +83,7 @@ class Film {
     };
     void addSample(const Vec2& u, const RGB& L) const {
       float i = (u.x + 1.0f)/2.0f * width;
-      float j = (u.y + 1.0f)/2.0f * height;
+      float j = (u.y + 1.0f)/2.0f * width;
       float rx = filter->radius.x;
       float ry = filter->radius.y;
       for(int iy = j - ry; iy <= j + ry; iy++) {
