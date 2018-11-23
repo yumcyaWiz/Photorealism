@@ -1,5 +1,5 @@
 [renderer]
-samples = 10
+samples = 100
 integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
@@ -17,21 +17,21 @@ resolution = [512, 512]
 [sky]
 type = "ibl"
 color = [1.0, 1.0, 1.0]
-path = "HDR_040_Field_Ref.hdr"
-intensity = 1.2
-phi-offset = 3.14
+path = "spruit_sunrise_8k.hdr"
+intensity = 0.7
+phi-offset = 0 
 theta-offset = 0
 
 
 [camera]
-type = "ideal-pinhole"
+type = "thin-lens"
 lens-distance = 1.0
-focus-point = [-0.5, 1.0, 0.0]
-f-number = 22.0
+focus-point = [0.0, 0.0, 0.0]
+f-number = 5.6
 [camera.transform]
 type = "look-at"
-origin = [-3.0, 1.0, 0.0]
-target = [0.0, 1.0, 0.0]
+origin = [0.0, 0.0, -4.0]
+target = [0.0, 0.0, 0.0]
 
 
 [[texture]]
@@ -62,6 +62,11 @@ path = "textures/vase_plant.png"
 name = "pokemon"
 type = "image"
 path = "pokemon.png"
+
+[[texture]]
+name = "earth"
+type = "image"
+path = "earth2.jpg"
 
 
 [[material]]
@@ -116,13 +121,14 @@ ior = 8.0
 [[material]]
 name = "plastic"
 type = "plastic"
-albedo = "texture"
+albedo = "earth"
 ior = 1.5
 
 [[material]]
 name = "check"
-type = "lambert"
+type = "plastic"
 albedo = "check"
+ior = 2.5
 
 [[material]]
 name = "img"
@@ -138,7 +144,7 @@ albedo = "pokemon"
 [[mesh]]
 name = "sphere"
 type = "sphere"
-radius = 0.5
+radius = 1
 
 [[mesh]]
 name = "floor"
@@ -149,7 +155,7 @@ path = "plane.obj"
 [[object]]
 name = "floor"
 mesh = "floor"
-material = "img"
+material = "check"
 [[object.transform]]
 type = "translate"
 vector = [0, -1, 0]
@@ -157,7 +163,7 @@ vector = [0, -1, 0]
 [[object]]
 name = "sphere"
 mesh = "sphere"
-material = "pokemon"
+material = "plastic"
 [[object.transform]]
 type = "translate"
 vector = [0, 0, 0]

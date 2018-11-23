@@ -8,6 +8,10 @@ type = "mt"
 [film]
 resolution = [512, 512]
 
+[filter]
+type = "box"
+radius = [0.5, 0.5]
+
 [sky]
 type = "ibl"
 color = [1.0, 1.0, 1.0]
