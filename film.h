@@ -82,8 +82,9 @@ class Film {
       data[i + width*j].n_sample++;
     };
     void addSample(const Vec2& u, const RGB& L) const {
-      float i = (u.x + 1.0f)/2.0f * width;
-      float j = (u.y + 1.0f)/2.0f * width;
+      float i = (u.x * height + width)/2.0f;
+      std::cout << i << std::endl;
+      float j = (u.y * height + height)/2.0f;
       float rx = filter->radius.x;
       float ry = filter->radius.y;
       for(int iy = j - ry; iy <= j + ry; iy++) {

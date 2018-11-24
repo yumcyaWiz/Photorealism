@@ -1,5 +1,5 @@
 [renderer]
-samples = 300
+samples = 1
 integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
@@ -12,7 +12,7 @@ type = "box"
 radius = [0.499, 0.499]
 
 [film]
-resolution = [2138, 1536]
+resolution = [1024, 512]
 
 [sky]
 type = "ibl"
@@ -30,8 +30,8 @@ focus-point = [0.0, 1.0, 0.0]
 f-number = 8.0
 [camera.transform]
 type = "look-at"
-origin = [0.0, -0.5, -3.8]
-target = [0.0, -0.5, 0.0]
+origin = [0.0, 0.0, -3.8]
+target = [0.0, 0.0, 0.0]
 
 
 [[texture]]
