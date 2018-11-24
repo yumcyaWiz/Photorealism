@@ -23,8 +23,8 @@ class DebugNormal : public Integrator {
 #pragma omp parallel for schedule(dynamic, 1)
       for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
-          float u = (2.0*(i + 0.5f) - width)/width;
-          float v = (2.0*(j + 0.5f) - height)/width;
+          float u = (2.0*(i + 0.5f) - width)/height;
+          float v = (2.0*(j + 0.5f) - height)/height;
           Vec2 uv(u, v);
 
           Ray ray;
