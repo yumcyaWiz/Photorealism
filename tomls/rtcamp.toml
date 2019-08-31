@@ -65,7 +65,7 @@ path = "earth2.jpg"
 [[texture]]
 name = "marble"
 type = "image"
-path = "marble2.jpg"
+path = "black_marble.jpg"
 
 
 [[material]]
@@ -189,11 +189,16 @@ name = "diamond"
 type = "obj"
 path = "diamond.obj"
 
+[[mesh]]
+name = "cube"
+type = "obj"
+path = "cube.obj"
+
 
 [[object]]
 name = "floor"
 mesh = "floor"
-material = "uv"
+material = "marble"
 [[object.transform]]
 type = "translate"
 vector = [0, 0, 0]
@@ -202,9 +207,9 @@ type = "scale"
 vector = [3, 3, 3]
 
 [[object]]
-name = "dragon"
-mesh = "diamond"
-material = "diamond"
+name = "cube"
+mesh = "cube"
+material = "mirror"
 [[object.transform]]
 type = "translate"
-vector = [0.0, 0.0, 0.0]
+vector = [0.0, 0.5, 0.0]
