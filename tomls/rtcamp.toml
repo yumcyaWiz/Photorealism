@@ -208,8 +208,8 @@ vector = [3, 3, 3]
 
 [[object]]
 name = "cube"
-mesh = "cube"
-material = "mirror"
+mesh = "diamond"
+material = "diamond"
 [[object.transform]]
 type = "translate"
 vector = [0.0, 0.5, 0.0]
