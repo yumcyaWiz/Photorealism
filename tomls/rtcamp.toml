@@ -1,5 +1,5 @@
 [renderer]
-samples = 20
+samples = 100
 integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"
@@ -12,25 +12,25 @@ type = "box"
 radius = [0.499, 0.499]
 
 [film]
-resolution = [512, 512]
+resolution = [906, 512]
 
 [sky]
 type = "ibl"
 color = [0.0, 0.0, 0.0]
-path = "PaperMill_E_3k.hdr"
-intensity = 1.0
+path = "hotel.hdr"
+intensity = 3.0
 phi-offset = 0.0
 theta-offset = 0
 
 
 [camera]
 type = "thin-lens"
-lens-distance = 1.0
+lens-distance = 1.5
 focus-point = [0.0, 1.0, 0.0]
 f-number = 8.0
 [camera.transform]
 type = "look-at"
-origin = [1.0, 3.0, 3.0]
+origin = [3.0, 3.0, 8.0]
 target = [0.0, 1.0, 0.0]
 
 
@@ -55,6 +55,10 @@ name = "blue"
 type = "uniform"
 color = [0.2, 0.2, 0.8]
 [[texture]]
+name = "brown"
+type = "uniform"
+color = [0.65, 0.43, 0.19]
+[[texture]]
 name = "uv"
 type = "image"
 path = "uv_test.png"
@@ -66,7 +70,14 @@ path = "earth2.jpg"
 name = "marble"
 type = "image"
 path = "black_marble.jpg"
-
+[[texture]]
+name = "emerald"
+type = "uniform"
+color = [0.1, 0.9, 0.8]
+[[texture]]
+name = "diamond_plate"
+type = "image"
+path = "diamond_plate.png"
 
 [[material]]
 name = "white"
@@ -79,6 +90,12 @@ name = "uv"
 type = "oren-nayar"
 sigma = 0.3
 albedo = "uv"
+
+[[material]]
+name = "diamond_plate"
+type = "oren-nayar"
+sigma = 0.3
+albedo = "diamond_plate"
 
 [[material]]
 name = "red"
@@ -107,7 +124,7 @@ albedo = "white"
 name = "glass"
 type = "glass"
 ior = 1.5
-albedo = "white"
+albedo = "pure_white"
 
 [[material]]
 name = "glass2"
@@ -118,8 +135,14 @@ albedo = "uv"
 [[material]]
 name = "diamond"
 type = "glass"
-ior = 1.5
+ior = 2.418
 albedo = "white"
+
+[[material]]
+name = "emerald"
+type = "glass"
+ior = 1.580
+albedo = "emerald"
 
 [[material]]
 name = "beckmann"
@@ -153,6 +176,13 @@ type = "plastic"
 albedo = "earth"
 ior = 1.6
 
+[[material]]
+name = "statue"
+type = "ggx"
+albedo = "brown"
+roughness = 0.4
+ior = 8.0
+
 
 [[mesh]]
 name = "bigSphere"
@@ -167,7 +197,7 @@ radius = 1.0
 [[mesh]]
 name = "light"
 type = "sphere"
-radius = 1.0
+radius = 3.0
 
 [[mesh]]
 name = "dragon"
@@ -180,6 +210,11 @@ type = "obj"
 path = "bunny.obj"
 
 [[mesh]]
+name = "lucy"
+type = "obj"
+path = "lucy.obj"
+
+[[mesh]]
 name = "floor"
 type = "obj"
 path = "plane.obj"
@@ -188,28 +223,210 @@ path = "plane.obj"
 name = "diamond"
 type = "obj"
 path = "diamond.obj"
+[[mesh]]
+name = "diamond2"
+type = "obj"
+path = "diamond2.obj"
+[[mesh]]
+name = "diamond3"
+type = "obj"
+path = "diamond3.obj"
 
 [[mesh]]
 name = "cube"
 type = "obj"
 path = "cube.obj"
+[[mesh]]
+name = "case"
+type = "obj"
+path = "case.obj"
 
 
 [[object]]
 name = "floor"
-mesh = "floor"
+mesh = "cube"
 material = "marble"
 [[object.transform]]
 type = "translate"
-vector = [0, 0, 0]
+vector = [0, -5, 0]
 [[object.transform]]
 type = "scale"
-vector = [3, 3, 3]
+vector = [4, 10, 4]
 
 [[object]]
-name = "cube"
+name = "dragon"
+mesh = "dragon"
+material = "diamond"
+[[object.transform]]
+type = "translate"
+vector = [0.0, 0.0, 0.0]
+[[object.transform]]
+type = "scale"
+vector = [0.25, 0.25, 0.25]
+
+[[object]]
+name = "case"
+mesh = "case"
+material = "glass"
+[[object.transform]]
+type = "translate"
+vector = [0.0, -0.1, 0.0]
+[[object.transform]]
+type = "scale"
+vector = [2, 2, 2]
+
+
+[[object]]
+name = "floor2"
+mesh = "cube"
+material = "marble"
+[[object.transform]]
+type = "translate"
+vector = [7, -5, 0]
+[[object.transform]]
+type = "scale"
+vector = [4, 10, 4]
+
+[[object]]
+name = "diamond"
 mesh = "diamond"
 material = "diamond"
 [[object.transform]]
 type = "translate"
-vector = [0.0, 0.5, 0.0]
+vector = [7.0, 0.0, 0.0]
+
+[[object]]
+name = "case2"
+mesh = "case"
+material = "glass"
+[[object.transform]]
+type = "translate"
+vector = [7.0, -0.1, 0.0]
+[[object.transform]]
+type = "scale"
+vector = [2, 2, 2]
+
+
+[[object]]
+name = "floor3"
+mesh = "cube"
+material = "marble"
+[[object.transform]]
+type = "translate"
+vector = [-7, -5, 0]
+[[object.transform]]
+type = "scale"
+vector = [4, 10, 4]
+
+[[object]]
+name = "bunny"
+mesh = "bunny"
+material = "white"
+[[object.transform]]
+type = "translate"
+vector = [-7.0, 0.0, 0.0]
+[[object.transform]]
+type = "scale"
+vector = [1.6, 1.6, 1.6]
+
+[[object]]
+name = "case2"
+mesh = "case"
+material = "glass"
+[[object.transform]]
+type = "translate"
+vector = [-7.0, -0.1, 0.0]
+[[object.transform]]
+type = "scale"
+vector = [2, 2, 2]
+
+
+[[object]]
+name = "floor4"
+mesh = "cube"
+material = "marble"
+[[object.transform]]
+type = "translate"
+vector = [7, -5, -12]
+[[object.transform]]
+type = "scale"
+vector = [4, 10, 4]
+
+[[object]]
+name = "sphere1"
+mesh = "lucy"
+material = "statue"
+[[object.transform]]
+type = "translate"
+vector = [7.0, -0.1, -12.0]
+[[object.transform]]
+type = "scale"
+vector = [0.01, 0.01, 0.01]
+
+
+[[object]]
+name = "floor5"
+mesh = "cube"
+material = "marble"
+[[object.transform]]
+type = "translate"
+vector = [0, -5, -12]
+[[object.transform]]
+type = "scale"
+vector = [4, 10, 4]
+
+[[object]]
+name = "sphere2"
+mesh = "sphere"
+material = "diamond"
+[[object.transform]]
+type = "translate"
+vector = [0.0, 1.0, -12.0]
+[[object.transform]]
+type = "scale"
+vector = [2.0, 2.0, 2.0]
+
+[[object]]
+name = "case2"
+mesh = "case"
+material = "glass"
+[[object.transform]]
+type = "translate"
+vector = [0.0, -0.1, -12.0]
+[[object.transform]]
+type = "scale"
+vector = [2, 2, 2]
+
+
+[[object]]
+name = "floor6"
+mesh = "cube"
+material = "marble"
+[[object.transform]]
+type = "translate"
+vector = [-7.0, -5, -12]
+[[object.transform]]
+type = "scale"
+vector = [4, 10, 4]
+
+[[object]]
+name = "sphere3"
+mesh = "sphere"
+material = "diamond"
+[[object.transform]]
+type = "translate"
+vector = [-7.0, 1.0, -12.0]
+[[object.transform]]
+type = "scale"
+vector = [2.0, 2.0, 2.0]
+
+[[object]]
+name = "case2"
+mesh = "case"
+material = "glass"
+[[object.transform]]
+type = "translate"
+vector = [-7.0, -0.1, -12.0]
+[[object.transform]]
+type = "scale"
+vector = [2, 2, 2]
