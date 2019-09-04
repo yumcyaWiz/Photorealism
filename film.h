@@ -59,15 +59,16 @@ class Film {
     };
     std::vector<uint8_t> getPixels_RGB() const {
       std::vector<uint8_t> pixels(3*width*height);
-      for(int i = 0; i < width; i++) {
-        for(int j = 0; j < height; j++) {
+      for(int j = 0; j < height; j++) {
+        for(int i = 0; i < width; i++) {
+          RGB c = pow(this->getPixel(i, j), 1/2.2);
           for(int k = 0; k < 3; k++) {
             if(k == 0)
-              pixels[k + 3*i + 3*width*j] = data[i + width*j].color.x;
+              pixels[k + 3*i + 3*width*j] = clamp((int)(255*c.x), 0, 255);
             else if(k == 1)
-              pixels[k + 3*i + 3*width*j] = data[i + width*j].color.y;
+              pixels[k + 3*i + 3*width*j] = clamp((int)(255*c.y), 0, 255);
             else if(k == 2)
-              pixels[k + 3*i + 3*width*j] = data[i + width*j].color.z;
+              pixels[k + 3*i + 3*width*j] = clamp((int)(255*c.z), 0, 255);
           }
         }
       }
@@ -102,9 +103,10 @@ class Film {
 
     void png_output(const std::string& filename) const {
       try {
-        std::ofstream file(filename);
+        std::ofstream file(filename, std::ios::binary);
         TinyPngOut png(static_cast<uint32_t>(width), static_cast<uint32_t>(height), file);
-        png.write(this->getPixels_RGB().data(), width*height);
+        auto pixels = this->getPixels_RGB();
+        png.write(pixels.data(), width*height);
       }
       catch(const char *msg) {
         std::cerr << msg << std::endl;
