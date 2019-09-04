@@ -2,6 +2,9 @@
 #define FILM_H
 #include <iostream>
 #include <fstream>
+
+#include "tinypngout/TinyPngOut.hpp"
+
 #include "vec3.h"
 #include "util.h"
 #include "filter.h"
@@ -45,6 +48,31 @@ class Film {
       }
       return data[i + width*j].color/data[i + width*j].filter_accum;
     };
+    std::vector<RGB> getPixels() const {
+      std::vector<RGB> pixels(width*height);
+      for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+          pixels[i + width*j] = data[i + width*j].color;
+        }
+      }
+      return pixels;
+    };
+    std::vector<uint8_t> getPixels_RGB() const {
+      std::vector<uint8_t> pixels(3*width*height);
+      for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+          for(int k = 0; k < 3; k++) {
+            if(k == 0)
+              pixels[k + 3*i + 3*width*j] = data[i + width*j].color.x;
+            else if(k == 1)
+              pixels[k + 3*i + 3*width*j] = data[i + width*j].color.y;
+            else if(k == 2)
+              pixels[k + 3*i + 3*width*j] = data[i + width*j].color.z;
+          }
+        }
+      }
+      return pixels;
+    };
     void setPixel(int i, int j, const RGB& c) {
       if(i < 0 || i >= width || j < 0 || j >= height) {
         std::cerr << "Invalid Indexes" << std::endl;
@@ -70,6 +98,17 @@ class Film {
         }
       }
       file.close();
+    };
+
+    void png_output(const std::string& filename) const {
+      try {
+        std::ofstream file(filename);
+        TinyPngOut png(static_cast<uint32_t>(width), static_cast<uint32_t>(height), file);
+        png.write(this->getPixels_RGB().data(), width*height);
+      }
+      catch(const char *msg) {
+        std::cerr << msg << std::endl;
+      }
     };
 
     void addSample(int i, int j, const RGB& L) const {
