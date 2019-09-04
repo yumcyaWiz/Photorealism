@@ -1,4 +1,5 @@
-a.out
+main
+*.out
 *.ppm
 *.png
 *.jpg
@@ -7,5 +8,6 @@ a.out
 *.obj
 *.mtl
 *.optrpt
+*.o
 objs/
 !figs/*

@@ -277,7 +277,7 @@ class PtExplicit : public Integrator {
           }
         }
       }
-      this->camera->film->ppm_output("output.ppm");
+      this->camera->film->png_output("output.png");
     }
 };
 #endif
