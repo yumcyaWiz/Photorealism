@@ -22,5 +22,10 @@ class Timer {
             auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
             return msec;
         };
+        int now() const {
+          auto now = std::chrono::system_clock::now();
+          auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(now - tstart).count();
+          return msec;
+        };
 };
 #endif

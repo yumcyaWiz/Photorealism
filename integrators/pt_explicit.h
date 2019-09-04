@@ -1,5 +1,6 @@
 #ifndef PT_EXPLICIT_H
 #define PT_EXPLICIT_H
+#include <chrono>
 #include "../integrator.h"
 #include "../timer.h"
 class PtExplicit : public Integrator {
@@ -248,7 +249,11 @@ class PtExplicit : public Integrator {
       const int height = this->camera->film->height;
       const int N_sqrt = std::sqrt(N);
 
-      for(int k = 0; k < N; k++) {
+      Timer timer1;
+      timer1.start();
+      for(int k = 0; ; k++) {
+        Timer timer2;
+        timer2.start();
         for(int j = 0; j < height; j++) {
 #pragma omp parallel for schedule(dynamic, 1)
           for(int i = 0; i < width; i++) {
@@ -269,15 +274,18 @@ class PtExplicit : public Integrator {
               RGB li = weight*this->Li(ray, scene);
               this->camera->film->addSample(uv, li);
             }
-
-            if(omp_get_thread_num() == 0) {
-              int index = i + width*j + width*height*k;
-              std::cout << progressbar(index, width*height*N) << " " << percentage(index, width*height*N) << "\r" << std::flush;
-            }
           }
         }
+        int render_time = timer2.stop();
+        std::cout << timer1.now() << " ms" << std::endl;
+
+        if(timer1.now() + render_time >= 55000) {
+          this->camera->film->png_output("output.png");
+          std::cout << k + 1 << " samples" << std::endl;
+          std::cout << timer1.stop() << " ms" << std::endl;
+          return;
+        }
       }
-      this->camera->film->png_output("output.png");
     }
 };
 #endif

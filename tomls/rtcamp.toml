@@ -12,7 +12,7 @@ type = "box"
 radius = [0.499, 0.499]
 
 [film]
-resolution = [906, 512]
+resolution = [1920, 1080]
 
 [sky]
 type = "ibl"
