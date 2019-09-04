@@ -21,6 +21,6 @@ int main(int argc, char** argv) {
   TomlLoader loader;
   loader.load(toml_filepath, scene, integrator);
 
-  integrator->render(*scene);
+  integrator->render_rtcamp(*scene);
   return 0;
 }

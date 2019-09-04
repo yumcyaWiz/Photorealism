@@ -1,5 +1,5 @@
 [renderer]
-samples = 1
+samples = 10
 integrator = "pt-explicit"
 accel = "bvh"
 polygon-accel = "bvh"

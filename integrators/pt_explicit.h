@@ -242,5 +242,42 @@ class PtExplicit : public Integrator {
       }
       this->camera->film->ppm_output("output.ppm");
     };
+
+    void render_rtcamp(Scene& scene) const {
+      const int width = this->camera->film->width;
+      const int height = this->camera->film->height;
+      const int N_sqrt = std::sqrt(N);
+
+      for(int k = 0; k < N; k++) {
+        for(int j = 0; j < height; j++) {
+#pragma omp parallel for schedule(dynamic, 1)
+          for(int i = 0; i < width; i++) {
+            float rx = 2*sampler->getNext() - 1;
+            float ry = 2*sampler->getNext() - 1;
+            float sx = float(k%N_sqrt)/N_sqrt + rx/(2.0*N_sqrt) + 1/(2.0*N_sqrt);
+            float sy = k/N_sqrt * 1/float(N_sqrt) + ry/(2.0*N_sqrt) + 1/(2.0*N_sqrt);
+            float u = (2.0*(i + sx) - width)/height;
+            float v = (2.0*(j + sy) - height)/height;
+            Vec2 uv(u, v);
+
+            Ray ray;
+            float weight;
+            if(!this->camera->getRay(u, v, *(this->sampler), ray, weight)) {
+              this->camera->film->addSample(uv, RGB(0, 0, 0));
+            }
+            else {
+              RGB li = weight*this->Li(ray, scene);
+              this->camera->film->addSample(uv, li);
+            }
+
+            if(omp_get_thread_num() == 0) {
+              int index = i + width*j + width*height*k;
+              std::cout << progressbar(index, width*height*N) << " " << percentage(index, width*height*N) << "\r" << std::flush;
+            }
+          }
+        }
+      }
+      this->camera->film->ppm_output("output.ppm");
+    }
 };
 #endif

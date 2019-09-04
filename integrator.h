@@ -10,5 +10,8 @@ class Integrator {
     Integrator(const std::shared_ptr<Camera>& _camera, const std::shared_ptr<Sampler>& _sampler) : camera(_camera), sampler(_sampler) {};
 
     virtual void render(Scene& scene) const = 0;
+    virtual void render_rtcamp(Scene& scene) const {
+      return;
+    };
 };
 #endif
