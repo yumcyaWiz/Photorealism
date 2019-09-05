@@ -8,6 +8,6 @@ intel:
 	icpc -std=c++14 -Wall -fast -qopenmp main.cpp
 
 rtcamp:
-	g++ -std=c++17 -Wall -fopenmp -O3 -mtune=native -march=native -mfpmath=both main.cpp
+	g++ -v -std=c++17 -Wall -fopenmp -static -static-libgcc -static-libstdc++ -O3 -mtune=native -march=native -mfpmath=both main.cpp
 
 

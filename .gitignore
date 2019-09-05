@@ -1,6 +1,10 @@
 main
 *.out
+*.so
+*.spec
 *.ppm
+*.0
+*.1
 *.png
 *.jpg
 *.hdr
